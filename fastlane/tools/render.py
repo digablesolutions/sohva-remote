@@ -19,7 +19,8 @@ WORK.mkdir(exist_ok=True)
 FONT = (HERE / "font" / "SchibstedGrotesk.ttf").as_uri()
 CHROME = r"C:\Program Files\Google\Chrome\Application\chrome.exe"
 META = REPO / "fastlane" / "metadata" / "android"
-SRC = REPO / "site" / "img"
+# Phone captures per locale (the app's own language); see fastlane/VIDEO.md for demo-mode capture.
+SHOTS_DIR = HERE / "shots"
 
 BASE_CSS = f"""
 @font-face {{ font-family: "Schibsted Grotesk"; src: url("{FONT}"); font-weight: 400 900; }}
@@ -51,9 +52,9 @@ def finish(png, dest, w, h, keep_alpha=False):
 
 
 # Source screenshots: drop the system navigation bar (bottom ~140 px) so the UI reads larger.
-def crop_source(name, top=0):
-    out = WORK / f"src-{top}-{name}"
-    im = Image.open(SRC / name).convert("RGB")
+def crop_source(name, top=0, locale="en-US"):
+    out = WORK / f"src-{locale}-{top}-{name}"
+    im = Image.open(SHOTS_DIR / locale / name).convert("RGB")
     im.crop((0, top, 1080, 2380)).save(out)
     return out.as_uri()
 
@@ -63,19 +64,22 @@ SHOTS = [
     ("1", "remote.png", "top",
      ("Your TV, from the <em>sofa</em>", "No ads, no account. Pair once, and every key lands right away."),
      ("Telkkari hoituu <em>sohvalta</em>", "Ei mainoksia, ei tiliä. Yhdistä kerran, ja painallukset menevät perille heti.")),
-    ("2", "scenes.png", "top",
+    ("2", "touchpad.png", "top",
+     ("Or just <em>swipe</em>", "Touchpad mode: swipe to move, tap for OK, rest your finger to keep going. No looking down."),
+     ("Tai vain <em>pyyhkäise</em>", "Kosketuslevy: pyyhkäise liikkuaksesi, napauta OK, pidä sormi paikallaan jatkaaksesi.")),
+    ("3", "scenes.png", "top",
      ("Emmerdale at <em>18:30</em>, the news at <em>19:00</em>", "Scheduled scenes change the channel on weekday evenings while the TV is on."),
-     ("Emmerdale <em>18.30</em>, uutiset <em>19.00</em>", "Ajastetut tilanteet vaihtavat kanavan arki-iltaisin, kun televisio on päällä.")),
-    ("3", "timers.png", "top",
+     ("Emmerdale <em>18.30</em>, uutiset <em>19.00</em>", "Ajastetut kohtaukset vaihtavat kanavan arki-iltaisin, kun televisio on päällä.")),
+    ("4", "timers.png", "top",
      ("Doze off after <em>Kymmenen Uutiset</em>", "The sleep timer fades the sound, then turns the TV off. Wake-up TV is ready at 6:15."),
      ("Nukahda <em>Kymmenen Uutisten</em> jälkeen", "Uniajastin hiljentää äänen ja sammuttaa television. Aamulla herätys-TV klo 6.15.")),
-    ("4", "channels.png", "top",
+    ("5", "channels.png", "top",
      ("Every channel, <em>one tap</em> away", "The TV's own channel list, with the one you're watching ticked."),
      ("Kaikki kanavat <em>yhdellä napautuksella</em>", "Television oma kanavalista, katsottava kanava merkittynä.")),
-    ("5", "inputs-apps.png", "top",
+    ("6", "inputs-apps.png", "top",
      ("Inputs and apps in <em>one list</em>", "Switch to the console or the soundbar without hunting for the remote."),
      ("Tulot ja sovellukset <em>samassa listassa</em>", "Vaihda pelikonsoliin tai soundbariin etsimättä kaukosäädintä.")),
-    ("6", "remote.png", "bottom",
+    ("7", "remote.png", "bottom",
      ("Volume and channels, <em>instantly</em>", "Keys arrive in tens of milliseconds. Your phone's volume buttons work too."),
      ("Ääni ja kanavat <em>heti</em>", "Painallukset perillä kymmenissä millisekunneissa. Puhelimen äänipainikkeetkin toimivat.")),
 ]
@@ -101,7 +105,7 @@ def screenshot(locale, idx, src, mode, head, sub):
     css = SHOT_CSS
     body = f"""<style>{css}</style>
 <div class="cap"><h1>{head}</h1><p>{html.escape(sub)}</p></div>
-<div class="stage {mode}"><div class="phone"><img src="{crop_source(src)}"></div></div>"""
+<div class="stage {mode}"><div class="phone"><img src="{crop_source(src, locale=locale)}"></div></div>"""
     png = chrome(body, f"shot-{locale}-{idx}", 1080, 1920)
     finish(png, META / locale / "images" / "phoneScreenshots" / f"{idx}.png", 1080, 1920)
 
@@ -129,7 +133,7 @@ def feature_graphic(locale):
 <div class="fg">
   <div class="col"><div class="brand">{MARK.format(s=52)}Sohva Remote</div>
   <h1>{head}</h1><p>{html.escape(sub)}</p></div>
-  <div class="phone"><img src="{crop_source('remote.png', top=72)}"></div>
+  <div class="phone"><img src="{crop_source('remote.png', top=72, locale=locale)}"></div>
 </div>"""
     png = chrome(body, f"feature-{locale}", 1024, 500)
     finish(png, META / locale / "images" / "featureGraphic.png", 1024, 500)
