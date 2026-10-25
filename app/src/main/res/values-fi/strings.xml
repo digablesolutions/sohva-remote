@@ -42,8 +42,8 @@
     <string name="favorite_pinned">Kiinnitetty</string>
     <string name="touchpad_on">Käytä kosketuslevyä</string>
     <string name="touchpad_off">Käytä nuolipainikkeita</string>
-    <string name="touchpad_description">Kosketuslevy: liiku pyyhkäisemällä, valitse OK napauttamalla</string>
-    <string name="touchpad_hint">Liiku pyyhkäisemällä\nValitse OK napauttamalla\nJatka liikkumista pitämällä sormi näytöllä pyyhkäisyn jälkeen</string>
+    <string name="touchpad_description">Kosketuslevy: pyyhkäise liikkuaksesi, napauta OK. Vasen reuna ääni, oikea reuna kanavat.</string>
+    <string name="touchpad_hint">Pyyhkäise liikkuaksesi, napauta OK\nPidä paikallaan: pitkä OK\nReunat: ääni ja kanavat</string>
     <string name="remote_back">Takaisin</string>
     <string name="remote_home">Koti</string>
     <string name="remote_options">Valinnat</string>
@@ -73,7 +73,10 @@
     <string name="state_connecting">Yhdistetään: %1$s…</string>
     <string name="state_connected">%1$s</string>
     <string name="state_standby">%1$s on valmiustilassa. Käynnistä se virtapainikkeesta.</string>
-    <string name="state_unreachable">%1$s ei ole tavoitettavissa. Onko se samassa Wi-Fi-verkossa?</string>
+    <string name="state_unreachable">%1$s ei vastaa. Tarkista, että se on kytketty ja samassa verkossa kuin puhelin.</string>
+    <string name="state_unreachable_offline">%1$s ei vastaa: puhelin ei ole yhteydessä verkkoon.</string>
+    <string name="state_unreachable_mobile">%1$s ei vastaa: puhelin käyttää mobiilidataa. Yhdistä kodin Wi-Fi-verkkoon.</string>
+    <string name="state_unreachable_vpn">%1$s ei vastaa: VPN on päällä. Sulje se tai salli lähiverkon käyttö VPN-sovelluksessa.</string>
     <string name="state_unauthorized">%1$s hylkäsi laiteparipyynnön. Muodosta laitepari uudelleen.</string>
     <string name="state_pair_again">Muodosta laitepari uudelleen</string>
     <string name="state_retry">Yritä uudelleen</string>

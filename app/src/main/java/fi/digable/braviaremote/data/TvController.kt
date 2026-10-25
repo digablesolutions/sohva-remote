@@ -4,6 +4,7 @@ import android.os.Build
 import fi.digable.braviaremote.BuildConfig
 import fi.digable.braviaremote.di.ApplicationScope
 import fi.digable.braviaremote.protocol.AtvEvent
+import fi.digable.braviaremote.protocol.AtvKeyDirection
 import fi.digable.braviaremote.protocol.AtvRemote
 import fi.digable.braviaremote.protocol.AtvTextEdit
 import fi.digable.braviaremote.protocol.BraviaApi
@@ -407,6 +408,29 @@ class TvController @Inject constructor(
      * The result completes once the key has been sent or has failed, for callers that must not let
      * the process go before that (a widget or tile tap); the remote screen ignores it.
      */
+    /**
+     * Holds [key] down on the TV until called again with [down] false: Android TV's long press
+     * (OK opens a context menu). Only the fast key channel can hold a key; without it the start of
+     * a hold becomes one ordinary press.
+     */
+    fun hold(key: RemoteKey, down: Boolean) {
+        val client = api ?: return
+        val code = key.atvKeyCode
+        sendQueue.trySend {
+            runCatching {
+                val channel = fastKeys
+                if (code != null && channel != null && channel.isOpen &&
+                    channel.sendKey(code, if (down) AtvKeyDirection.START_LONG else AtvKeyDirection.END_LONG)
+                ) {
+                    DebugLog.d { "Key $key ${if (down) "held" else "released"} over fast keys" }
+                } else if (down) {
+                    client.sendIrcc(codes.codeFor(key))
+                    DebugLog.d { "Key $key: no fast keys, sent as one press" }
+                }
+            }.onFailure { DebugLog.w(it) { "Hold $key failed" } }
+        }
+    }
+
     fun press(key: RemoteKey, repeat: Boolean = false): Deferred<Unit> {
         val done = CompletableDeferred<Unit>()
         val client = api ?: run {

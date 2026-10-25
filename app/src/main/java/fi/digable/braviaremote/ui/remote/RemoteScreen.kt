@@ -98,6 +98,7 @@ import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import fi.digable.braviaremote.R
 import fi.digable.braviaremote.data.ConnectionState
+import fi.digable.braviaremote.data.LocalNetwork
 import fi.digable.braviaremote.data.SavedTv
 import fi.digable.braviaremote.protocol.ExternalInput
 import fi.digable.braviaremote.protocol.PlayingContent
@@ -203,7 +204,7 @@ fun RemoteScreen(
             Spacer(Modifier.weight(1f))
             Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
                 if (touchpad) {
-                    Touchpad(haptics, viewModel::press, viewModel::pressRepeat)
+                    Touchpad(haptics, viewModel::press, viewModel::pressRepeat, viewModel::hold)
                 } else {
                     DPadRing(haptics, viewModel::press, viewModel::pressRepeat)
                 }
@@ -489,11 +490,24 @@ private fun SleepLine(at: Long) {
 
 @Composable
 private fun StatusLine(state: ConnectionState) {
+    val context = LocalContext.current
     val text = when (state) {
         is ConnectionState.NoTv, is ConnectionState.Connected -> return
         is ConnectionState.Connecting -> stringResource(R.string.state_connecting, state.tv.name)
         is ConnectionState.Standby -> stringResource(R.string.state_standby, state.tv.name)
-        is ConnectionState.Unreachable -> stringResource(R.string.state_unreachable, state.tv.name)
+        is ConnectionState.Unreachable -> {
+            // Read when the TV stops answering, so the message names the phone-side cause if any.
+            val network = remember(state) { LocalNetwork.current(context) }
+            stringResource(
+                when (network) {
+                    LocalNetwork.NO_NETWORK -> R.string.state_unreachable_offline
+                    LocalNetwork.MOBILE_ONLY -> R.string.state_unreachable_mobile
+                    LocalNetwork.VPN -> R.string.state_unreachable_vpn
+                    LocalNetwork.OK -> R.string.state_unreachable
+                },
+                state.tv.name,
+            )
+        }
         is ConnectionState.Unauthorized -> stringResource(R.string.state_unauthorized, state.tv.name)
     }
     Text(text, style = MaterialTheme.typography.titleMedium, modifier = Modifier.padding(top = 4.dp))

@@ -106,6 +106,7 @@ class RemoteViewModel @Inject constructor(
 
     fun press(key: RemoteKey) = controller.press(key)
     fun pressRepeat(key: RemoteKey) = controller.press(key, repeat = true)
+    fun hold(key: RemoteKey, down: Boolean) = controller.hold(key, down)
     fun togglePower() = controller.togglePower()
     fun toggleMute() = controller.toggleMute()
     fun refresh() = controller.refresh()

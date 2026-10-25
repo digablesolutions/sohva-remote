@@ -6,11 +6,19 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -45,15 +53,24 @@ import kotlin.math.sign
 
 /**
  * The D-pad as a surface for the thumb, for use without looking at the phone: a swipe sends one
- * arrow per step of travel, a tap sends OK, and resting the finger after a swipe keeps moving that
- * way until it lifts. Every key goes through the same queue as the buttons (fast keys when open).
+ * arrow per step of travel, a tap sends OK, holding still sends a long OK, and resting the finger
+ * after a swipe keeps moving that way until it lifts. The left and right edges are rails, like the
+ * rockers on a physical remote: up and down there change the volume and the channel.
+ * Every key goes through the same queue as the buttons (fast keys when open).
  */
 @Composable
-fun Touchpad(haptics: Boolean, press: (RemoteKey) -> Unit, pressRepeat: (RemoteKey) -> Unit, modifier: Modifier = Modifier) {
+fun Touchpad(
+    haptics: Boolean,
+    press: (RemoteKey) -> Unit,
+    pressRepeat: (RemoteKey) -> Unit,
+    hold: (RemoteKey, Boolean) -> Unit,
+    modifier: Modifier = Modifier,
+) {
     val view = LocalView.current
     val density = LocalDensity.current
     val currentPress by rememberUpdatedState(press)
     val currentRepeat by rememberUpdatedState(pressRepeat)
+    val currentHold by rememberUpdatedState(hold)
     val currentHaptics by rememberUpdatedState(haptics)
     var touch by remember { mutableStateOf<Offset?>(null) }
     val glow = MaterialTheme.colorScheme.primary
@@ -62,6 +79,10 @@ fun Touchpad(haptics: Boolean, press: (RemoteKey) -> Unit, pressRepeat: (RemoteK
         stringResource(R.string.remote_down) to RemoteKey.DOWN,
         stringResource(R.string.remote_left) to RemoteKey.LEFT,
         stringResource(R.string.remote_right) to RemoteKey.RIGHT,
+        stringResource(R.string.remote_volume_up) to RemoteKey.VOLUME_UP,
+        stringResource(R.string.remote_volume_down) to RemoteKey.VOLUME_DOWN,
+        stringResource(R.string.remote_channel_up) to RemoteKey.CHANNEL_UP,
+        stringResource(R.string.remote_channel_down) to RemoteKey.CHANNEL_DOWN,
     )
     val description = stringResource(R.string.touchpad_description)
     val okLabel = stringResource(R.string.remote_ok)
@@ -89,28 +110,53 @@ fun Touchpad(haptics: Boolean, press: (RemoteKey) -> Unit, pressRepeat: (RemoteK
                 customActions = labels.map { (label, key) -> CustomAccessibilityAction(label) { send(key, repeat = false); true } }
             }
             .pointerInput(Unit) {
-                val stepper = SwipeStepper(firstStep = with(density) { FIRST_STEP.toPx() }, step = with(density) { STEP.toPx() })
+                fun px(dp: androidx.compose.ui.unit.Dp) = with(density) { dp.toPx() }
+                val arrows = SwipeStepper(firstStep = px(FIRST_STEP), step = px(STEP))
+                val volume = SwipeStepper(firstStep = px(VOLUME_STEP), step = px(VOLUME_STEP))
+                val channel = SwipeStepper(firstStep = px(CHANNEL_STEP), step = px(CHANNEL_STEP))
                 val slop = viewConfiguration.touchSlop
-                val restPx = with(density) { REST.toPx() }
+                val restPx = px(REST)
                 awaitEachGesture {
                     val down = awaitFirstDown()
                     down.consume()
                     touch = down.position
+                    val rail = Rail.at(down.position.x, size.width.toFloat(), px(RAIL))
+                    val stepper = when (rail) {
+                        Rail.VOLUME -> volume
+                        Rail.CHANNEL -> channel
+                        null -> arrows
+                    }
                     stepper.reset()
                     var travelled = 0f
                     var lastKey: RemoteKey? = null
                     var otherFinger = false
+                    var holding = false
+                    val holdAt = down.uptimeMillis + LONG_PRESS_MS
                     // Where the finger last really moved; drifting less than REST from it is resting.
                     var anchor = down.position
                     // When the finger has rested this long after a swipe, repeat that direction.
                     var repeatAt = Long.MAX_VALUE
                     try {
                         while (true) {
-                            val wait = if (lastKey == null) Long.MAX_VALUE else (repeatAt - SystemClock.uptimeMillis()).coerceAtLeast(0)
+                            val now = SystemClock.uptimeMillis()
+                            val wait = when {
+                                holding -> Long.MAX_VALUE
+                                lastKey != null -> (repeatAt - now).coerceAtLeast(0)
+                                rail == null && !otherFinger && travelled < slop -> (holdAt - now).coerceAtLeast(0)
+                                else -> Long.MAX_VALUE
+                            }
                             val event = withTimeoutOrNull(wait) { awaitPointerEvent() }
                             if (event == null) {
-                                lastKey?.let { send(it, repeat = true) }
-                                repeatAt = SystemClock.uptimeMillis() + REPEAT_MS
+                                val repeat = lastKey
+                                if (repeat != null) {
+                                    send(repeat, repeat = true)
+                                    repeatAt = SystemClock.uptimeMillis() + REPEAT_MS
+                                } else {
+                                    // Held still in the middle: a long OK, released when the finger lifts.
+                                    holding = true
+                                    if (currentHaptics) view.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
+                                    currentHold(RemoteKey.CONFIRM, true)
+                                }
                                 continue
                             }
                             if (event.changes.any { it.id != down.id && it.pressed }) otherFinger = true
@@ -120,9 +166,14 @@ fun Touchpad(haptics: Boolean, press: (RemoteKey) -> Unit, pressRepeat: (RemoteK
                             val delta = change.positionChange()
                             change.consume()
                             touch = change.position
+                            if (holding) {
+                                if (!change.pressed) break
+                                continue
+                            }
                             travelled += delta.getDistance()
                             // The last move can come with the release (a quick flick): count it first.
-                            val keys = stepper.feed(delta.x, delta.y)
+                            // On a rail only up and down count, and become volume or channel keys.
+                            val keys = if (rail == null) stepper.feed(delta.x, delta.y) else stepper.feed(0f, delta.y).mapNotNull(rail::keyFor)
                             for (key in keys) {
                                 send(key, repeat = false)
                                 lastKey = key
@@ -133,29 +184,79 @@ fun Touchpad(haptics: Boolean, press: (RemoteKey) -> Unit, pressRepeat: (RemoteK
                                 repeatAt = SystemClock.uptimeMillis() + HOLD_MS
                             }
                             if (!change.pressed) {
-                                if (lastKey == null && !otherFinger && travelled < slop) send(RemoteKey.CONFIRM, repeat = false)
+                                if (rail == null && lastKey == null && !otherFinger && travelled < slop) send(RemoteKey.CONFIRM, repeat = false)
                                 break
                             }
                         }
                     } finally {
+                        // Also when the gesture is cancelled: a held key must never stay down.
+                        if (holding) currentHold(RemoteKey.CONFIRM, false)
                         touch = null
                     }
                 }
             },
     ) {
+        RailLabel(stringResource(R.string.remote_volume_short), Modifier.align(Alignment.CenterStart))
+        RailLabel(stringResource(R.string.remote_channel_short), Modifier.align(Alignment.CenterEnd))
         Text(
             stringResource(R.string.touchpad_hint),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
             textAlign = TextAlign.Center,
-            modifier = Modifier.align(Alignment.Center).padding(24.dp),
+            modifier = Modifier.align(Alignment.Center).padding(horizontal = RAIL + 8.dp, vertical = 24.dp),
         )
+    }
+}
+
+/** A rail's strip: a faint up arrow, the label and a down arrow, the width of the rail. */
+@Composable
+private fun RailLabel(label: String, modifier: Modifier) {
+    val tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.55f)
+    Column(
+        modifier
+            .width(RAIL)
+            .fillMaxHeight()
+            .background(MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = 0.6f)),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+    ) {
+        Icon(Icons.Default.KeyboardArrowUp, contentDescription = null, tint = tint)
+        Text(label, style = MaterialTheme.typography.labelSmall, color = tint)
+        Icon(Icons.Default.KeyboardArrowDown, contentDescription = null, tint = tint)
+    }
+}
+
+/** The touchpad's edges: up and down there are volume (left) or channel (right) keys. */
+internal enum class Rail(private val up: RemoteKey, private val down: RemoteKey) {
+    VOLUME(RemoteKey.VOLUME_UP, RemoteKey.VOLUME_DOWN),
+    CHANNEL(RemoteKey.CHANNEL_UP, RemoteKey.CHANNEL_DOWN);
+
+    /** The rail's key for an arrow from the stepper; null for left and right. */
+    fun keyFor(arrow: RemoteKey): RemoteKey? = when (arrow) {
+        RemoteKey.UP -> up
+        RemoteKey.DOWN -> down
+        else -> null
+    }
+
+    companion object {
+        /** The rail under a finger that went down at [x] on a pad [width] wide, or null for the middle. */
+        fun at(x: Float, width: Float, railWidth: Float): Rail? = when {
+            x < railWidth -> VOLUME
+            x > width - railWidth -> CHANNEL
+            else -> null
+        }
     }
 }
 
 private val FIRST_STEP = 28.dp
 private val STEP = 52.dp
 private const val HOLD_MS = 400L
+/** Holding still this long in the middle is a long OK. */
+private const val LONG_PRESS_MS = 550L
+private val RAIL = 52.dp
+/** Volume steps come quickly; a channel change takes the TV a moment, so it needs more travel. */
+private val VOLUME_STEP = 26.dp
+private val CHANNEL_STEP = 60.dp
 private const val REPEAT_MS = 140L
 /** A finger that stays within this of where it last moved is resting, so jitter still repeats. */
 private val REST = 4.dp
