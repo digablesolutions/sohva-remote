@@ -177,13 +177,17 @@ No / None / No.
 
 ## 3. Pre-launch checklist
 
-- [ ] Blockers 1-6 above resolved (package name, app name, versionCode 3, targetSdk 36, exact alarm
-      permission, privacy page live).
+- [x] Blockers 1-6 above resolved (package name, app name, versionCode 3, targetSdk 36, exact alarm
+      permission, privacy page live) - done 2026-10-25.
 - [ ] Organization developer account for Digable verified (D-U-N-S, address, phone).
 - [ ] Build a signed **Android App Bundle** (`./gradlew bundleRelease`), R8 on, no debug logs.
-- [ ] Create an **upload key** (keystore kept outside the repo, backed up, password in a password
-      manager) and enrol in **Play App Signing** (Google holds the app signing key; default for new
-      apps).
+- [ ] **App signing: use our own key** (decided 2026-10-25). The GitHub release APK is signed with
+      `~/.android/sohva-upload.jks` (alias `upload`, SHA-256 A0:3B:3F:9F:...:C4:26), so Play must
+      sign with the same key or sideloaded installs could never update from Play. In Play Console,
+      when creating the release choose *Change app signing key* -> *Use the same key as another app /
+      Export and upload a key from Java keystore* (PEPK tool), and upload this key as the **app
+      signing key**. Then register a separate upload key (or reuse it). This key can never be
+      replaced: keep the .jks and its password (keystore.properties) in two safe places.
 - [ ] Upload first to **Internal testing** (family testers), then **Closed testing**. Note: new
       *personal* developer accounts must run a closed test with 12+ testers for 14 days before
       production; organization accounts are exempt, but a closed test is still worth running.
