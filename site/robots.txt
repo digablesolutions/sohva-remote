@@ -1,0 +1,36 @@
+# Sohva Remote landing page. Everyone, including AI crawlers and agents, is welcome.
+# (Crawlers read robots.txt at the host root; this copy applies if the site moves to its own domain.)
+User-agent: *
+Allow: /
+
+User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-User
+Allow: /
+
+User-agent: Claude-SearchBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+Sitemap: https://digablesolutions.github.io/sohva-remote/sitemap.xml

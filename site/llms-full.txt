@@ -1,0 +1,56 @@
+# Sohva Remote: full description
+
+Sohva Remote is a free, ad-free Android phone remote for Sony Bravia TVs, made by Digable (Finland). It replaces the physical remote over the home network. No cloud, no account, no analytics, no ads, no paywall. It is an independent app, not made by or affiliated with Sony. "Sohva" is Finnish for sofa.
+
+- Website: https://digablesolutions.github.io/sohva-remote/
+- Download (APK): https://github.com/digablesolutions/sohva-remote/releases/latest
+- Google Play: coming soon (package id fi.digable.sohva)
+- Source code: https://github.com/digablesolutions/sohva-remote
+- Requirements: an Android phone with Android 8.0 or newer; a Sony Bravia TV with IP control on the same network
+- Version: 1.0.0 (October 2026). Languages: English, Finnish.
+
+## What it does
+
+### On the remote
+- Fast keys: D-pad, OK, Back, Home, volume and channel keys go over the TV's Android TV Remote protocol, so a press reaches the TV in tens of milliseconds. Other keys use Sony's IRCC IP control.
+- Touchpad mode: a toggle beside the D-pad turns it into a touch surface. Swipe to move, tap for OK, rest the finger after a swipe to keep moving.
+- The card shows what's on (channel or app) and the volume; swipe it to change channel. A "jump back" chip returns to the previous channel.
+- Inputs and installed apps (with icons) and the full channel list. Long-press an app to pin it as a one-tap button under the remote and as a launcher shortcut.
+- Type on the TV: when the TV's on-screen keyboard is up, type or dictate from the phone.
+- Voice commands in Finnish and English, for example "kanava 3", "volume 20", "Netflix", "PlayStation", "mute", "turn off".
+- The phone's volume buttons change the TV volume while the app is open. Haptic feedback and long-press repeat.
+
+### Without opening the app
+- Quick Settings tiles: power, mute, guide, and the first scene.
+- Home-screen widget: volume, channel and mute.
+- Remote in notifications (opt-in): power, volume, mute, pause and play in the notification shade and on the lock screen.
+- Mute the TV while a phone call rings or is in progress, and unmute after (opt-in).
+- A double tap on power is ignored for a few seconds, so the TV does not switch off and straight back on.
+
+### Automations
+- Scenes: one tap for TV on + a channel, input or app + a volume (for example "Game time": PlayStation at volume 30).
+- Scheduled scenes: days and times, for example MTV3 at 18.30 on weekdays for Emmerdale, Yle TV1 at 20.30 for the news. A scheduled scene only acts while the TV is on; it never switches the TV on.
+- Sleep timer: turns the sound down over the last minute, then turns the TV off; the volume comes back the next time the TV is on.
+- Wake-up TV: switches the TV on at a set time on chosen days, to a channel, input or app and a volume.
+
+## Setup
+1. On the TV: Settings > Network > Home network setup > IP control. Set Authentication to "Normal and Pre-Shared Key" and Remote start to On.
+2. Install the app (APK from GitHub releases now; Google Play later).
+3. Open it on the same Wi-Fi as the TV. It finds the TV; type the 4-digit PIN the TV shows. Fast keys ask once for a second code from the TV.
+
+## Privacy
+Everything stays between the phone and the TV; the app makes no calls outside the local network. Stored on the phone only: the TV's address and name, pairing keys (encrypted with Android Keystore) and settings. App backups are disabled. Voice input uses the phone's own speech recognizer; the app receives only the recognized text and does not store it. The phone-state permission is used only for "Mute during calls". Uninstalling deletes everything.
+Privacy policy: https://digablesolutions.github.io/sohva-remote/privacy.html
+
+## Frequently asked
+- Which TVs? Built and tested on a Sony KD-65XF9005 (Android TV); other Bravia TVs with IP control should work.
+- Is it free? Yes: no ads, no paywall, no in-app purchases.
+- Does it work away from home? No. Phone and TV must be on the same network.
+- Is it made by Sony? No. It is an independent app by Digable, not affiliated with Sony.
+- iPhone? No, Android only.
+
+## Known limits
+- With an HDMI-CEC soundbar, volume moves in steps of two.
+- Devices on HDMI-CEC (such as a PlayStation 5) are listed only while awake; switching to their input does not wake them.
+- Apps with their own keyboard (YouTube) do not raise the TV keyboard, so typing does not apply there.
+- Live TV cannot be previewed on the phone.

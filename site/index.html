@@ -6,6 +6,11 @@
 <title>Sohva Remote: a phone remote for Sony Bravia TVs</title>
 <meta name="description" content="Sohva Remote is a fast, ad-free phone remote for Sony Bravia TVs. It works on your home network only: no cloud, no account.">
 <link rel="canonical" href="https://digablesolutions.github.io/sohva-remote/">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="author" content="Digable">
+<meta name="keywords" content="Sony Bravia remote, Android TV remote app, TV remote for Android, kaukosäädin, Sony Bravia kaukosäädin, ad-free TV remote">
+<link rel="sitemap" type="application/xml" href="sitemap.xml">
+<link rel="alternate" type="text/plain" title="Summary for LLMs and agents" href="llms.txt">
 <meta name="theme-color" content="#000000">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
@@ -27,6 +32,145 @@
 <link rel="preload" as="image" href="img/photos/hero-sofa-1024.webp" imagesrcset="img/photos/hero-sofa-640.webp 640w, img/photos/hero-sofa-1024.webp 1024w, img/photos/hero-sofa-1440.webp 1440w, img/photos/hero-sofa-1664.webp 1664w" imagesizes="100vw" fetchpriority="high">
 <link rel="stylesheet" href="css/site.css">
 <script src="js/site.js" defer></script>
+<script type="application/ld+json" id="structured-data">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "SoftwareApplication",
+      "@id": "https://digablesolutions.github.io/sohva-remote/#app",
+      "name": "Sohva Remote",
+      "alternateName": "Sohva Remote for Sony Bravia TVs",
+      "description": "A fast, ad-free Android phone remote for Sony Bravia TVs that works on the home network only. Not affiliated with Sony.",
+      "applicationCategory": "UtilitiesApplication",
+      "applicationSubCategory": "TV remote control",
+      "operatingSystem": "Android 8.0 or newer",
+      "softwareVersion": "1.0.0",
+      "inLanguage": [
+        "en",
+        "fi"
+      ],
+      "isAccessibleForFree": true,
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "EUR"
+      },
+      "downloadUrl": "https://github.com/digablesolutions/sohva-remote/releases/latest",
+      "installUrl": "https://github.com/digablesolutions/sohva-remote/releases/latest",
+      "releaseNotes": "https://github.com/digablesolutions/sohva-remote/releases",
+      "url": "https://digablesolutions.github.io/sohva-remote/",
+      "image": "https://digablesolutions.github.io/sohva-remote/img/og.jpg",
+      "screenshot": [
+        "https://digablesolutions.github.io/sohva-remote/img/remote.png",
+        "https://digablesolutions.github.io/sohva-remote/img/scenes.png",
+        "https://digablesolutions.github.io/sohva-remote/img/timers.png",
+        "https://digablesolutions.github.io/sohva-remote/img/channels.png",
+        "https://digablesolutions.github.io/sohva-remote/img/inputs-apps.png"
+      ],
+      "featureList": [
+        "Fast keys over the TV's Android TV Remote protocol: D-pad, volume and channels in tens of milliseconds",
+        "Touchpad mode: swipe to move, tap for OK, rest the finger to keep moving",
+        "Swipe the card to change channel; jump back to the previous channel",
+        "The TV's inputs, installed apps and channel list; pin apps as one-tap buttons and launcher shortcuts",
+        "Type or dictate into the TV's search box; voice commands in Finnish and English",
+        "Scenes and scheduled scenes (they act only while the TV is on)",
+        "Sleep timer that fades the sound over a minute; wake-up TV at a set time",
+        "Quick Settings tiles, home-screen widget, remote in notifications and on the lock screen",
+        "Mute the TV during phone calls; the phone's volume buttons control the TV",
+        "Home network only: no ads, no account, no cloud, no analytics"
+      ],
+      "author": {
+        "@id": "https://digablesolutions.github.io/sohva-remote/#digable"
+      },
+      "publisher": {
+        "@id": "https://digablesolutions.github.io/sohva-remote/#digable"
+      },
+      "sameAs": [
+        "https://github.com/digablesolutions/sohva-remote"
+      ]
+    },
+    {
+      "@type": "Organization",
+      "@id": "https://digablesolutions.github.io/sohva-remote/#digable",
+      "name": "Digable",
+      "url": "https://github.com/digablesolutions"
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://digablesolutions.github.io/sohva-remote/#site",
+      "url": "https://digablesolutions.github.io/sohva-remote/",
+      "name": "Sohva Remote",
+      "inLanguage": "en",
+      "publisher": {
+        "@id": "https://digablesolutions.github.io/sohva-remote/#digable"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://digablesolutions.github.io/sohva-remote/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Which TVs does it work with?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "It's built and tested on a Sony KD-65XF9005 with Android TV. Other Bravia TVs with IP control should work too."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What do I need to set on the TV?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Open Settings › Network › Home network setup › IP control. Set Authentication to \"Normal and Pre-Shared Key\" and Remote start to On. Then open the app and type the PIN the TV shows."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is it free?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. There are no ads and no paywall: every feature is there from the first launch."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does it work away from home?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. The phone talks to the TV directly over your home network, so both need to be on the same Wi-Fi. Nothing goes through the internet, which is also why it's fast."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "When will it be on Google Play?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "It's on its way. Until then, the APK on the GitHub releases page installs on Android 8.0 or newer. Android asks you to allow installs from your browser or file manager the first time."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is it made by Sony?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. Sohva Remote is an independent app made by Digable. It isn't made by or affiliated with Sony. \"Sohva\" is Finnish for sofa."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What does it store about me?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Only what it needs to reach your TV, kept on the phone: the TV's address, the pairing keys and your settings. See the privacy policy."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>

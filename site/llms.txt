@@ -1,0 +1,23 @@
+# Sohva Remote
+
+> Sohva Remote is a free, ad-free Android phone remote for Sony Bravia TVs, made by Digable. It talks to the TV directly over the home network (no cloud, no account, no analytics). "Sohva" is Finnish for sofa. It is an independent app, not made by or affiliated with Sony.
+
+Key facts:
+- Platform: Android 8.0 or newer (phone). Version 1.0.0. Price: free, no ads, no in-app purchases.
+- Works with: Sony Bravia TVs with IP control; built and tested on a KD-65XF9005 (Android TV). Works only when the phone and TV are on the same network.
+- Get it: APK from GitHub releases (https://github.com/digablesolutions/sohva-remote/releases/latest). Coming to Google Play (package fi.digable.sohva).
+- TV setup: Settings > Network > Home network setup > IP control: Authentication "Normal and Pre-Shared Key", Remote start On. The app finds the TV and asks for the PIN shown on the TV.
+- Languages: English and Finnish UI; voice commands in Finnish and English.
+- Source code: https://github.com/digablesolutions/sohva-remote
+
+## Pages
+
+- [Landing page](https://digablesolutions.github.io/sohva-remote/): features, a weekday routine example, FAQ, download
+- [Privacy policy (English)](https://digablesolutions.github.io/sohva-remote/privacy.html)
+- [Tietosuojaseloste (suomi)](https://digablesolutions.github.io/sohva-remote/privacy-fi.html)
+- [Full product description for LLMs](https://digablesolutions.github.io/sohva-remote/llms-full.txt)
+
+## Optional
+
+- [Releases and release notes](https://github.com/digablesolutions/sohva-remote/releases)
+- [README with build instructions](https://github.com/digablesolutions/sohva-remote#readme)

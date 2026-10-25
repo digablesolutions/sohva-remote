@@ -1,10 +1,18 @@
-# Sohva Remote
+# Sohva Remote: free, ad-free Android remote for Sony Bravia TVs
+
+[![Latest release](https://img.shields.io/github/v/release/digablesolutions/sohva-remote?label=download%20APK&color=ffb547)](https://github.com/digablesolutions/sohva-remote/releases/latest)
+[![Android 8.0+](https://img.shields.io/badge/Android-8.0%2B-3ddc84?logo=android&logoColor=white)](https://github.com/digablesolutions/sohva-remote/releases/latest)
+[![Website](https://img.shields.io/badge/website-sohva--remote-000000)](https://digablesolutions.github.io/sohva-remote/)
+[![CI](https://github.com/digablesolutions/sohva-remote/actions/workflows/android.yml/badge.svg)](https://github.com/digablesolutions/sohva-remote/actions/workflows/android.yml)
 
 A fast, ad-free phone remote for Sony Bravia TVs, on the local network only ("sohva" is
 Finnish for sofa). Built for a 2018 KD-65XF9005 (Android TV); other Bravias with IP
 control should work too. No cloud, no account, no analytics. Not affiliated with Sony.
 
-Package `fi.digable.sohva`, by Digable. Landing page: https://digablesolutions.github.io/sohva-remote/
+**[Download the APK](https://github.com/digablesolutions/sohva-remote/releases/latest)** ·
+**[Website](https://digablesolutions.github.io/sohva-remote/)** · Coming to Google Play
+(`fi.digable.sohva`). Made by Digable. English and Finnish (suomeksi: ilmainen, mainokseton
+kaukosäädin Sony Bravia -televisioille).
 
 <p>
   <img src="site/img/remote.png" width="200" alt="The remote screen: channel card, scene chips, D-pad, volume and channel rockers">
