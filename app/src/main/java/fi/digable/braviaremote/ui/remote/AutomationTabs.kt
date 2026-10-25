@@ -120,7 +120,8 @@ private fun ExactAlarmNotice() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun WakeUpSection(viewModel: RemoteViewModel) {
-    val wakeUp by viewModel.wakeUp.collectAsStateWithLifecycle()
+    val loaded by viewModel.wakeUp.collectAsStateWithLifecycle()
+    val wakeUp = loaded ?: return
     val targets by viewModel.targets.collectAsStateWithLifecycle()
     var pickTime by remember { mutableStateOf(false) }
     fun update(change: WakeUp.() -> WakeUp) = viewModel.setWakeUp(wakeUp.change())

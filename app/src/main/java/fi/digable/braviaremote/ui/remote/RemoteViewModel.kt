@@ -72,7 +72,8 @@ class RemoteViewModel @Inject constructor(
     /** The channel watched before this one, for the "jump back" chip. */
     val previousChannel: StateFlow<TvChannel?> = controller.previousChannel
 
-    val wakeUp: StateFlow<WakeUp> = wakeUpAlarm.settings.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), WakeUp())
+    /** Null until the saved settings are read: the defaults must never show, or be saved by a tap. */
+    val wakeUp: StateFlow<WakeUp?> = wakeUpAlarm.settings.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
     val scenes: StateFlow<List<Scene>> = store.scenes.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
     val favoriteApps: StateFlow<List<TvApp>> = store.favoriteApps.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
