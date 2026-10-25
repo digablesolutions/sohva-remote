@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import fi.digable.braviaremote.R
+import fi.digable.braviaremote.data.AppShortcuts
 import fi.digable.braviaremote.data.ConnectionState
 import fi.digable.braviaremote.data.CredentialStore
 import fi.digable.braviaremote.data.HardwareKeys
@@ -13,12 +14,12 @@ import fi.digable.braviaremote.data.SavedTv
 import fi.digable.braviaremote.data.Scene
 import fi.digable.braviaremote.data.SceneSchedule
 import fi.digable.braviaremote.data.SleepTimer
+import fi.digable.braviaremote.data.TvController
+import fi.digable.braviaremote.data.TvStore
 import fi.digable.braviaremote.data.TvTarget
 import fi.digable.braviaremote.data.WakeUp
 import fi.digable.braviaremote.data.WakeUpAlarm
 import fi.digable.braviaremote.data.WakeUpService
-import fi.digable.braviaremote.data.TvController
-import fi.digable.braviaremote.data.TvStore
 import fi.digable.braviaremote.protocol.AtvEvent
 import fi.digable.braviaremote.protocol.AtvTextEdit
 import fi.digable.braviaremote.protocol.ExternalInput
@@ -29,6 +30,7 @@ import fi.digable.braviaremote.protocol.TvChannel
 import fi.digable.braviaremote.voice.VoiceAction
 import fi.digable.braviaremote.voice.VoiceCommands
 import fi.digable.braviaremote.voice.VoiceInbox
+import javax.inject.Inject
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
@@ -37,7 +39,6 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @HiltViewModel
 class RemoteViewModel @Inject constructor(
@@ -71,6 +72,11 @@ class RemoteViewModel @Inject constructor(
 
     val wakeUp: StateFlow<WakeUp> = wakeUpAlarm.settings.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), WakeUp())
     val scenes: StateFlow<List<Scene>> = store.scenes.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+    val favoriteApps: StateFlow<List<TvApp>> = store.favoriteApps.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+
+    fun toggleFavoriteApp(app: TvApp) = viewModelScope.launch {
+        AppShortcuts.publish(context, store.toggleFavoriteApp(app))
+    }
 
     /** What a wake-up or scene can switch to: channels, then connected inputs, then apps. */
     val targets: StateFlow<List<TvTarget>> = combine(controller.channels, controller.inputs, controller.apps) { channels, inputs, apps ->

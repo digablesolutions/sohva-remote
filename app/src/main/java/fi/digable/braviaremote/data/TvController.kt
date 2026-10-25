@@ -492,8 +492,15 @@ class TvController @Inject constructor(
 
     // ---- power ----
 
+    /** A double tap on Power (screen, tile or widget) must not switch the TV off and straight back on. */
+    private val powerGuard = PowerGuard()
+
     fun togglePower(): Job? {
         _activeTv.value ?: return null
+        if (!powerGuard.tryAcquire()) {
+            DebugLog.d { "Power: ignored, pressed again too soon" }
+            return null
+        }
         return scope.launch {
             if (state.value is ConnectionState.Connected) powerOff() else powerOn()
         }
@@ -504,6 +511,10 @@ class TvController @Inject constructor(
      * or the widget, then switches it the other way.
      */
     suspend fun togglePowerNow() {
+        if (!powerGuard.tryAcquire()) {
+            DebugLog.d { "Power: ignored, pressed again too soon" }
+            return
+        }
         val session = awaitSession() ?: return
         val client = api ?: return
         val on = if (session is ConnectionState.Connected) {

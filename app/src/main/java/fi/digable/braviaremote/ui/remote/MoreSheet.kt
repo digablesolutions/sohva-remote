@@ -5,8 +5,10 @@ import android.content.pm.PackageManager
 import android.text.format.DateFormat
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -27,6 +29,7 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -42,6 +45,7 @@ import androidx.compose.material.icons.filled.SkipNext
 import androidx.compose.material.icons.filled.SkipPrevious
 import androidx.compose.material.icons.filled.Speaker
 import androidx.compose.material.icons.filled.SportsEsports
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.Stop
 import androidx.compose.material.icons.filled.Tv
 import androidx.compose.material3.CircularProgressIndicator
@@ -72,12 +76,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
-import androidx.core.content.ContextCompat
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.SubcomposeAsyncImage
 import fi.digable.braviaremote.BuildConfig
@@ -126,11 +132,14 @@ fun MoreSheet(viewModel: RemoteViewModel, onDismiss: () -> Unit, onAddTv: () -> 
 }
 
 /** Inputs as a list (one row per device name, connected first), then the TV's apps as a grid. */
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun WatchTab(viewModel: RemoteViewModel, onDone: () -> Unit) {
     val inputs by viewModel.inputs.collectAsStateWithLifecycle()
     val sources by viewModel.tvSources.collectAsStateWithLifecycle()
     val apps by viewModel.apps.collectAsStateWithLifecycle()
+    val favorites by viewModel.favoriteApps.collectAsStateWithLifecycle()
+    val haptic = LocalHapticFeedback.current
     val playing by viewModel.playing.collectAsStateWithLifecycle()
     val state by viewModel.state.collectAsStateWithLifecycle()
     LaunchedEffect(Unit) {
@@ -176,16 +185,45 @@ private fun WatchTab(viewModel: RemoteViewModel, onDone: () -> Unit) {
                 onClick = { viewModel.selectInput(input.uri); onDone() },
             )
         }
-        item(span = { GridItemSpan(maxLineSpan) }) { SectionHeader(stringResource(R.string.more_apps)) }
+        item(span = { GridItemSpan(maxLineSpan) }) {
+            Column {
+                SectionHeader(stringResource(R.string.more_apps))
+                Text(
+                    stringResource(R.string.favorite_hint),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+        }
         items(apps, key = { it.uri }) { app ->
+            val pinned = favorites.any { it.uri == app.uri }
+            val pinLabel = stringResource(if (pinned) R.string.favorite_remove else R.string.favorite_add)
             Column(
                 Modifier
                     .clip(RoundedCornerShape(16.dp))
-                    .clickable { viewModel.launchApp(app.uri); onDone() }
+                    .combinedClickable(
+                        onClick = { viewModel.launchApp(app.uri); onDone() },
+                        onLongClickLabel = pinLabel,
+                        onLongClick = {
+                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                            viewModel.toggleFavoriteApp(app)
+                        },
+                    )
                     .padding(vertical = 8.dp, horizontal = 4.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                AppIcon(app.icon)
+                Box {
+                    AppIcon(app.icon)
+                    if (pinned) {
+                        Icon(
+                            Icons.Default.Star,
+                            contentDescription = stringResource(R.string.favorite_pinned),
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.align(Alignment.TopEnd).size(18.dp)
+                                .background(MaterialTheme.colorScheme.surface, CircleShape),
+                        )
+                    }
+                }
                 Spacer(Modifier.height(6.dp))
                 Text(
                     app.title,

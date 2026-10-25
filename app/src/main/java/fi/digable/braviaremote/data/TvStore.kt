@@ -87,6 +87,22 @@ class TvStore @Inject constructor(private val dataStore: DataStore<Preferences>)
         dataStore.edit { it[WAKE_UP] = json.encodeToString(WakeUp.serializer(), wakeUp) }
     }
 
+    /** Apps pinned as one-tap buttons under the remote's card and as launcher shortcuts. */
+    val favoriteApps: Flow<List<TvApp>> = dataStore.data.map { prefs ->
+        prefs[FAVORITE_APPS]?.let { runCatching { json.decodeFromString(appListSerializer, it) }.getOrNull() }.orEmpty()
+    }
+
+    /** Pins [app], or unpins it when it is already pinned. */
+    suspend fun toggleFavoriteApp(app: TvApp): List<TvApp> {
+        var result = emptyList<TvApp>()
+        dataStore.edit { prefs ->
+            val list = prefs[FAVORITE_APPS]?.let { runCatching { json.decodeFromString(appListSerializer, it) }.getOrNull() }.orEmpty()
+            result = if (list.any { it.uri == app.uri }) list.filterNot { it.uri == app.uri } else list + app
+            prefs[FAVORITE_APPS] = json.encodeToString(appListSerializer, result)
+        }
+        return result
+    }
+
     val scenes: Flow<List<Scene>> = dataStore.data.map { prefs ->
         prefs[SCENES]?.let { runCatching { json.decodeFromString(sceneListSerializer, it) }.getOrNull() }.orEmpty()
     }
@@ -158,6 +174,7 @@ class TvStore @Inject constructor(private val dataStore: DataStore<Preferences>)
         val sceneListSerializer = ListSerializer(Scene.serializer())
         val WAKE_UP = stringPreferencesKey("wake_up")
         val SCENES = stringPreferencesKey("scenes")
+        val FAVORITE_APPS = stringPreferencesKey("favorite_apps")
         fun appsKey(tvId: String) = stringPreferencesKey("apps.$tvId")
     }
 }

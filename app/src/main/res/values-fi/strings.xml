@@ -33,6 +33,10 @@
     <string name="remote_left">Vasemmalle</string>
     <string name="remote_right">Oikealle</string>
     <string name="remote_ok">OK</string>
+    <string name="favorite_hint">Kiinnitä sovellus kaukosäätimen alle painamalla sitä pitkään.</string>
+    <string name="favorite_add">Kiinnitä kaukosäätimen alle</string>
+    <string name="favorite_remove">Irrota</string>
+    <string name="favorite_pinned">Kiinnitetty</string>
     <string name="touchpad_on">Käytä kosketuslevyä</string>
     <string name="touchpad_off">Käytä nuolipainikkeita</string>
     <string name="touchpad_description">Kosketuslevy: liiku pyyhkäisemällä, valitse OK napauttamalla</string>

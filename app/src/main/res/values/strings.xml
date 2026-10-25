@@ -35,6 +35,10 @@
     <string name="remote_left">Left</string>
     <string name="remote_right">Right</string>
     <string name="remote_ok">OK</string>
+    <string name="favorite_hint">Long-press an app to pin it under the remote.</string>
+    <string name="favorite_add">Pin under the remote</string>
+    <string name="favorite_remove">Unpin</string>
+    <string name="favorite_pinned">Pinned</string>
     <string name="touchpad_on">Use the touchpad</string>
     <string name="touchpad_off">Use the arrow buttons</string>
     <string name="touchpad_description">Touchpad: swipe to move, tap for OK</string>

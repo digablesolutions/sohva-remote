@@ -9,7 +9,6 @@ import android.text.format.DateFormat
 import android.view.HapticFeedbackConstants
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.material3.IconButton
 import androidx.compose.animation.core.Animatable
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -59,6 +58,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -129,6 +129,7 @@ fun RemoteScreen(
     val tvTextField by viewModel.tvTextField.collectAsStateWithLifecycle()
     val previousChannel by viewModel.previousChannel.collectAsStateWithLifecycle()
     val scenes by viewModel.scenes.collectAsStateWithLifecycle()
+    val favoriteApps by viewModel.favoriteApps.collectAsStateWithLifecycle()
     var showMore by remember { mutableStateOf(false) }
     var showKeyboard by remember { mutableStateOf(false) }
     // Opens when the TV's keyboard comes up, not on every echo, so a dismissed sheet stays closed.
@@ -186,8 +187,10 @@ fun RemoteScreen(
             val onLiveTv = playing?.uri?.startsWith("tv:") == true
             QuickChips(
                 previous = previousChannel?.takeIf { onLiveTv && state is ConnectionState.Connected },
+                favorites = favoriteApps,
                 scenes = scenes,
                 onJumpBack = viewModel::jumpBack,
+                onApp = { viewModel.launchApp(it.uri) },
                 onScene = viewModel::runScene,
             )
             if (textFieldOpen && !showKeyboard) {
@@ -497,17 +500,19 @@ private fun StatusLine(state: ConnectionState) {
 }
 
 /**
- * Under the card: "jump back" to the channel watched before (on live TV), then the user's scenes.
- * Nothing at all when there is neither.
+ * Under the card: "jump back" to the channel watched before (on live TV), the pinned apps, then the
+ * user's scenes. Nothing at all when there is none of them.
  */
 @Composable
 private fun QuickChips(
     previous: fi.digable.braviaremote.protocol.TvChannel?,
+    favorites: List<fi.digable.braviaremote.protocol.TvApp>,
     scenes: List<fi.digable.braviaremote.data.Scene>,
     onJumpBack: () -> Unit,
+    onApp: (fi.digable.braviaremote.protocol.TvApp) -> Unit,
     onScene: (fi.digable.braviaremote.data.Scene) -> Unit,
 ) {
-    if (previous == null && scenes.isEmpty()) return
+    if (previous == null && favorites.isEmpty() && scenes.isEmpty()) return
     Row(
         Modifier.fillMaxWidth().padding(top = 10.dp).horizontalScroll(rememberScrollState()),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -517,6 +522,19 @@ private fun QuickChips(
                 onClick = onJumpBack,
                 label = { Text(previous.title, maxLines = 1) },
                 leadingIcon = { Icon(Icons.Default.History, contentDescription = stringResource(R.string.jump_back), modifier = Modifier.size(18.dp)) },
+            )
+        }
+        for (app in favorites) {
+            AssistChip(
+                onClick = { onApp(app) },
+                label = { Text(app.title, maxLines = 1) },
+                leadingIcon = {
+                    coil.compose.AsyncImage(
+                        model = app.icon.ifBlank { null },
+                        contentDescription = null,
+                        modifier = Modifier.size(18.dp).clip(androidx.compose.foundation.shape.RoundedCornerShape(4.dp)),
+                    )
+                },
             )
         }
         for (scene in scenes) {
