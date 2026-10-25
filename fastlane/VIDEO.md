@@ -1,5 +1,12 @@
 # Promo video storyboard (Sohva Remote)
 
+**Done 2026-10-25:** `fastlane/video/promo-en-US.mp4` and `promo-fi-FI.mp4` (35.8 s, 1080x1920,
+captions burned in, end card). Made with `tools/record_promo.sh` (scripted phone recording, with
+System UI demo mode at 18:30) and `tools/promo.py` (frames, captions, end card; ffmpeg from the
+`imageio-ffmpeg` pip package works). Voice was left out: speech can't be scripted over adb.
+**To publish:** upload each to YouTube as Unlisted, embedding on, monetisation off, not "made for
+kids"; put the URL in `metadata/android/<locale>/video.txt`.
+
 Target: 25 to 30 s, portrait phone capture, no voice-over needed, subtitles burned in only if the
 Finnish and English versions are separate uploads. The first 10 s must show the real experience
 (Play autoplays the start muted), so no logo intro.
