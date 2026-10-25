@@ -13,58 +13,23 @@
 <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<style>
-:root {
-  color-scheme: dark;
-  --ink: #000000; --panel: #141416; --line: #2c2c30; --text: #f2f2f2; --muted: #a3a3a8;
-  --amber: #ffb547; --on-amber: #241500; --gutter: 1.25rem;
-}
-@media (min-width: 720px) { :root { --gutter: 2rem; } }
-* { box-sizing: border-box; }
-html { -webkit-text-size-adjust: 100%; }
-body { margin: 0; background: var(--ink); color: var(--text); font-family: "Schibsted Grotesk", system-ui, sans-serif; font-size: 1.0625rem; line-height: 1.6; overflow-wrap: break-word; }
-a { color: var(--amber); text-underline-offset: 3px; }
-:focus-visible { outline: 3px solid var(--amber); outline-offset: 3px; border-radius: 6px; }
-.wrap { max-width: 72rem; margin-inline: auto; padding-inline: var(--gutter); }
-.skip { position: absolute; left: var(--gutter); top: .75rem; z-index: 10; padding: .6rem 1rem; border-radius: 999px; background: var(--amber); color: var(--on-amber); font-weight: 600; text-decoration: none; transform: translateY(-200%); }
-.skip:focus { transform: none; }
-.top { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding-block: 1.25rem; }
-.mark { display: flex; align-items: center; gap: .6rem; font-weight: 700; font-size: 1.05rem; color: var(--text); text-decoration: none; }
-.mark svg { flex: none; }
-.top nav a { color: var(--muted); text-decoration: none; font-weight: 500; }
-.top nav a:hover { color: var(--text); }
-article { padding-block: 3rem 5rem; }
-article > * { max-width: 42rem; }
-h1 { margin: 0; font-size: clamp(2.2rem, 6vw, 3.5rem); line-height: 1.05; letter-spacing: -.03em; font-weight: 800; }
-.meta { color: var(--muted); margin: 1rem 0 0; }
-.lede { font-size: 1.2rem; margin: 2rem 0 0; }
-h2 { margin: 2.75rem 0 .75rem; font-size: 1.35rem; line-height: 1.2; letter-spacing: -.01em; font-weight: 700; }
-p, li { color: #c4c4c8; }
-p { margin: .75rem 0 0; }
-ul { margin: .75rem 0 0; padding-left: 1.2rem; }
-li { margin-top: .5rem; }
-li::marker { color: var(--amber); }
-strong { color: var(--text); font-weight: 600; }
-code { font-size: .9em; background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: .1em .35em; overflow-wrap: anywhere; }
-footer { border-top: 1px solid var(--line); padding-block: 2rem 3rem; color: var(--muted); font-size: .92rem; }
-footer .wrap { display: flex; flex-wrap: wrap; gap: 1rem 2rem; justify-content: space-between; }
-footer p { margin: 0; color: var(--muted); max-width: 40rem; }
-footer nav { display: flex; flex-wrap: wrap; gap: .5rem 1.5rem; }
-</style>
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400..800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/site.css">
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
-<header class="wrap top">
+<header class="site-head">
+  <div class="wrap">
   <a class="mark" href="./" aria-label="Sohva Remote, home">
     <svg width="28" height="28" viewBox="0 0 28 28" aria-hidden="true"><circle cx="14" cy="14" r="13" fill="none" stroke="#ffb547" stroke-width="2"/><circle cx="14" cy="14" r="5.5" fill="#ffb547"/></svg>
     Sohva Remote
   </a>
-  <nav aria-label="Language"><a href="privacy-fi.html" hreflang="fi" lang="fi">Suomeksi</a></nav>
+  <nav class="site-nav" aria-label="Language"><a href="privacy-fi.html" hreflang="fi" lang="fi">Suomeksi</a></nav>
+  </div>
 </header>
 
 <main id="main" tabindex="-1">
-  <article class="wrap">
+  <article class="wrap doc">
     <h1>Privacy policy</h1>
     <p class="meta">Sohva Remote, by Digable. Effective 25 October 2026.</p>
     <p class="lede">Sohva Remote collects no data. It has no analytics, no ads and no account. It talks only to your TV, on your own network.</p>
@@ -98,7 +63,7 @@ footer nav { display: flex; flex-wrap: wrap; gap: .5rem 1.5rem; }
   </article>
 </main>
 
-<footer>
+<footer class="site-foot">
   <div class="wrap">
     <p>Sohva Remote is made by Digable. It's an independent app, not made by or affiliated with Sony.</p>
     <nav aria-label="Footer">
