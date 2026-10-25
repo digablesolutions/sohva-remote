@@ -2,6 +2,7 @@ package fi.digable.braviaremote.ui.remote
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.os.Build
 import android.text.format.DateFormat
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -411,6 +412,7 @@ private fun KeysTab(viewModel: RemoteViewModel, haptics: Boolean) {
         }
 
         CallMuteSetting(viewModel)
+        NotificationRemoteSetting(viewModel)
 
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth().padding(top = 4.dp)) {
             Text(stringResource(R.string.more_haptics), Modifier.weight(1f))
@@ -481,6 +483,38 @@ private fun CallMuteSetting(viewModel: RemoteViewModel) {
             checked = enabled && granted,
             onCheckedChange = { on ->
                 if (on && !granted) permission.launch(Manifest.permission.READ_PHONE_STATE) else viewModel.setMuteOnCalls(on)
+            },
+        )
+    }
+}
+
+/** The remote keys as a notification; asks for the notification permission on Android 13+. */
+@Composable
+private fun NotificationRemoteSetting(viewModel: RemoteViewModel) {
+    val enabled by viewModel.notificationRemoteEnabled.collectAsStateWithLifecycle()
+    val context = LocalContext.current
+    val permission = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
+        viewModel.setNotificationRemote(granted)
+    }
+    val granted = Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU ||
+        ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED
+    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth().padding(top = 4.dp)) {
+        Column(Modifier.weight(1f)) {
+            Text(stringResource(R.string.notif_remote_title))
+            Text(
+                stringResource(R.string.notif_remote_hint),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+        Switch(
+            checked = enabled && granted,
+            onCheckedChange = { on ->
+                if (on && !granted && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    permission.launch(Manifest.permission.POST_NOTIFICATIONS)
+                } else {
+                    viewModel.setNotificationRemote(on)
+                }
             },
         )
     }

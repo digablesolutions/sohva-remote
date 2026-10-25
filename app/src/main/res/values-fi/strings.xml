@@ -33,6 +33,9 @@
     <string name="remote_left">Vasemmalle</string>
     <string name="remote_right">Oikealle</string>
     <string name="remote_ok">OK</string>
+    <string name="notif_remote_title">Kaukosäädin ilmoituksissa</string>
+    <string name="notif_remote_hint">Virta, äänenvoimakkuus, mykistys, tauko ja toisto ilmoituspaneelissa ja lukitusnäytöllä.</string>
+    <string name="notif_remote_channel">Kaukosäädin</string>
     <string name="favorite_hint">Kiinnitä sovellus kaukosäätimen alle painamalla sitä pitkään.</string>
     <string name="favorite_add">Kiinnitä kaukosäätimen alle</string>
     <string name="favorite_remove">Irrota</string>

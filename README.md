@@ -26,6 +26,8 @@ Package `fi.digable.sohva`, by Digable. Landing page: https://digablesolutions.g
   beside the D-pad switches between the two.
 - The card shows what's on (channel or app); swipe it to change channel. "Jump back"
   chip returns to the channel watched before.
+- Pin apps (long-press in Inputs & apps): one-tap chips under the card and launcher
+  shortcuts (long-press the app icon).
 - More sheet: the TV's inputs, installed apps (icons cached on the phone), the channel
   list, number pad and extra keys, timers, scenes, saved TVs.
 - Type on the TV: when the TV's keyboard is up, type (or dictate) from the phone.
@@ -35,6 +37,9 @@ Package `fi.digable.sohva`, by Digable. Landing page: https://digablesolutions.g
 **Without opening the app**
 - Quick Settings tiles: power, mute, guide, and the first scene.
 - Home-screen widget: volume, channel and mute.
+- Remote in notifications (opt-in): power, volume, mute, pause and play in the shade
+  and on the lock screen.
+- A double tap on power is ignored for 4 s, so the TV doesn't switch off and back on.
 - Mute the TV while a phone call rings or is on, unmute after (opt-in).
 
 **Automations**
@@ -80,6 +85,7 @@ for a second, one-time PIN from the TV's Android TV Remote service.
 | `FOREGROUND_SERVICE`, `WAKE_LOCK` | Keep the phone awake for the minute a timer needs to reach the TV. |
 | `RECEIVE_BOOT_COMPLETED` | Set the alarms again after a restart. |
 | `READ_PHONE_STATE` | Only for "Mute during calls", asked when you switch it on. |
+| `POST_NOTIFICATIONS` | Only for "Remote in notifications" and the timers' brief status; asked when you switch it on. |
 | `VIBRATE` | Haptic feedback. |
 
 Microphone access goes through Android's own speech recognizer; the app never records

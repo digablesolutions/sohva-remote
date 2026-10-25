@@ -27,6 +27,7 @@ import fi.digable.braviaremote.protocol.PlayingContent
 import fi.digable.braviaremote.protocol.RemoteKey
 import fi.digable.braviaremote.protocol.TvApp
 import fi.digable.braviaremote.protocol.TvChannel
+import fi.digable.braviaremote.shortcuts.NotificationRemote
 import fi.digable.braviaremote.voice.VoiceAction
 import fi.digable.braviaremote.voice.VoiceCommands
 import fi.digable.braviaremote.voice.VoiceInbox
@@ -48,6 +49,7 @@ class RemoteViewModel @Inject constructor(
     private val sleepTimer: SleepTimer,
     private val wakeUpAlarm: WakeUpAlarm,
     private val sceneSchedule: SceneSchedule,
+    private val notificationRemote: NotificationRemote,
     @ApplicationContext private val context: Context,
     hardwareKeys: HardwareKeys,
     voiceInbox: VoiceInbox,
@@ -201,6 +203,14 @@ class RemoteViewModel @Inject constructor(
     fun setMuteOnCalls(enabled: Boolean) = viewModelScope.launch { store.setMuteOnCalls(enabled) }
     fun setHaptics(enabled: Boolean) = viewModelScope.launch { store.setHaptics(enabled) }
     fun setTouchpad(enabled: Boolean) = viewModelScope.launch { store.setTouchpad(enabled) }
+
+    val notificationRemoteEnabled: StateFlow<Boolean> =
+        store.notificationRemote.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
+
+    fun setNotificationRemote(enabled: Boolean) = viewModelScope.launch {
+        store.setNotificationRemote(enabled)
+        notificationRemote.sync()
+    }
 
     private companion object {
         /** "Louder" moves as far as a few presses of the volume key. */

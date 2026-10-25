@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The notification remote: one row of keys, usable on the lock screen. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingVertical="4dp">
+
+    <ImageButton
+        android:id="@+id/notif_power"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_marginHorizontal="3dp"
+        android:layout_weight="1"
+        android:background="@drawable/widget_key"
+        android:contentDescription="@string/remote_power"
+        android:src="@drawable/ic_power"
+        android:tint="@color/widget_on_surface" />
+
+    <ImageButton
+        android:id="@+id/notif_volume_down"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_marginHorizontal="3dp"
+        android:layout_weight="1"
+        android:background="@drawable/widget_key"
+        android:contentDescription="@string/remote_volume_down"
+        android:src="@drawable/ic_remove"
+        android:tint="@color/widget_on_surface" />
+
+    <ImageButton
+        android:id="@+id/notif_mute"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_marginHorizontal="3dp"
+        android:layout_weight="1"
+        android:background="@drawable/widget_key"
+        android:contentDescription="@string/remote_mute"
+        android:src="@drawable/ic_volume_off"
+        android:tint="@color/widget_on_surface" />
+
+    <ImageButton
+        android:id="@+id/notif_volume_up"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_marginHorizontal="3dp"
+        android:layout_weight="1"
+        android:background="@drawable/widget_key"
+        android:contentDescription="@string/remote_volume_up"
+        android:src="@drawable/ic_add"
+        android:tint="@color/widget_on_surface" />
+
+    <ImageButton
+        android:id="@+id/notif_pause"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_marginHorizontal="3dp"
+        android:layout_weight="1"
+        android:background="@drawable/widget_key"
+        android:contentDescription="@string/remote_pause"
+        android:src="@drawable/ic_pause"
+        android:tint="@color/widget_on_surface" />
+
+    <ImageButton
+        android:id="@+id/notif_play"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_marginHorizontal="3dp"
+        android:layout_weight="1"
+        android:background="@drawable/widget_key"
+        android:contentDescription="@string/remote_play"
+        android:src="@drawable/ic_play"
+        android:tint="@color/widget_on_surface" />
+</LinearLayout>

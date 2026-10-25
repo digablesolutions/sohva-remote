@@ -23,6 +23,13 @@ class TvStore @Inject constructor(private val dataStore: DataStore<Preferences>)
     val activeTvId: Flow<String?> = dataStore.data.map { it[ACTIVE_TV] }
     val hapticsEnabled: Flow<Boolean> = dataStore.data.map { it[HAPTICS] ?: true }
 
+    /** The remote keys as an ongoing notification, also on the lock screen. */
+    val notificationRemote: Flow<Boolean> = dataStore.data.map { it[NOTIFICATION_REMOTE] ?: false }
+
+    suspend fun setNotificationRemote(enabled: Boolean) {
+        dataStore.edit { it[NOTIFICATION_REMOTE] = enabled }
+    }
+
     /** The remote shows the touchpad instead of the D-pad ring. */
     val touchpad: Flow<Boolean> = dataStore.data.map { it[TOUCHPAD] ?: false }
 
@@ -164,6 +171,7 @@ class TvStore @Inject constructor(private val dataStore: DataStore<Preferences>)
         val ACTIVE_TV = stringPreferencesKey("active_tv")
         val HAPTICS = booleanPreferencesKey("haptics")
         val TOUCHPAD = booleanPreferencesKey("touchpad")
+        val NOTIFICATION_REMOTE = booleanPreferencesKey("notification_remote")
         val SLEEP_AT = longPreferencesKey("sleep_at")
         val MUTE_ON_CALLS = booleanPreferencesKey("mute_on_calls")
         val MUTED_FOR_CALL = booleanPreferencesKey("muted_for_call")

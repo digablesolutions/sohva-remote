@@ -13,6 +13,8 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <!-- A restart drops alarms: set the wake-up and sleep timer again. -->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <!-- Optional: the remote as a notification (and the timers' progress). Asked for when turned on. -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <!-- Optional: mute the TV during phone calls. Asked for only when that setting is turned on. -->
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <!-- Sleep timer, wake-up and scheduled scenes on time with the app closed. Play allows

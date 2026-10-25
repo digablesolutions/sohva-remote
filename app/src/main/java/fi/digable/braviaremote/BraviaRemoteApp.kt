@@ -7,17 +7,18 @@ import coil.util.DebugLogger
 import dagger.Lazy
 import dagger.hilt.android.HiltAndroidApp
 import fi.digable.braviaremote.data.CredentialStore
+import fi.digable.braviaremote.data.SceneSchedule
 import fi.digable.braviaremote.data.SleepTimer
 import fi.digable.braviaremote.data.TvController
-import fi.digable.braviaremote.data.SceneSchedule
 import fi.digable.braviaremote.data.WakeUpAlarm
 import fi.digable.braviaremote.di.ApplicationScope
+import fi.digable.braviaremote.shortcuts.NotificationRemote
 import fi.digable.braviaremote.shortcuts.WidgetUpdater
+import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
-import javax.inject.Inject
 
 @HiltAndroidApp
 class BraviaRemoteApp : Application(), ImageLoaderFactory {
@@ -28,6 +29,7 @@ class BraviaRemoteApp : Application(), ImageLoaderFactory {
     @Inject lateinit var sleepTimer: Lazy<SleepTimer>
     @Inject lateinit var wakeUp: Lazy<WakeUpAlarm>
     @Inject lateinit var sceneSchedule: Lazy<SceneSchedule>
+    @Inject lateinit var notificationRemote: Lazy<NotificationRemote>
     @Inject @ApplicationScope lateinit var scope: CoroutineScope
 
     override fun onCreate() {
@@ -45,6 +47,7 @@ class BraviaRemoteApp : Application(), ImageLoaderFactory {
             sleepTimer.get().restore()
             wakeUp.get().reschedule()
             sceneSchedule.get().reschedule()
+            notificationRemote.get().sync()
         }
     }
 
