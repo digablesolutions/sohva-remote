@@ -1,0 +1,7 @@
+What's new in 1.1
+• Live TV: the card shows the programme on now, with its times and progress
+• Touchpad edges change the volume (left) and the channel (right)
+• Hold still on the touchpad for a long OK (menus on Android TV)
+• If the TV stops accepting fast keys, the app says so and offers Pair again
+• Clearer message when the TV can't be reached: no network, mobile data or a VPN
+• Fixed: the wake-up settings could flash their defaults when opening Timers

@@ -1,0 +1,7 @@
+Uutta versiossa 1.1
+• Suorissa lähetyksissä kortti näyttää ohjelman, sen ajat ja edistymisen
+• Kosketuslevyn reunat: vasen äänenvoimakkuus, oikea kanava
+• Pitkä OK: pidä sormea paikallaan kosketuslevyllä
+• Jos televisio lakkaa hyväksymästä pikanäppäimiä, sovellus kertoo sen ja tarjoaa uuden yhdistämisen
+• Selkeämpi viesti, kun televisioon ei saada yhteyttä
+• Korjattu: herätyksen oletusarvot saattoivat vilahtaa Ajastimissa
