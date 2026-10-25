@@ -1,0 +1,450 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sohva Remote: a phone remote for Sony Bravia TVs</title>
+<meta name="description" content="Sohva Remote is a fast, ad-free phone remote for Sony Bravia TVs. It works on your home network only: no cloud, no account.">
+<link rel="canonical" href="https://digablesolutions.github.io/sohva-remote/">
+<meta name="theme-color" content="#000000">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+<!-- Share card. Crawlers need absolute URLs; these point at the GitHub Pages site. -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Sohva Remote">
+<meta property="og:url" content="https://digablesolutions.github.io/sohva-remote/">
+<meta property="og:title" content="Sohva Remote">
+<meta property="og:description" content="A fast, ad-free phone remote for Sony Bravia TVs. Home network only: no cloud, no account.">
+<meta property="og:image" content="https://digablesolutions.github.io/sohva-remote/img/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Sohva Remote: your TV, from the sofa. A living room in the evening, with the app's remote screen.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://digablesolutions.github.io/sohva-remote/img/og.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="preload" as="image" href="img/photos/hero-sofa-1024.webp" imagesrcset="img/photos/hero-sofa-640.webp 640w, img/photos/hero-sofa-1024.webp 1024w, img/photos/hero-sofa-1440.webp 1440w, img/photos/hero-sofa-1664.webp 1664w" imagesizes="100vw" fetchpriority="high">
+<style>
+:root {
+  color-scheme: dark;
+  --ink: #000000;
+  --panel: #141416;
+  --line: #2c2c30;
+  --text: #f2f2f2;
+  --muted: #a3a3a8;
+  --amber: #ffb547;
+  --amber-deep: #3a2a0e;
+  --on-amber: #241500;
+  --power: #6fe3a5;
+  --radius-phone: 44px;
+  --measure: 34rem;
+  --gutter: 1.25rem;
+}
+@media (min-width: 720px) { :root { --gutter: 2rem; } }
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+body {
+  margin: 0;
+  background: var(--ink);
+  color: var(--text);
+  font-family: "Schibsted Grotesk", system-ui, sans-serif;
+  font-size: 1.0625rem;
+  line-height: 1.55;
+  overflow-wrap: break-word;
+}
+img { display: block; max-width: 100%; height: auto; }
+a { color: var(--amber); text-underline-offset: 3px; }
+:focus-visible { outline: 3px solid var(--amber); outline-offset: 3px; border-radius: 6px; }
+[id] { scroll-margin-top: 1.5rem; }
+.wrap { max-width: 72rem; margin-inline: auto; padding-inline: var(--gutter); }
+
+.skip {
+  position: absolute; left: var(--gutter); top: .75rem; z-index: 10;
+  padding: .6rem 1rem; border-radius: 999px;
+  background: var(--amber); color: var(--on-amber); font-weight: 600; text-decoration: none;
+  transform: translateY(-200%);
+}
+.skip:focus { transform: none; }
+
+/* Header */
+.top { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding-block: 1.25rem; }
+.mark { display: flex; align-items: center; gap: .6rem; font-weight: 700; font-size: 1.05rem; color: var(--text); text-decoration: none; }
+.mark svg { flex: none; }
+.top nav a { color: var(--muted); text-decoration: none; font-weight: 500; }
+.top nav a:hover { color: var(--text); }
+@media (max-width: 379px) { .top .wide { display: none; } }
+
+/* Hero: full-bleed photo, the headline comes in over its dark lower edge */
+.hero { position: relative; isolation: isolate; --photo-h: clamp(300px, 58vw, 760px); }
+.photo-bleed { position: absolute; inset: 0 0 auto; height: var(--photo-h); margin: 0; z-index: -1; overflow: hidden; }
+.photo-bleed img { width: 100%; height: 100%; max-width: none; object-fit: cover; }
+.photo-bleed::after {
+  content: ""; position: absolute; inset: 0;
+  background:
+    linear-gradient(to bottom, rgba(0,0,0,.65) 0%, rgba(0,0,0,0) 18%, rgba(0,0,0,.45) 55%, rgba(0,0,0,.88) 78%, #000 100%),
+    linear-gradient(to right, rgba(0,0,0,.6) 0%, rgba(0,0,0,0) 60%);
+}
+.hero .photo-bleed img { object-position: 72% 40%; }
+.hero-inner { display: grid; gap: 3rem; align-items: start; padding-block: calc(var(--photo-h) * .56) 4.5rem; }
+@media (min-width: 900px) {
+  .hero .photo-bleed img { object-position: center 40%; }
+  .hero-inner { grid-template-columns: 1.2fr .8fr; padding-block: calc(var(--photo-h) * .5) 6rem; }
+  .hero-inner .phone { margin-top: calc(var(--photo-h) * -.22); width: min(280px, 100%); justify-self: end; }
+}
+.hero h1, .hero p, .band-text { text-shadow: 0 1px 24px rgba(0,0,0,.6); }
+.hero h1 {
+  margin: 0;
+  font-size: clamp(2.5rem, 7vw, 4.75rem);
+  line-height: 1.02;
+  letter-spacing: -.035em;
+  font-weight: 800;
+  max-width: 12ch;
+  text-wrap: balance;
+}
+.hero p { color: #c4c4c8; font-size: 1.2rem; max-width: var(--measure); margin: 1.5rem 0 2rem; }
+.actions { display: flex; flex-wrap: wrap; gap: .75rem; }
+.button {
+  display: inline-flex; align-items: center; gap: .5rem;
+  padding: .85rem 1.4rem; border-radius: 999px;
+  font-weight: 600; text-decoration: none; font-size: 1rem;
+}
+.button:focus-visible { border-radius: 999px; }
+.button.primary { background: var(--amber); color: var(--on-amber); }
+.button.primary:hover { background: #ffc46b; }
+.button.quiet { border: 1px solid var(--line); color: var(--text); }
+.button.quiet:hover { border-color: var(--muted); }
+
+.phone {
+  margin: 0;
+  justify-self: center;
+  width: min(300px, 78vw, 100%);
+  padding: 10px;
+  border-radius: var(--radius-phone);
+  background: #1b1b1e;
+  box-shadow: 0 0 0 1px var(--line), 0 40px 120px -30px rgba(255, 181, 71, .28);
+}
+.phone img { border-radius: calc(var(--radius-phone) - 10px); }
+
+/* Evening guide: the page's one loud element */
+.guide { border-top: 1px solid var(--line); padding-block: 4.5rem; }
+.guide-head { display: grid; gap: 1rem; margin-bottom: 2.5rem; }
+@media (min-width: 900px) { .guide-head { grid-template-columns: 1fr 1fr; align-items: end; } }
+h2 { margin: 0; font-size: clamp(1.9rem, 4vw, 2.75rem); line-height: 1.08; letter-spacing: -.025em; font-weight: 750; text-wrap: balance; }
+.guide-head p, .section-lede { color: var(--muted); margin: 0; max-width: var(--measure); }
+.section-lede { margin-top: 1rem; }
+.guide-body { display: grid; gap: 3rem; }
+.guide-phone { display: none; margin: 0; }
+@media (min-width: 1000px) {
+  .guide-body { grid-template-columns: minmax(0, 1fr) 280px; gap: 4rem; align-items: start; }
+  .guide-phone { display: block; position: sticky; top: 2rem; }
+  .guide-phone .phone { width: 280px; }
+  .guide-phone figcaption { color: var(--muted); font-size: .92rem; margin-top: 1.25rem; text-align: center; }
+}
+.slots { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
+.slot {
+  display: grid;
+  grid-template-columns: 5.25rem minmax(0, 1fr);
+  gap: .3rem 1rem;
+  padding-block: 1.15rem;
+  border-bottom: 1px solid var(--line);
+  position: relative;
+}
+@media (min-width: 720px) { .slot { grid-template-columns: 8.5rem minmax(0, 1fr) minmax(0, 16rem); gap: .3rem 1.25rem; align-items: baseline; } }
+.slot time {
+  grid-row: span 2;
+  font-size: clamp(1.5rem, 3.4vw, 2.5rem);
+  font-weight: 700;
+  letter-spacing: -.02em;
+  color: var(--amber);
+  line-height: 1;
+}
+@media (min-width: 720px) { .slot time { grid-row: auto; } }
+.slot.night time { color: var(--muted); }
+.slot.morning time { color: var(--power); }
+.slot .what { font-size: 1.2rem; font-weight: 600; display: flex; flex-wrap: wrap; align-items: center; gap: .3rem .6rem; }
+.slot .how { grid-column: 2; color: var(--muted); font-size: .98rem; }
+@media (min-width: 720px) { .slot .how { grid-column: 3; } }
+
+/* Now / Next, set by the script below */
+.slot.is-live::before {
+  content: ""; position: absolute; inset-block: -1px; left: -1rem; width: 3px;
+  background: var(--amber);
+}
+.slot.is-live { background: linear-gradient(90deg, rgba(255, 181, 71, .07), transparent 70%); }
+.pill {
+  display: inline-flex; align-items: center; gap: .4rem;
+  padding: .15rem .6rem; border-radius: 999px;
+  background: var(--amber-deep); color: var(--amber);
+  font-size: .8rem; font-weight: 600; line-height: 1.5;
+}
+.pill.now::before { content: ""; width: .45rem; height: .45rem; border-radius: 50%; background: var(--amber); }
+@media (prefers-reduced-motion: no-preference) {
+  .pill.now::before { animation: blink 2.4s ease-in-out infinite; }
+  @keyframes blink { 50% { opacity: .35; } }
+}
+.guide-note { color: var(--muted); font-size: .95rem; margin: 1.5rem 0 0; max-width: 40rem; }
+.guide-status { color: var(--text); font-size: .95rem; margin: 0 0 1rem; }
+.guide-status[hidden] { display: none; }
+
+/* Morning band */
+.band { position: relative; isolation: isolate; --photo-h: clamp(280px, 52vw, 680px); }
+.band .photo-bleed img { object-position: 30% 50%; }
+.band .photo-bleed::after {
+  background:
+    linear-gradient(to bottom, #000 0%, rgba(0,0,0,0) 20%, rgba(0,0,0,.4) 55%, rgba(0,0,0,.88) 80%, #000 100%),
+    linear-gradient(to right, rgba(0,0,0,.6) 0%, rgba(0,0,0,0) 60%);
+}
+.band-text { padding-block: calc(var(--photo-h) * .62) 4.5rem; }
+.band-text time { color: var(--power); }
+.band-text p { color: #c4c4c8; max-width: var(--measure); margin: 1rem 0 0; }
+
+/* Features */
+.features { border-top: 1px solid var(--line); padding-block: 4.5rem; }
+.features-top { display: grid; gap: 2.5rem; }
+.features-top .group { margin-top: 2.5rem; }
+.photo-card { margin: 0; border-radius: 22px; overflow: hidden; border: 1px solid var(--line); aspect-ratio: 4 / 3; }
+.photo-card img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 45%; }
+@media (min-width: 900px) {
+  .features-top { grid-template-columns: minmax(0, 1fr) minmax(0, .8fr); gap: 4rem; align-items: start; }
+  .photo-card { aspect-ratio: 4 / 5; position: sticky; top: 2rem; }
+}
+.groups { display: grid; gap: 2.5rem; margin-top: 3rem; }
+@media (min-width: 720px) { .groups { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 3rem; } }
+.group h3 { margin: 0 0 .9rem; font-size: 1.2rem; font-weight: 700; }
+.group ul { margin: 0; padding: 0; list-style: none; }
+.group li { padding-block: .55rem; border-top: 1px solid var(--line); color: var(--muted); }
+.group li strong { color: var(--text); font-weight: 600; }
+
+/* Screens strip */
+.screens { padding-block: 0 4.5rem; }
+.screens h2 { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.strip {
+  display: flex; gap: 1.25rem;
+  margin: 0 calc(-1 * var(--gutter)); padding: .5rem var(--gutter) 1rem;
+  list-style: none;
+  overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding-inline: var(--gutter);
+  scrollbar-color: var(--line) transparent;
+}
+.strip:focus-visible { outline-offset: -3px; }
+.strip::after { content: ""; flex: 0 0 1px; }
+.strip li { flex: 0 0 min(220px, 60vw); scroll-snap-align: start; }
+.strip figure { margin: 0; }
+.strip img { border-radius: 22px; border: 1px solid var(--line); }
+.strip figcaption { color: var(--muted); font-size: .92rem; margin-top: .6rem; }
+
+/* Promise */
+.promise { border-top: 1px solid var(--line); padding-block: 4.5rem; display: grid; gap: 2rem; }
+@media (min-width: 900px) { .promise { grid-template-columns: 1fr 1fr; } }
+.promise dl { margin: 0; display: grid; gap: 1.25rem; }
+.promise dt { font-weight: 700; font-size: 1.15rem; }
+.promise dd { margin: .2rem 0 0; color: var(--muted); }
+.promise .more { color: var(--muted); margin: 1.5rem 0 0; }
+
+/* Get it */
+.get { border-top: 1px solid var(--line); padding-block: 4.5rem 5rem; }
+.steps { list-style: none; counter-reset: step; margin: 2.5rem 0 0; padding: 0; display: grid; gap: 1.75rem; }
+@media (min-width: 900px) { .steps { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2.5rem; } }
+.steps li { counter-increment: step; display: grid; grid-template-columns: 2.5rem minmax(0, 1fr); gap: 1rem; }
+.steps li::before {
+  content: counter(step);
+  width: 2.5rem; height: 2.5rem; border-radius: 50%;
+  display: grid; place-items: center;
+  background: var(--amber-deep); color: var(--amber); font-weight: 700;
+}
+.steps h3 { margin: .35rem 0; font-size: 1.1rem; }
+.steps p { margin: 0; color: var(--muted); }
+code { font-size: .9em; background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: .1em .35em; overflow-wrap: anywhere; }
+
+footer { border-top: 1px solid var(--line); padding-block: 2rem 3rem; color: var(--muted); font-size: .92rem; }
+footer .wrap { display: flex; flex-wrap: wrap; gap: 1rem 2rem; justify-content: space-between; }
+footer p { margin: 0; max-width: 40rem; }
+footer nav { display: flex; flex-wrap: wrap; gap: .5rem 1.5rem; }
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="wrap top">
+  <a class="mark" href="#main" aria-label="Sohva Remote, top of page">
+    <svg width="28" height="28" viewBox="0 0 28 28" aria-hidden="true"><circle cx="14" cy="14" r="13" fill="none" stroke="#ffb547" stroke-width="2"/><circle cx="14" cy="14" r="5.5" fill="#ffb547"/></svg>
+    Sohva Remote
+  </a>
+  <nav aria-label="Site"><a href="https://github.com/digablesolutions/sohva-remote">Source<span class="wide"> on GitHub</span></a></nav>
+</header>
+
+<main id="main" tabindex="-1">
+  <section class="hero" aria-labelledby="hero-title">
+    <figure class="photo-bleed">
+      <img src="img/photos/hero-sofa-1024.webp" srcset="img/photos/hero-sofa-640.webp 640w, img/photos/hero-sofa-1024.webp 1024w, img/photos/hero-sofa-1440.webp 1440w, img/photos/hero-sofa-1664.webp 1664w" sizes="100vw" width="1664" height="936" fetchpriority="high" decoding="async" alt="">
+    </figure>
+    <div class="wrap hero-inner">
+    <div>
+      <h1 id="hero-title">Your TV, from the sofa.</h1>
+      <p>Sohva Remote is a quick, ad-free remote for Sony Bravia TVs. It talks to the TV over your home network only, so keys land instantly and nothing leaves the house.</p>
+      <div class="actions">
+        <a class="button primary" href="#get">Get the app</a>
+        <a class="button quiet" href="#evening">See a weekday evening</a>
+      </div>
+    </div>
+    <figure class="phone">
+      <img src="img/remote-540.webp" srcset="img/remote-540.webp 540w, img/remote-1080.webp 1080w" sizes="(min-width: 385px) 280px, calc(78vw - 20px)" width="540" height="1260" decoding="async" alt="The remote screen: the channel card with what's on now, scene buttons, the D-pad, and volume and channel controls">
+    </figure>
+    </div>
+  </section>
+
+  <section class="wrap guide" id="evening" aria-labelledby="evening-title">
+    <div class="guide-head">
+      <h2 id="evening-title">A weekday evening, set up once.</h2>
+      <p>Three scenes switch to the right channel at the right time while the TV is on. The sleep timer and wake-up handle the ends of the day, even with the app closed.</p>
+    </div>
+    <div class="guide-body">
+      <div>
+        <p class="guide-status" id="guide-status" role="status" hidden></p>
+        <ol class="slots">
+          <li class="slot" data-start="18:30" data-end="19:00"><time datetime="18:30">18.30</time><span class="what">Emmerdale</span><span class="how">The Emmerdale scene switches to MTV3</span></li>
+          <li class="slot" data-start="19:00" data-end="20:30"><time datetime="19:00">19.00</time><span class="what">Seitsemän Uutiset</span><span class="how">News MTV3 makes sure it's MTV3</span></li>
+          <li class="slot" data-start="20:30" data-end="22:00"><time datetime="20:30">20.30</time><span class="what">Yle Uutiset</span><span class="how">News Yle TV1 switches to Yle TV1</span></li>
+          <li class="slot" data-start="22:00" data-end="23:30"><time datetime="22:00">22.00</time><span class="what">Kymmenen Uutiset</span><span class="how">News MTV3 switches back to MTV3</span></li>
+          <li class="slot night" data-start="23:30"><time datetime="23:30">23.30</time><span class="what">Lights out</span><span class="how">Sleep timer fades the sound over a minute, then turns the TV off</span></li>
+          <li class="slot morning" data-start="06:15"><time datetime="06:15">06.15</time><span class="what">Good morning</span><span class="how">Wake-up turns the TV on to the morning channel</span></li>
+        </ol>
+        <p class="guide-note">A scheduled scene never turns the TV on by itself. If nobody is watching at 20.30, the TV stays off.</p>
+      </div>
+      <figure class="guide-phone">
+        <div class="phone"><img src="img/scenes-540.webp" srcset="img/scenes-540.webp 540w, img/scenes-1080.webp 1080w" sizes="260px" width="540" height="1260" loading="lazy" decoding="async" alt="The Scenes tab: Emmerdale on MTV3 HD, Mon–Fri 18:30; News MTV3 on MTV3 HD, Mon–Fri 19:00 and 22:00; News Yle TV1 on Yle TV1 HD, Mon–Fri 20:30"></div>
+        <figcaption>The same evening in the Scenes tab</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="band" aria-labelledby="morning-title">
+    <figure class="photo-bleed">
+      <img src="img/photos/morning-1024.webp" srcset="img/photos/morning-640.webp 640w, img/photos/morning-1024.webp 1024w, img/photos/morning-1664.webp 1664w" sizes="100vw" width="1664" height="936" loading="lazy" decoding="async" alt="">
+    </figure>
+    <div class="wrap band-text">
+      <h2 id="morning-title"><time datetime="06:15">06.15</time>, and the TV is already on.</h2>
+      <p>Wake-up turns the TV on at a set time, to the channel and volume you picked, even with the app closed. The coffee is still your job.</p>
+    </div>
+  </section>
+
+  <section class="wrap features" aria-labelledby="features-title">
+    <div class="features-top">
+    <div>
+    <h2 id="features-title">Everything the remote on the sofa does, and more.</h2>
+    <p class="section-lede">Built for a Sony KD-65XF9005 with Android TV. Other Bravias with IP control should work too.</p>
+      <div class="group">
+        <h3>On the remote</h3>
+        <ul>
+          <li><strong>Fast keys.</strong> D-pad, volume and channels go over the Android TV Remote protocol, so a press lands in tens of milliseconds.</li>
+          <li><strong>Touchpad.</strong> A toggle beside the D-pad turns it into a touchpad: swipe to move, tap for OK, and rest your finger after a swipe to keep moving.</li>
+          <li><strong>Swipe to change channel.</strong> The card shows what's on; one tap jumps back to the last channel.</li>
+          <li><strong>Every input and app.</strong> Inputs, installed apps with their icons, and the full channel list.</li>
+          <li><strong>Phone volume buttons.</strong> They change the TV volume while the app is open.</li>
+          <li><strong>Type and talk.</strong> Type or dictate into the TV's search, or say "kanava 3", "volume 20" or "Netflix", in Finnish or English.</li>
+        </ul>
+      </div>
+    </div>
+    <figure class="photo-card">
+      <img src="img/photos/hand-phone-800.webp" srcset="img/photos/hand-phone-480.webp 480w, img/photos/hand-phone-800.webp 800w, img/photos/hand-phone-1120.webp 1120w" sizes="(min-width: 1152px) 470px, (min-width: 900px) 42vw, 100vw" width="1120" height="1400" loading="lazy" decoding="async" alt="">
+    </figure>
+    </div>
+    <div class="groups">
+      <div class="group">
+        <h3>Without opening it</h3>
+        <ul>
+          <li><strong>Quick Settings tiles.</strong> Power, mute, guide and your first scene, from the notification shade.</li>
+          <li><strong>Home-screen widget.</strong> Volume, channel and mute.</li>
+          <li><strong>Mute during calls.</strong> The TV goes quiet when the phone rings and comes back after.</li>
+        </ul>
+      </div>
+      <div class="group">
+        <h3>On a schedule</h3>
+        <ul>
+          <li><strong>Scenes.</strong> TV on, a channel, input or app, and a volume: "Game time" puts the PS5 on at 30.</li>
+          <li><strong>Scheduled scenes.</strong> Pick days and times; they act only while the TV is on.</li>
+          <li><strong>Sleep timer.</strong> Fades the sound over a minute, turns the TV off, and puts the volume back next time.</li>
+          <li><strong>Wake-up TV.</strong> On at a set time, to a channel and volume.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap screens" aria-labelledby="screens-title">
+    <h2 id="screens-title">Screenshots</h2>
+    <ul class="strip" tabindex="0" aria-label="Screenshots, scroll sideways for more">
+      <li><figure><img src="img/remote-540.webp" srcset="img/remote-540.webp 540w, img/remote-1080.webp 1080w" sizes="(min-width: 367px) 220px, 60vw" width="540" height="1260" loading="lazy" decoding="async" alt="Remote screen with the channel card, scene buttons, D-pad and volume and channel controls"><figcaption>The remote</figcaption></figure></li>
+      <li><figure><img src="img/inputs-apps-540.webp" srcset="img/inputs-apps-540.webp 540w, img/inputs-apps-1080.webp 1080w" sizes="(min-width: 367px) 220px, 60vw" width="540" height="1260" loading="lazy" decoding="async" alt="The TV's inputs and installed apps, each with its icon"><figcaption>Inputs and apps</figcaption></figure></li>
+      <li><figure><img src="img/channels-540.webp" srcset="img/channels-540.webp 540w, img/channels-1080.webp 1080w" sizes="(min-width: 367px) 220px, 60vw" width="540" height="1260" loading="lazy" decoding="async" alt="The channel list"><figcaption>Channels</figcaption></figure></li>
+      <li><figure><img src="img/scenes-540.webp" srcset="img/scenes-540.webp 540w, img/scenes-1080.webp 1080w" sizes="(min-width: 367px) 220px, 60vw" width="540" height="1260" loading="lazy" decoding="async" alt="Scenes with their weekday schedules"><figcaption>Scenes</figcaption></figure></li>
+      <li><figure><img src="img/timers-540.webp" srcset="img/timers-540.webp 540w, img/timers-1080.webp 1080w" sizes="(min-width: 367px) 220px, 60vw" width="540" height="1260" loading="lazy" decoding="async" alt="Sleep timer and wake-up settings"><figcaption>Timers</figcaption></figure></li>
+    </ul>
+  </section>
+
+  <section class="wrap promise" aria-labelledby="promise-title">
+    <div>
+      <h2 id="promise-title">What it will never do.</h2>
+      <p class="section-lede">Most remote apps make you sit through an ad to turn the volume down. This one is a remote and nothing else.</p>
+      <p class="more">The details are in the <a href="privacy.html">privacy policy</a>.</p>
+    </div>
+    <dl>
+      <div><dt>No ads, no paywall</dt><dd>Every feature is there from the first launch.</dd></div>
+      <div><dt>No account, no cloud</dt><dd>The phone talks to the TV on your network. Nothing goes to the internet.</dd></div>
+      <div><dt>No pairing again and again</dt><dd>Pair once with the PIN on the TV. If the TV gets a new address, the app finds it again.</dd></div>
+    </dl>
+  </section>
+
+  <section class="wrap get" id="get" aria-labelledby="get-title">
+    <h2 id="get-title">Get the app</h2>
+    <p class="section-lede">Sohva Remote is coming to Google Play. Until then, install the APK yourself, on Android 8.0 or newer.</p>
+    <ol class="steps">
+      <li><div><h3>Allow remote control on the TV</h3><p>Settings › Network › Home network setup › IP control: set Authentication to "Normal and Pre-Shared Key" and Remote start to On.</p></div></li>
+      <li><div><h3>Install the APK</h3><p>Download it from the <a href="https://github.com/digablesolutions/sohva-remote/releases">releases page on GitHub</a> and open it on the phone, or build it yourself with <code>./gradlew assembleRelease</code>.</p></div></li>
+      <li><div><h3>Pair with the PIN</h3><p>Open the app on the same Wi-Fi. It finds the TV; type the PIN the TV shows.</p></div></li>
+    </ol>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>Sohva Remote is made by Digable. It's an independent app, not made by or affiliated with Sony.</p>
+    <nav aria-label="Footer">
+      <a href="privacy.html">Privacy</a>
+      <a href="https://github.com/digablesolutions/sohva-remote">Source on GitHub</a>
+    </nav>
+  </div>
+</footer>
+
+<script>
+// Mark the slot that is on now (or next) by the viewer's clock. The page reads fine without this.
+(function () {
+  var slots = [].slice.call(document.querySelectorAll('.slot[data-start]'));
+  var status = document.getElementById('guide-status');
+  var min = function (s) { var p = s.split(':'); return p[0] * 60 + +p[1]; };
+  var d = new Date(), day = d.getDay(), now = d.getHours() * 60 + d.getMinutes();
+  var weekday = function (n) { return n >= 1 && n <= 5; };
+  var mark = function (slot, kind) {
+    var pill = document.createElement('span');
+    pill.className = 'pill ' + kind;
+    pill.textContent = kind === 'now' ? 'Now' : 'Next';
+    slot.querySelector('.what').appendChild(pill);
+    slot.classList.add('is-live');
+  };
+  if (!weekday(day)) {
+    status.textContent = "It's the weekend: these scenes run Monday to Friday.";
+    status.hidden = false;
+    return;
+  }
+  var current = slots.filter(function (s) {
+    return s.dataset.end && now >= min(s.dataset.start) && now < min(s.dataset.end);
+  })[0];
+  if (current) { mark(current, 'now'); return; }
+  var upcoming = slots.filter(function (s) { return min(s.dataset.start) > now; })
+    .sort(function (a, b) { return min(a.dataset.start) - min(b.dataset.start); })[0];
+  // After 23.30 the next thing is tomorrow's wake-up, if tomorrow is a weekday.
+  if (!upcoming && weekday((day + 1) % 7)) upcoming = slots.filter(function (s) { return s.classList.contains('morning'); })[0];
+  if (upcoming) mark(upcoming, 'next');
+})();
+</script>
+</body>
+</html>

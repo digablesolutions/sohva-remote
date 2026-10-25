@@ -1,0 +1,9 @@
+First release.
+• Fast keys over the TV's Android TV Remote connection
+• Swipe the card to change channel; jump back to the previous one
+• New touchpad mode
+• Inputs, apps, channel list, typing and voice commands
+• Scenes and scheduled scenes for your evening routine
+• Sleep timer with a gentle fade, and wake-up TV
+• Quick Settings tiles and a home-screen widget
+Not affiliated with Sony.

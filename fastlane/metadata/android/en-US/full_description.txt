@@ -1,0 +1,37 @@
+Sohva Remote turns your phone into a quick remote for Sony Bravia TVs on your home network. No ads before the volume changes, no paywall, no account. Pair once with the PIN on the TV screen and it stays paired. ("Sohva" is Finnish for sofa.)
+
+Not affiliated with Sony. Sohva Remote is an independent app by Digable. Sony and Bravia are trademarks of Sony Group Corporation or its affiliates.
+
+Keys that land right away
+• The D-pad, volume and channel keys go over the TV's own Android TV Remote connection and arrive in tens of milliseconds.
+• Swipe the card to change channel, and jump back to the previous channel with one tap.
+• Touchpad mode: swipe to move, tap for OK, hold to keep moving.
+• While the app is open, your phone's volume buttons control the TV.
+
+Everything on the TV, in one place
+• The TV's inputs and installed apps, with their icons.
+• The channel list.
+• Type or dictate into the TV's search box.
+• Voice commands in Finnish and English: "kanava 3", "volume 20", "Netflix", "mute", "turn off".
+
+Your evenings, one tap each
+• Scenes: TV on, the right channel, input or app, and the volume you like, all with one tap.
+• Scheduled scenes run on the days and times you choose. They act only while the TV is already on and never switch it on by themselves.
+• Our own weekday evening: Emmerdale on MTV3 at 18:30, Seitsemän Uutiset at 19:00, Yle Uutiset on Yle TV1 at 20:30 and Kymmenen Uutiset at 22:00. Each is a scene, and the TV changes channel on time.
+• Sleep timer: the sound fades over the last minute, then the TV turns off, even with the app closed. The volume is back to normal next time.
+• Wake-up TV: the TV turns on at a set time, to the channel and volume you pick.
+• Mute the TV during phone calls (optional, off until you turn it on).
+
+Shortcuts outside the app
+• Quick Settings tiles for power, mute, the TV guide and your first scene.
+• A home-screen widget for volume, channel and mute.
+
+Privacy
+Sohva Remote collects no data. It talks only to your TV, on your home network. No cloud, no account, no analytics, no ads. The pairing keys are stored encrypted on your phone. Voice input goes through your phone's own speech recognition service.
+
+What you need
+• A Sony Bravia TV with IP control, on the same Wi-Fi network as your phone. Built and tested on a KD-65XF9005 Android TV; other Bravia models with IP control should work.
+• Android 8.0 or newer.
+• On the TV, once: Settings › Network › Home network setup › IP control. Set Authentication to "Normal and Pre-Shared Key" and turn Remote start on.
+
+Free, with no ads and no in-app purchases.

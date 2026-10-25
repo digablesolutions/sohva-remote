@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Discovery -->
+    <string name="discover_title">Etsi televisio</string>
+    <string name="discover_searching">Etsitään Wi-Fi-verkosta…</string>
+    <string name="discover_none_found">Bravia-televisiota ei löytynyt. Varmista, että televisio on päällä ja samassa Wi-Fi-verkossa, ja yritä uudelleen.</string>
+    <string name="discover_search_again">Etsi uudelleen</string>
+    <string name="discover_manual_title">Lisää IP-osoitteella</string>
+    <string name="discover_manual_hint">192.168.1.20</string>
+    <string name="discover_manual_add">Lisää</string>
+    <string name="discover_manual_invalid">Anna kelvollinen IPv4-osoite</string>
+    <string name="discover_wifi_off">Wi-Fi on pois päältä. Yhdistä ensin television verkkoon.</string>
+    <string name="discover_tv_model">%1$s · %2$s</string>
+
+    <!-- Pairing -->
+    <string name="pair_title">Muodosta laitepari: %1$s</string>
+    <string name="pair_instructions">Televisiossa näkyy nelinumeroinen koodi. Syötä se alle.</string>
+    <string name="pair_pin_label">PIN-koodi</string>
+    <string name="pair_button">Muodosta laitepari</string>
+    <string name="pair_requesting">Pyydetään koodia televisiolta…</string>
+    <string name="pair_wrong_pin">Väärä koodi. Tarkista koodi televisiosta ja yritä uudelleen.</string>
+    <string name="pair_failed">Laiteparin muodostaminen epäonnistui: %1$s</string>
+    <string name="pair_not_supported">Televisio ei vastannut laiteparipyyntöön. Varmista, että IP-ohjaus on käytössä: Asetukset › Verkko › Kotiverkon asetukset › IP-ohjaus › Todennus › Normaali ja esijaettu avain.</string>
+    <string name="pair_cancel">Peruuta</string>
+
+    <!-- Remote -->
+    <string name="remote_power">Virta</string>
+    <string name="remote_volume_up">Lisää ääntä</string>
+    <string name="remote_volume_down">Hiljennä</string>
+    <string name="remote_mute">Mykistä</string>
+    <string name="remote_up">Ylös</string>
+    <string name="remote_down">Alas</string>
+    <string name="remote_left">Vasemmalle</string>
+    <string name="remote_right">Oikealle</string>
+    <string name="remote_ok">OK</string>
+    <string name="touchpad_on">Käytä kosketuslevyä</string>
+    <string name="touchpad_off">Käytä nuolipainikkeita</string>
+    <string name="touchpad_description">Kosketuslevy: liiku pyyhkäisemällä, valitse OK napauttamalla</string>
+    <string name="touchpad_hint">Liiku pyyhkäisemällä\nValitse OK napauttamalla\nJatka liikkumista pitämällä sormi näytöllä pyyhkäisyn jälkeen</string>
+    <string name="remote_back">Takaisin</string>
+    <string name="remote_home">Koti</string>
+    <string name="remote_options">Valinnat</string>
+    <string name="remote_play">Toista</string>
+    <string name="remote_pause">Tauko</string>
+    <string name="remote_stop">Pysäytä</string>
+    <string name="remote_rewind">Kelaa taakse</string>
+    <string name="remote_forward">Kelaa eteen</string>
+    <string name="remote_previous">Edellinen</string>
+    <string name="remote_next">Seuraava</string>
+    <string name="remote_more">Lisää</string>
+    <string name="remote_volume_level">Äänenvoimakkuus %1$d</string>
+    <string name="remote_volume_muted">Mykistetty</string>
+    <string name="remote_unmute">Ääni päälle</string>
+    <string name="remote_volume_short">Ääni</string>
+    <string name="remote_channel_short">Kan.</string>
+    <string name="remote_channel_up">Seuraava kanava</string>
+    <string name="remote_channel_down">Edellinen kanava</string>
+    <string name="remote_source_unknown">Android TV</string>
+    <string name="remote_source_detail">%1$s · %2$s</string>
+    <string name="remote_volume_lower">äänenvoimakkuus %1$d</string>
+    <string name="remote_volume_lower_muted">mykistetty</string>
+    <string name="remote_switch_to">Vaihda</string>
+    <string name="remote_all_sources">Lisää</string>
+
+    <!-- Connection state -->
+    <string name="state_connecting">Yhdistetään: %1$s…</string>
+    <string name="state_connected">%1$s</string>
+    <string name="state_standby">%1$s on valmiustilassa. Käynnistä se virtapainikkeesta.</string>
+    <string name="state_unreachable">%1$s ei ole tavoitettavissa. Onko se samassa Wi-Fi-verkossa?</string>
+    <string name="state_unauthorized">%1$s hylkäsi laiteparipyynnön. Muodosta laitepari uudelleen.</string>
+    <string name="state_pair_again">Muodosta laitepari uudelleen</string>
+    <string name="state_retry">Yritä uudelleen</string>
+
+    <!-- More sheet -->
+    <string name="more_watch">Tulot ja sovellukset</string>
+    <string name="more_inputs">Tulot</string>
+    <string name="more_not_connected">Ei yhteyttä</string>
+    <string name="more_now_on">Nyt päällä</string>
+    <string name="more_apps">Sovellukset</string>
+    <string name="more_keys">Painikkeet</string>
+    <string name="more_channels">Kanavat</string>
+    <string name="more_channels_empty">Televisio ei ilmoittanut kanavia.</string>
+    <string name="remote_swipe_channels">Vaihda kanavaa pyyhkäisemällä</string>
+    <string name="more_tvs">Televisiot</string>
+    <string name="more_digit">%1$d</string>
+    <string name="more_loading">Ladataan televisiosta…</string>
+    <string name="more_empty">Ei näytettävää</string>
+    <string name="more_refresh">Päivitä</string>
+    <string name="more_tv_input">TV</string>
+    <string name="more_add_tv">Lisää toinen televisio</string>
+    <string name="more_forget_tv">Unohda</string>
+    <string name="more_haptics">Värinä painettaessa</string>
+    <string name="key_red">Punainen</string>
+    <string name="key_green">Vihreä</string>
+    <string name="key_yellow">Keltainen</string>
+    <string name="key_blue">Sininen</string>
+    <string name="key_subtitle">Tekstitys</string>
+    <string name="key_audio">Ääni</string>
+    <string name="key_info">Tiedot</string>
+    <string name="key_guide">Ohjelmaopas</string>
+    <string name="key_exit">Poistu</string>
+    <string name="key_teletext">Teksti-TV</string>
+    <string name="key_netflix">Netflix</string>
+    <string name="key_sleep">TV:n uniajastin</string>
+    <string name="key_picture_off">Kuva pois</string>
+    <string name="key_input">Tulo</string>
+    <string name="fast_keys_title">Pikanäppäimet</string>
+    <string name="fast_keys_setup">Ota pikanäppäimet käyttöön</string>
+    <string name="fast_keys_on">Pikanäppäimet käytössä</string>
+    <string name="fast_keys_connecting">Pyydetään koodia televisiolta…</string>
+    <string name="fast_keys_instructions">%1$s näyttää kuusimerkkisen koodin. Syötä se alle.</string>
+    <string name="fast_keys_code_label">Koodi</string>
+    <string name="fast_keys_wrong_code">Väärä koodi. Tarkista koodi televisiosta ja yritä uudelleen.</string>
+    <string name="fast_keys_failed">Pikanäppäimien käyttöönotto epäonnistui: %1$s</string>
+    <string name="fast_keys_done">Pikanäppäimet ovat nyt käytössä: %1$s.</string>
+    <string name="fast_keys_close">Valmis</string>
+
+    <!-- Quick Settings tiles and the widget -->
+    <string name="tile_power">TV:n virta</string>
+    <string name="tile_mute">TV:n mykistys</string>
+    <string name="tile_guide">TV:n ohjelmaopas</string>
+    <string name="tile_on">Päällä</string>
+    <string name="tile_standby">Valmiustila</string>
+    <string name="tile_connecting">Yhdistetään…</string>
+    <string name="tile_unreachable">Ei tavoitettavissa</string>
+    <string name="tile_unauthorized">Muodosta laitepari uudelleen sovelluksessa</string>
+    <string name="tile_muted">Mykistetty</string>
+    <string name="tile_volume">Äänenvoimakkuus %1$d</string>
+    <string name="widget_description">Katselutiedot sekä äänenvoimakkuus-, mykistys-, kanava- ja virtapainikkeet</string>
+    <string name="widget_tv_on">TV päällä</string>
+    <string name="widget_no_tv">Lisää televisio avaamalla sovellus</string>
+
+    <!-- Sleep timer -->
+    <string name="sleep_title">Uniajastin</string>
+    <string name="sleep_hint">Hiljentää ääntä viimeisen minuutin ajan ja sammuttaa sitten television, vaikka sovellus olisi suljettu. Äänenvoimakkuus palautuu, kun sovellus seuraavan kerran havaitsee television olevan päällä.</string>
+    <string name="sleep_minutes">%1$d min</string>
+    <string name="sleep_off_at">Sammutus klo %1$s</string>
+    <string name="sleep_running">TV sammuu klo %1$s</string>
+    <string name="sleep_cancel">Peruuta</string>
+    <string name="sleep_fading">Hiljennetään televisiota yöksi</string>
+
+    <!-- Typing on the TV -->
+    <string name="type_title">Kirjoita televisioon</string>
+    <string name="type_hint">Hae</string>
+    <string name="type_voice">Puhu kirjoittamisen sijaan</string>
+    <string name="type_speak">Sano, mitä haluat hakea</string>
+    <string name="type_search">Hae televisiosta</string>
+
+    <!-- Voice commands -->
+    <string name="voice_button">Äänikomento</string>
+    <string name="voice_prompt">Sano kanava, sovellus tai tulo tai esimerkiksi ”äänenvoimakkuus 15”</string>
+    <string name="voice_switch">Vaihdetaan: %1$s</string>
+    <string name="voice_volume">Äänenvoimakkuus %1$d</string>
+    <string name="voice_louder">Kovemmalle</string>
+    <string name="voice_quieter">Hiljemmalle</string>
+    <string name="voice_mute">Mykistetty</string>
+    <string name="voice_unmute">Ääni päälle</string>
+    <string name="voice_off">Sammutetaan televisiota</string>
+    <string name="voice_unknown">Kuulin ”%1$s”, mutta televisiosta ei löydy mitään sillä nimellä</string>
+
+    <!-- Mute during calls -->
+    <string name="call_mute_title">Mykistä TV puhelun ajaksi</string>
+    <string name="call_mute_hint">Mykistää television puhelimen soidessa ja puhelun ajaksi. Ääni palautuu puhelun päätyttyä.</string>
+
+    <!-- Timers, wake-up, scenes, jump back -->
+    <string name="more_timers">Ajastimet</string>
+    <string name="more_scenes">Kohtaukset</string>
+    <string name="wake_title">Herätys</string>
+    <string name="wake_hint">Käynnistää television asetettuun aikaan, vaikka sovellus olisi suljettu.</string>
+    <string name="wake_next">Seuraava: %1$s %2$s</string>
+    <string name="wake_running">Käynnistetään televisiota</string>
+    <string name="wake_trying">TV käynnistyy minuutin kuluttua</string>
+    <string name="target_label">Vaihda</string>
+    <string name="target_keep">Viimeksi katsottu</string>
+    <string name="target_none">Älä muuta</string>
+    <string name="volume_keep">Säilytä äänenvoimakkuus</string>
+    <string name="dialog_ok">OK</string>
+    <string name="dialog_cancel">Peruuta</string>
+    <string name="scenes_hint">Yksi napautus käynnistää television ja valitsee kanavan, tulon tai sovelluksen sekä äänenvoimakkuuden. Kohtaukset näkyvät kortin alla. Ensimmäinen kohtaus näkyy myös pika-asetuksissa. Kohtauksen voi myös ajastaa. Muokkaa kohtausta napauttamalla sitä.</string>
+    <string name="scene_edit">Muokkaa kohtausta</string>
+    <string name="exact_alarm_title">Salli tarkat hälytykset</string>
+    <string name="exact_alarm_body">Uniajastin, herätys ja ajastetut kohtaukset tarvitsevat luvan toimiakseen ajallaan ja saadakseen yhteyden televisioon myös sovelluksen ollessa suljettuna.</string>
+    <string name="exact_alarm_allow">Avaa asetukset</string>
+    <string name="scene_schedule">Ajastus</string>
+    <string name="scene_schedule_hint">Suoritetaan automaattisesti näinä aikoina vain, jos televisio on päällä. Ei koskaan käynnistä televisiota.</string>
+    <string name="scene_add_time">Lisää aika</string>
+    <string name="scene_remove_time">Poista %1$s</string>
+    <string name="days_every">Joka päivä</string>
+    <string name="scene_add">Uusi kohtaus</string>
+    <string name="scene_name">Nimi</string>
+    <string name="scene_name_example">esim. PS5-ilta</string>
+    <string name="scene_save">Tallenna</string>
+    <string name="scene_run">Suorita</string>
+    <string name="scene_delete">Poista %1$s</string>
+    <string name="scene_power_only">TV päälle</string>
+    <string name="scene_running">%1$s…</string>
+    <string name="scene_failed">%1$s: televisio ei käynnistynyt</string>
+    <string name="tile_scene">TV-kohtaus</string>
+    <string name="tile_scene_none">Lisää kohtaus sovelluksessa</string>
+    <string name="jump_back">Takaisin edelliselle kanavalle</string>
+</resources>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="ic_launcher_background">#000000</color>
+
+    <!-- Home-screen widget, from the OLED Ink light scheme (dark values in values-night). -->
+    <color name="widget_surface">#F3F3F4</color>
+    <color name="widget_key">#E6E6E8</color>
+    <color name="widget_outline">#D0D0D4</color>
+    <color name="widget_ripple">#33111111</color>
+    <color name="widget_on_surface">#111111</color>
+    <color name="widget_dim">#55555B</color>
+    <color name="widget_accent">#8A4F00</color>
+    <color name="widget_power_on">#0B7A45</color>
+</resources>

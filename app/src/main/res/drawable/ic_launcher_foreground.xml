@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- The Sohva Remote mark: an amber ring with a dot, as on the store icon and the landing page.
+         Kept inside the 66dp safe zone, so every launcher mask shows all of it. -->
+    <path
+        android:strokeColor="#FFB547"
+        android:strokeWidth="5.5"
+        android:pathData="M54,54m-22,0a22,22 0 1 1 44,0a22,22 0 1 1 -44,0" />
+    <path
+        android:fillColor="#FFB547"
+        android:pathData="M54,54m-9.5,0a9.5,9.5 0 1 1 19,0a9.5,9.5 0 1 1 -19,0" />
+</vector>

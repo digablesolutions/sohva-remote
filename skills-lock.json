@@ -1,0 +1,107 @@
+{
+  "version": 1,
+  "skills": {
+    "android-cli": {
+      "source": "android/skills",
+      "sourceType": "github",
+      "skillPath": "devtools/android-cli/SKILL.md",
+      "computedHash": "67308215de0bf09ed27f059d7d53e0d956a0c32954217b907c393501c582a4cb"
+    },
+    "android-intent-security": {
+      "source": "android/skills",
+      "sourceType": "github",
+      "skillPath": "security/android-intent-security/SKILL.md",
+      "computedHash": "e90597939253d57e55fa2c44dd5b522b0bd50e507c4b858b014d42ef97231224"
+    },
+    "android-permissions-security": {
+      "source": "android/skills",
+      "sourceType": "github",
+      "skillPath": "security/android-permissions-security/SKILL.md",
+      "computedHash": "3f7607e70b29f575866c8bba6c7366c40a22f65a5a11356c4eaca5e1173e5c83"
+    },
+    "anr-audit-and-fix": {
+      "source": "android/skills",
+      "sourceType": "github",
+      "skillPath": "performance/anr-audit-and-fix/SKILL.md",
+      "computedHash": "361f9dc0bde520a7ca500272556c05c0649c4f21d5b1779f32ccd4a441cad13f"
+    },
+    "compose-animations": {
+      "source": "chrisbanes/skills",
+      "sourceType": "github",
+      "skillPath": "skills/compose-animations/SKILL.md",
+      "computedHash": "9818ad4e1e8ee63ee61d99496221f4e5ac4b2ba71d390932a799704b6d40f013"
+    },
+    "compose-component-design": {
+      "source": "chrisbanes/skills",
+      "sourceType": "github",
+      "skillPath": "skills/compose-component-design/SKILL.md",
+      "computedHash": "c91101788bda27233b4b2079ffa8d6c9fef294aa4c476c490e3a324f43b00ac3"
+    },
+    "compose-performance": {
+      "source": "chrisbanes/skills",
+      "sourceType": "github",
+      "skillPath": "skills/compose-performance/SKILL.md",
+      "computedHash": "b5220d78ec69f9e7fbbcadf799698698f8ca9a8fe1b5c3b641cde0b35171b852"
+    },
+    "compose-state-and-effects": {
+      "source": "chrisbanes/skills",
+      "sourceType": "github",
+      "skillPath": "skills/compose-state-and-effects/SKILL.md",
+      "computedHash": "2e07dac4c8032d6bc58be29536a8f21d344361598b07036c058d045450c5bf32"
+    },
+    "compose-ui-testing-patterns": {
+      "source": "chrisbanes/skills",
+      "sourceType": "github",
+      "skillPath": "skills/compose-ui-testing-patterns/SKILL.md",
+      "computedHash": "c4bba20cb0a82e507beebc26ee9740a347e44981fea181bbcc0bb3cccede5b99"
+    },
+    "edge-to-edge": {
+      "source": "android/skills",
+      "sourceType": "github",
+      "skillPath": "system/edge-to-edge/SKILL.md",
+      "computedHash": "7ccf71d4ff4d16509ee07df3312d6475741cd68006156c1a90e0638aa67b5fa0"
+    },
+    "jetpack-compose-performance": {
+      "source": "android/skills",
+      "sourceType": "github",
+      "skillPath": "jetpack-compose/jetpack-compose-performance/SKILL.md",
+      "computedHash": "5ddd50960de268e7c7d6ee33b9529d2e07cfed05c3de034c2f4e833e72e7ecc7"
+    },
+    "kotlin-api-design": {
+      "source": "chrisbanes/skills",
+      "sourceType": "github",
+      "skillPath": "skills/kotlin-api-design/SKILL.md",
+      "computedHash": "66978c4c58d8982452c6b38f7551a2a571440ecd348ebe1a6f719d38a95b1e0a"
+    },
+    "kotlin-concurrency-and-flow": {
+      "source": "chrisbanes/skills",
+      "sourceType": "github",
+      "skillPath": "skills/kotlin-concurrency-and-flow/SKILL.md",
+      "computedHash": "a1ade00ae5cc153f0f615c58adad786b1321d263d3ecd67dc135c99f1a599a3d"
+    },
+    "kotlin-control-flow": {
+      "source": "chrisbanes/skills",
+      "sourceType": "github",
+      "skillPath": "skills/kotlin-control-flow/SKILL.md",
+      "computedHash": "f4235ae7f2985a0bbf8a098e019754f7f778689d96434d3f25689a3bd998cf61"
+    },
+    "r8-analyzer": {
+      "source": "android/skills",
+      "sourceType": "github",
+      "skillPath": "performance/r8-analyzer/SKILL.md",
+      "computedHash": "5e2384cf330c98600ff86f74a42795adafb75c69e9d3a883e662edc23d1c09ba"
+    },
+    "styles": {
+      "source": "android/skills",
+      "sourceType": "github",
+      "skillPath": "jetpack-compose/theming/styles/SKILL.md",
+      "computedHash": "c83c25098d43be2919558bd7b78aa52f9766fb963ad9aa7e4aa303d025578897"
+    },
+    "testing-setup": {
+      "source": "android/skills",
+      "sourceType": "github",
+      "skillPath": "testing/testing-setup/SKILL.md",
+      "computedHash": "69fccbd7662c04b6d4b886d5323033ac9acf1343957fca1eecbc2a4d13c547e9"
+    }
+  }
+}

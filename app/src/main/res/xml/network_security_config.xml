@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The Bravia IP control API is plain HTTP on the LAN and the TV is addressed by IP literal.
+  Android's network security config can only scope cleartext by host name, not by address
+  range, so cleartext is enabled in the base config. The app has no backend and never
+  connects to anything other than the user's TV (see BraviaApi), so nothing else is exposed.
+-->
+<network-security-config xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="InsecureBaseConfiguration">
+    <base-config cleartextTrafficPermitted="true">
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+    </base-config>
+</network-security-config>

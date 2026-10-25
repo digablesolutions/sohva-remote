@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name" translatable="false">Sohva Remote</string>
+
+    <!-- Discovery -->
+    <string name="discover_title">Find your TV</string>
+    <string name="discover_searching">Searching the Wi-Fi network…</string>
+    <string name="discover_none_found">No Bravia TV found. Make sure the TV is on and on the same Wi-Fi, then try again.</string>
+    <string name="discover_search_again">Search again</string>
+    <string name="discover_manual_title">Add by IP address</string>
+    <string name="discover_manual_hint">192.168.1.20</string>
+    <string name="discover_manual_add">Add</string>
+    <string name="discover_manual_invalid">Enter a valid IPv4 address</string>
+    <string name="discover_wifi_off">Wi-Fi is off. Connect to the TV\'s network first.</string>
+    <string name="discover_tv_model">%1$s · %2$s</string>
+
+    <!-- Pairing -->
+    <string name="pair_title">Pair with %1$s</string>
+    <string name="pair_instructions">The TV is showing a 4-digit code. Enter it below.</string>
+    <string name="pair_pin_label">PIN code</string>
+    <string name="pair_button">Pair</string>
+    <string name="pair_requesting">Asking the TV for a code…</string>
+    <string name="pair_wrong_pin">Wrong code. Check the TV screen and try again.</string>
+    <string name="pair_failed">Pairing failed: %1$s</string>
+    <string name="pair_not_supported">This TV did not answer the pairing request. Check that IP control is on: Settings › Network › Home network setup › IP control › Authentication › Normal and Pre-Shared Key.</string>
+    <string name="pair_cancel">Cancel</string>
+
+    <!-- Remote -->
+    <string name="remote_power">Power</string>
+    <string name="remote_volume_up">Volume up</string>
+    <string name="remote_volume_down">Volume down</string>
+    <string name="remote_mute">Mute</string>
+    <string name="remote_up">Up</string>
+    <string name="remote_down">Down</string>
+    <string name="remote_left">Left</string>
+    <string name="remote_right">Right</string>
+    <string name="remote_ok">OK</string>
+    <string name="touchpad_on">Use the touchpad</string>
+    <string name="touchpad_off">Use the arrow buttons</string>
+    <string name="touchpad_description">Touchpad: swipe to move, tap for OK</string>
+    <string name="touchpad_hint">Swipe to move\nTap for OK\nHold after a swipe to keep going</string>
+    <string name="remote_back">Back</string>
+    <string name="remote_home">Home</string>
+    <string name="remote_options">Options</string>
+    <string name="remote_play">Play</string>
+    <string name="remote_pause">Pause</string>
+    <string name="remote_stop">Stop</string>
+    <string name="remote_rewind">Rewind</string>
+    <string name="remote_forward">Fast forward</string>
+    <string name="remote_previous">Previous</string>
+    <string name="remote_next">Next</string>
+    <string name="remote_more">More</string>
+    <string name="remote_volume_level">Volume %1$d</string>
+    <string name="remote_volume_muted">Muted</string>
+    <string name="remote_unmute">Unmute</string>
+    <string name="remote_volume_short">VOL</string>
+    <string name="remote_channel_short">CH</string>
+    <string name="remote_channel_up">Channel up</string>
+    <string name="remote_channel_down">Channel down</string>
+    <string name="remote_source_unknown">Android TV</string>
+    <string name="remote_source_detail">%1$s · %2$s</string>
+    <string name="remote_volume_lower">volume %1$d</string>
+    <string name="remote_volume_lower_muted">muted</string>
+    <string name="remote_switch_to">Switch to</string>
+    <string name="remote_all_sources">More</string>
+
+    <!-- Connection state -->
+    <string name="state_connecting">Connecting to %1$s…</string>
+    <string name="state_connected">%1$s</string>
+    <string name="state_standby">%1$s is in standby. Press power to wake it.</string>
+    <string name="state_unreachable">Can\'t reach %1$s. Is it on the same Wi-Fi?</string>
+    <string name="state_unauthorized">%1$s rejected the pairing. Pair again.</string>
+    <string name="state_pair_again">Pair again</string>
+    <string name="state_retry">Retry</string>
+
+    <!-- More sheet -->
+    <string name="more_watch">Inputs &amp; apps</string>
+    <string name="more_inputs">Inputs</string>
+    <string name="more_not_connected">Not connected</string>
+    <string name="more_now_on">Now on</string>
+    <string name="more_apps">Apps</string>
+    <string name="more_keys">Keys</string>
+    <string name="more_channels">Channels</string>
+    <string name="more_channels_empty">The TV listed no channels.</string>
+    <string name="remote_swipe_channels">Swipe to change channel</string>
+    <string name="more_tvs">TVs</string>
+    <string name="more_digit">%1$d</string>
+    <string name="more_loading">Loading from the TV…</string>
+    <string name="more_empty">Nothing to show</string>
+    <string name="more_refresh">Refresh</string>
+    <string name="more_tv_input">TV</string>
+    <string name="more_add_tv">Add another TV</string>
+    <string name="more_forget_tv">Forget</string>
+    <string name="more_haptics">Vibrate on key press</string>
+    <string name="key_red">Red</string>
+    <string name="key_green">Green</string>
+    <string name="key_yellow">Yellow</string>
+    <string name="key_blue">Blue</string>
+    <string name="key_subtitle">Subtitles</string>
+    <string name="key_audio">Audio</string>
+    <string name="key_info">Info</string>
+    <string name="key_guide">Guide</string>
+    <string name="key_exit">Exit</string>
+    <string name="key_teletext">Teletext</string>
+    <string name="key_netflix">Netflix</string>
+    <string name="key_sleep">TV sleep key</string>
+    <string name="key_picture_off">Picture off</string>
+    <string name="key_input">Input</string>
+    <string name="fast_keys_title">Fast keys</string>
+    <string name="fast_keys_setup">Set up fast keys</string>
+    <string name="fast_keys_on">Fast keys paired</string>
+    <string name="fast_keys_connecting">Asking the TV for a code…</string>
+    <string name="fast_keys_instructions">%1$s is showing a 6-character code. Enter it below.</string>
+    <string name="fast_keys_code_label">Code</string>
+    <string name="fast_keys_wrong_code">Wrong code. Check the TV screen and try again.</string>
+    <string name="fast_keys_failed">Could not pair fast keys: %1$s</string>
+    <string name="fast_keys_done">Fast keys are paired with %1$s.</string>
+    <string name="fast_keys_close">Done</string>
+    <!-- Quick Settings tiles and the widget -->
+    <string name="tile_power">TV power</string>
+    <string name="tile_mute">TV mute</string>
+    <string name="tile_guide">TV guide</string>
+    <string name="tile_on">On</string>
+    <string name="tile_standby">Standby</string>
+    <string name="tile_connecting">Connecting…</string>
+    <string name="tile_unreachable">Not reachable</string>
+    <string name="tile_unauthorized">Pair again in the app</string>
+    <string name="tile_muted">Muted</string>
+    <string name="tile_volume">Volume %1$d</string>
+    <string name="widget_description">What\'s on, with volume, mute, channel and power keys</string>
+    <string name="widget_tv_on">TV on</string>
+    <string name="widget_no_tv">Open the app to add your TV</string>
+
+    <!-- Sleep timer -->
+    <string name="sleep_title">Sleep timer</string>
+    <string name="sleep_hint">Turns the sound down over the last minute, then turns the TV off, even with this app closed. The volume comes back the next time the app sees the TV on.</string>
+    <string name="sleep_minutes">%1$d min</string>
+    <string name="sleep_off_at">Off at %1$s</string>
+    <string name="sleep_running">TV turns off at %1$s</string>
+    <string name="sleep_cancel">Cancel</string>
+    <string name="sleep_fading">Turning the TV down for the night</string>
+
+    <!-- Typing on the TV -->
+    <string name="type_title">Type on TV</string>
+    <string name="type_hint">Search</string>
+    <string name="type_voice">Speak instead of typing</string>
+    <string name="type_speak">Say what to search for</string>
+    <string name="type_search">Search on TV</string>
+
+    <!-- Voice commands -->
+    <string name="voice_button">Voice command</string>
+    <string name="voice_prompt">Say a channel, app or input, or e.g. “volume 15”</string>
+    <string name="voice_switch">Switching to %1$s</string>
+    <string name="voice_volume">Volume %1$d</string>
+    <string name="voice_louder">Louder</string>
+    <string name="voice_quieter">Quieter</string>
+    <string name="voice_mute">Muted</string>
+    <string name="voice_unmute">Sound on</string>
+    <string name="voice_off">Turning the TV off</string>
+    <string name="voice_unknown">Heard “%1$s”, but nothing on the TV goes by that name</string>
+
+    <!-- Mute during calls -->
+    <string name="call_mute_title">Mute the TV during calls</string>
+    <string name="call_mute_hint">While the phone rings or a call is on; sound comes back after.</string>
+
+    <!-- Timers, wake-up, scenes, jump back -->
+    <string name="more_timers">Timers</string>
+    <string name="more_scenes">Scenes</string>
+    <string name="wake_title">Wake-up TV</string>
+    <string name="wake_hint">Switches the TV on at a set time, even with this app closed.</string>
+    <string name="wake_next">Next: %1$s %2$s</string>
+    <string name="wake_running">Switching the TV on</string>
+    <string name="wake_trying">The TV wakes up in a minute</string>
+    <string name="target_label">Turn to</string>
+    <string name="target_keep">Whatever was on last</string>
+    <string name="target_none">Leave as it is</string>
+    <string name="volume_keep">Keep the volume</string>
+    <string name="dialog_ok">OK</string>
+    <string name="dialog_cancel">Cancel</string>
+    <string name="scenes_hint">One tap for the TV on, a channel, input or app, and a volume. Scenes show under the card; the first one is also a Quick Settings tile. A scene can also run by itself at set times. Tap one to change it.</string>
+    <string name="scene_edit">Edit scene</string>
+    <string name="exact_alarm_title">Allow exact alarms</string>
+    <string name="exact_alarm_body">The sleep timer, wake-up and scheduled scenes need it to run on time and reach the TV while the app is closed.</string>
+    <string name="exact_alarm_allow">Open settings</string>
+    <string name="scene_schedule">Schedule</string>
+    <string name="scene_schedule_hint">Runs by itself at these times, only while the TV is on. It never switches the TV on.</string>
+    <string name="scene_add_time">Add time</string>
+    <string name="scene_remove_time">Remove %1$s</string>
+    <string name="days_every">Every day</string>
+    <string name="scene_add">New scene</string>
+    <string name="scene_name">Name</string>
+    <string name="scene_name_example">e.g. PS5 night</string>
+    <string name="scene_save">Save</string>
+    <string name="scene_run">Run</string>
+    <string name="scene_delete">Delete %1$s</string>
+    <string name="scene_power_only">TV on</string>
+    <string name="scene_running">%1$s…</string>
+    <string name="scene_failed">%1$s: the TV did not come on</string>
+    <string name="tile_scene">TV scene</string>
+    <string name="tile_scene_none">Add a scene in the app</string>
+    <string name="jump_back">Back to the previous channel</string>
+</resources>

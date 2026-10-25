@@ -1,0 +1,9 @@
+Ensimmäinen julkaisu.
+• Nopeat painallukset television Android TV Remote -yhteyden kautta
+• Vaihda kanavaa pyyhkäisemällä korttia, palaa edelliselle kanavalle
+• Uusi kosketuslevytila
+• Tulot, sovellukset, kanavalista, kirjoitus ja äänikomennot
+• Tilanteet ja ajastetut tilanteet arki-illan rutiineihin
+• Uniajastin, joka hiljentää äänen pehmeästi, ja herätys-TV
+• Pika-asetusten ruudut ja aloitusnäytön widget
+Ei sidoksissa Sonyyn.
