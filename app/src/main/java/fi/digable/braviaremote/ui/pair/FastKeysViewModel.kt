@@ -1,11 +1,11 @@
 package fi.digable.braviaremote.ui.pair
 
-import android.os.Build
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import fi.digable.braviaremote.data.AtvIdentity
 import fi.digable.braviaremote.data.CredentialStore
+import fi.digable.braviaremote.data.DeviceName
 import fi.digable.braviaremote.data.DebugLog
 import fi.digable.braviaremote.data.SavedTv
 import fi.digable.braviaremote.data.TvStore
@@ -72,7 +72,7 @@ class FastKeysViewModel @Inject constructor(
             _state.update { it.copy(step = FastKeysStep.Connecting, code = "") }
             try {
                 val pairing = withContext(Dispatchers.IO) {
-                    AtvPairing(identity.socketFactory(), identity.publicKey, "${Build.MODEL} (Sohva Remote)")
+                    AtvPairing(identity.socketFactory(), identity.publicKey, DeviceName.forTv)
                 }
                 session = pairing.start(tv.host)
                 _state.update { it.copy(step = FastKeysStep.EnterCode) }

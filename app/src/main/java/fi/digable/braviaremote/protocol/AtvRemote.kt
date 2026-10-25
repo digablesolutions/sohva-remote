@@ -36,6 +36,9 @@ sealed interface AtvEvent {
 
     /** The TV's keyboard went away. */
     data object TextFieldClosed : AtvEvent
+
+    /** Any message from the TV except pings, described on demand, for diagnosing (logs only). */
+    class Received(val describe: () -> String) : AtvEvent
 }
 
 /** A change to the text field on the TV, see [AtvRemote.Connection.edit]. */
@@ -276,6 +279,7 @@ class AtvRemote(
                     muted = (v.varint(8) ?: 0L) != 0L,
                 ))
             }
+            if (fields.none { it.number == PING }) onEvent(AtvEvent.Received { describe(fields) })
             fields.message(IME_KEY_INJECT)?.let { ime ->
                 ime.message(1)?.varint(1)?.let { imeCounter = it }
                 ime.message(1)?.string(12)?.let { onEvent(AtvEvent.CurrentApp(it)) }
@@ -317,6 +321,26 @@ class AtvRemote(
 
     companion object {
         const val PORT = 6466
+
+        /**
+         * A compact view of a message for the log: field numbers, numbers, and short readable text,
+         * a few levels deep ("20{1{1=7 12=com.netflix.ninja}}"). Never used for anything but logs.
+         */
+        internal fun describe(fields: List<AtvWire.Field>, depth: Int = 0): String = fields.joinToString(" ") { f ->
+            when (val v = f.value) {
+                is Long -> "${f.number}=$v"
+                is ByteArray -> {
+                    val text = v.toString(Charsets.UTF_8)
+                    val nested = if (depth < 3) runCatching { AtvWire.parse(v) }.getOrNull() else null
+                    when {
+                        text.isNotEmpty() && text.length <= 80 && text.all { it.code in 32..126 } -> "${f.number}=$text"
+                        nested != null && nested.isNotEmpty() -> "${f.number}{${describe(nested, depth + 1)}}"
+                        else -> "${f.number}=<${v.size} bytes>"
+                    }
+                }
+                else -> "${f.number}=?"
+            }
+        }
 
         /** Feature bits as the Android TV Remote apps send them (keys, IME, power, volume, app links). */
         private const val FEATURES = 622

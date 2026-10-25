@@ -69,6 +69,14 @@ class TvController @Inject constructor(
     private val _state = MutableStateFlow<ConnectionState>(ConnectionState.NoTv)
     val state: StateFlow<ConnectionState> = _state.asStateFlow()
 
+    /**
+     * The TV no longer accepts the fast-keys pairing (removed on the TV, or replaced by another
+     * pairing). Keys still work over IRCC, but slower and without knowing the app in front, so the
+     * remote asks to pair again instead of degrading silently.
+     */
+    private val _fastKeysRefused = MutableStateFlow(false)
+    val fastKeysRefused: StateFlow<Boolean> = _fastKeysRefused.asStateFlow()
+
     private val _inputs = MutableStateFlow<List<ExternalInput>>(emptyList())
     val inputs: StateFlow<List<ExternalInput>> = _inputs.asStateFlow()
 
@@ -288,7 +296,7 @@ class TvController @Inject constructor(
     }
 
     fun pairing(client: BraviaApi): PinPairing =
-        PinPairing(client, clientId = "SohvaRemote:${credentials.clientId}", nickname = "${Build.MODEL} (Sohva Remote)")
+        PinPairing(client, clientId = "SohvaRemote:${credentials.clientId}", nickname = DeviceName.forTv)
 
     // ---- fast keys (Android TV Remote channel) ----
 
@@ -326,6 +334,7 @@ class TvController @Inject constructor(
                     ensureActive()
                     fastKeys = connection
                     backoffMs = FAST_KEYS_RETRY_MS
+                    _fastKeysRefused.value = false
                     DebugLog.d { "Fast keys up in ${(System.nanoTime() - started) / 1_000_000} ms" }
                     val cause = connection.awaitClosed()
                     DebugLog.w(cause) { "Fast keys channel closed" }
@@ -333,10 +342,12 @@ class TvController @Inject constructor(
                     throw e
                 } catch (e: BraviaException.Unauthorized) {
                     DebugLog.w(e) { "Fast keys: the TV's certificate changed; pair fast keys again" }
+                    _fastKeysRefused.value = true
                     return@launch
                 } catch (e: BraviaException.Protocol) {
                     // Most likely the TV no longer knows our certificate (pairing removed on the TV).
                     DebugLog.w(e) { "Fast keys refused; pair fast keys again" }
+                    _fastKeysRefused.value = true
                     return@launch
                 } catch (e: Exception) {
                     DebugLog.w(e) { "Fast keys connect failed; retrying in $backoffMs ms" }
@@ -366,6 +377,7 @@ class TvController @Inject constructor(
                     _state.value = current.copy(volume = VolumeInfo(target, event.level, 0, event.max, event.muted))
                 }
             }
+            is AtvEvent.Received -> DebugLog.d { "TV sent ${event.describe()}" }
             is AtvEvent.CurrentApp -> {
                 if (_currentApp.value == event.packageName) return
                 DebugLog.d { "App in front: ${event.packageName}" }

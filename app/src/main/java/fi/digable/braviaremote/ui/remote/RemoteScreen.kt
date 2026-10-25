@@ -131,6 +131,7 @@ fun RemoteScreen(
     val previousChannel by viewModel.previousChannel.collectAsStateWithLifecycle()
     val scenes by viewModel.scenes.collectAsStateWithLifecycle()
     val favoriteApps by viewModel.favoriteApps.collectAsStateWithLifecycle()
+    val fastKeysRefused by viewModel.fastKeysRefused.collectAsStateWithLifecycle()
     var showMore by remember { mutableStateOf(false) }
     var showKeyboard by remember { mutableStateOf(false) }
     // Opens when the TV's keyboard comes up, not on every echo, so a dismissed sheet stays closed.
@@ -185,6 +186,22 @@ fun RemoteScreen(
                 onChannel = viewModel::changeChannel,
                 onMore = { showMore = true },
             )
+            val tv = state.tvOrNull
+            if (fastKeysRefused && tv != null) {
+                // Keys still work over IRCC; say why the remote got slower and how to fix it.
+                Row(
+                    Modifier.fillMaxWidth().padding(top = 10.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(
+                        stringResource(R.string.fast_keys_refused),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.weight(1f),
+                    )
+                    FilledTonalButton(onClick = { onFastKeys(tv) }) { Text(stringResource(R.string.fast_keys_pair_again)) }
+                }
+            }
             val onLiveTv = playing?.uri?.startsWith("tv:") == true
             QuickChips(
                 previous = previousChannel?.takeIf { onLiveTv && state is ConnectionState.Connected },

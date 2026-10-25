@@ -21,6 +21,9 @@ android {
         versionCode = 3
         versionName = "1.0.0"
         vectorDrawables.useSupportLibrary = true
+        // Release builds log nothing; `-Psohva.logs=true` builds one that logs, for diagnosing on
+        // the family's phone without re-pairing (same package and signature as the release).
+        buildConfigField("boolean", "LOGS", (findProperty("sohva.logs") == "true").toString())
     }
 
     // The Play upload key lives outside the repo; keystore.properties (gitignored) points to it.
@@ -43,6 +46,7 @@ android {
         debug {
             // Installs beside the release build, so testing never replaces the family's paired app.
             applicationIdSuffix = ".debug"
+            buildConfigField("boolean", "LOGS", "true")
             resValue("string", "app_name", "Sohva Dev")
         }
         release {

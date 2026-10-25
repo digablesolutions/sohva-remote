@@ -174,7 +174,11 @@ class RemoteViewModel @Inject constructor(
     fun selectInput(uri: String) = controller.selectInput(uri)
     fun launchApp(uri: String) = controller.launchApp(uri)
 
-    fun hasFastKeys(tv: SavedTv): Boolean = credentials.atvCertificate(tv.id) != null
+    /** Paired for fast keys, and the TV still accepts that pairing. */
+    fun hasFastKeys(tv: SavedTv): Boolean =
+        credentials.atvCertificate(tv.id) != null && !(controller.fastKeysRefused.value && tv.id == state.value.tvOrNull?.id)
+
+    val fastKeysRefused: StateFlow<Boolean> = controller.fastKeysRefused
 
     fun switchTo(tv: SavedTv) = viewModelScope.launch { controller.switchTo(tv) }
     fun forget(tv: SavedTv) = viewModelScope.launch { controller.forget(tv) }

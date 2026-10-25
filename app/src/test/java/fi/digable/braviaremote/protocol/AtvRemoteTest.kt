@@ -34,7 +34,19 @@ class AtvRemoteTest {
         remote.connect("127.0.0.1", tv.certificate.certificate.encoded, tv.port) { events += it }
     }
 
-    private fun nextEvent(): AtvEvent = events.poll(5, TimeUnit.SECONDS) ?: error("No event")
+    /** The next event the app acts on; the diagnostic [AtvEvent.Received] ones are skipped. */
+    private fun nextEvent(): AtvEvent {
+        while (true) {
+            val event = events.poll(5, TimeUnit.SECONDS) ?: error("No event")
+            if (event !is AtvEvent.Received) return event
+        }
+    }
+
+    @Test
+    fun `messages are described for the log`() {
+        val fields = AtvWire.parse(AtvWire.message { message(20) { message(1) { varint(1, 7); string(12, "com.netflix.ninja") } } })
+        assertThat(AtvRemote.describe(fields)).isEqualTo("20{1{1=7 12=com.netflix.ninja}}")
+    }
 
     @Test
     fun `connecting answers the TV's configuration with our device info`() {

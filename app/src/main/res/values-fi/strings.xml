@@ -40,6 +40,8 @@
     <string name="favorite_add">Kiinnitä kaukosäätimen alle</string>
     <string name="favorite_remove">Irrota</string>
     <string name="favorite_pinned">Kiinnitetty</string>
+    <string name="fast_keys_refused">Pikanäppäimet lakkasivat toimimasta, joten painallukset ovat hitaampia. Yhdistä puhelin televisioon uudelleen.</string>
+    <string name="fast_keys_pair_again">Yhdistä uudelleen</string>
     <string name="touchpad_on">Käytä kosketuslevyä</string>
     <string name="touchpad_off">Käytä nuolipainikkeita</string>
     <string name="touchpad_description">Kosketuslevy: pyyhkäise liikkuaksesi, napauta OK. Vasen reuna ääni, oikea reuna kanavat.</string>
