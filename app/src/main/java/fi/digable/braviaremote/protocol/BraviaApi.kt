@@ -198,7 +198,15 @@ class BraviaApi(
             if (e.isStandby) return@mapped null else throw e
         }
         val o = result.firstOrNull() as? JsonObject ?: return@mapped null
-        return@mapped PlayingContent(uri = o.str("uri"), title = o.str("title"), source = o.str("source"))
+        return@mapped PlayingContent(
+            uri = o.str("uri"),
+            title = o.str("title"),
+            source = o.str("source"),
+            programTitle = o.str("programTitle").ifBlank { null },
+            programStart = o.str("startDateTime").ifBlank { null },
+            programSeconds = o.str("durationSec").toIntOrNull(),
+            raw = o.toString(),
+        )
     }
 
 

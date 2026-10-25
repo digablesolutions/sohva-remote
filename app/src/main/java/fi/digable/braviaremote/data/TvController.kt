@@ -899,7 +899,7 @@ class TvController @Inject constructor(
                     .getOrNull() ?: return@forEachIndexed
                 val last = i == CHANNEL_REFRESH_DELAYS_MS.lastIndex
                 if (now.uri != left?.uri || last) {
-                    DebugLog.d { "Playing: ${now.uri}" }
+                    DebugLog.d { "Playing: ${now.uri} ${now.raw}" }
                     _playing.value = now
                 }
             }
@@ -907,6 +907,20 @@ class TvController @Inject constructor(
     }
 
     /** Re-reads what the TV is showing, after [delayMs] for the TV to finish switching. */
+    private var nextProgrammeJob: Job? = null
+
+    /** Asks again just after the programme on now ends, so the card shows the next one. */
+    private fun scheduleNextProgramme(playing: PlayingContent?) {
+        nextProgrammeJob?.cancel()
+        val end = playing?.programWindow?.second ?: return
+        val wait = end - System.currentTimeMillis() + PROGRAMME_END_GRACE_MS
+        if (wait <= 0 || wait > PROGRAMME_MAX_WAIT_MS) return
+        nextProgrammeJob = scope.launch {
+            delay(wait)
+            if (_playing.value?.uri == playing.uri) refreshPlaying()
+        }
+    }
+
     fun refreshPlaying(delayMs: Long = 0) {
         val client = api ?: return
         scope.launch {
@@ -914,8 +928,9 @@ class TvController @Inject constructor(
             if (state.value !is ConnectionState.Connected) return@launch
             runCatching { client.getPlayingContentInfo() }
                 .onSuccess {
-                    DebugLog.d { "Playing: ${it?.uri ?: "nothing reported"}" }
+                    DebugLog.d { "Playing: ${it?.uri ?: "nothing reported"} ${it?.raw.orEmpty()}" }
                     _playing.value = it
+                    scheduleNextProgramme(it)
                 }
                 .onFailure { DebugLog.w(it) { "Playing content fetch failed" } }
         }
@@ -977,6 +992,9 @@ class TvController @Inject constructor(
         const val RESTORE_ATTEMPTS = 4
         const val RESTORE_RETRY_MS = 3_000L
         const val SWITCH_SETTLE_MS = 2_500L
+        /** The TV switches its now-playing info a little after the scheduled end. */
+        const val PROGRAMME_END_GRACE_MS = 5_000L
+        const val PROGRAMME_MAX_WAIT_MS = 6 * 60 * 60_000L
         const val VOLUME_CONFIRM_MS = 1_500L
 
         /** How long a tile, widget or timer waits for the TV to answer before giving up. */

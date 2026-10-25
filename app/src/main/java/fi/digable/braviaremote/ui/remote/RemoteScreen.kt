@@ -1,5 +1,7 @@
 package fi.digable.braviaremote.ui.remote
 
+import kotlinx.coroutines.delay
+import androidx.compose.runtime.produceState
 import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.Intent
@@ -299,6 +301,44 @@ fun RemoteScreen(
     }
 }
 
+/**
+ * The programme on now, when the TV reports it (live TV): its title, start and end, and how far
+ * along it is. Ticks every half minute while shown.
+ */
+@Composable
+private fun ProgrammeLine(playing: PlayingContent) {
+    val title = playing.programTitle ?: return
+    val window = playing.programWindow
+    val now by produceState(System.currentTimeMillis(), window) {
+        while (true) {
+            value = System.currentTimeMillis()
+            delay(30_000)
+        }
+    }
+    val context = LocalContext.current
+    Column(Modifier.padding(top = 6.dp)) {
+        Text(title, style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Medium, maxLines = 1, overflow = TextOverflow.Ellipsis)
+        if (window != null) {
+            val time = android.text.format.DateFormat.getTimeFormat(context)
+            val (start, end) = window
+            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                Text(
+                    stringResource(R.string.programme_time, time.format(java.util.Date(start)), time.format(java.util.Date(end))),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                LinearProgressIndicator(
+                    progress = { ((now - start).toFloat() / (end - start)).coerceIn(0f, 1f) },
+                    modifier = Modifier.width(96.dp).height(3.dp).clip(RoundedCornerShape(2.dp)),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    trackColor = MaterialTheme.colorScheme.surfaceContainerHighest,
+                    drawStopIndicator = {},
+                )
+            }
+        }
+    }
+}
+
 /** A source the user can jump to from the card: the tuner and each connected input, once per name. */
 private data class QuickSource(val name: String, val uri: String)
 
@@ -380,6 +420,7 @@ private fun NowPlayingCard(
                     }
                     else -> StatusLine(state)
                 }
+                if (state is ConnectionState.Connected) playing?.let { ProgrammeLine(it) }
                 if (sleepAt != null) SleepLine(sleepAt)
             }
             Spacer(Modifier.width(12.dp))

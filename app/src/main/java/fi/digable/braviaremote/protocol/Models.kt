@@ -72,7 +72,28 @@ data class PlayingContent(
     val uri: String,
     val title: String,
     val source: String,
-)
+    /** For a broadcast, when the TV reports it: the programme on now, e.g. "Kymmenen Uutiset". */
+    val programTitle: String? = null,
+    /** The programme's start as the TV sends it (ISO 8601 with offset), and its length. */
+    val programStart: String? = null,
+    val programSeconds: Int? = null,
+    /** Every field of the TV's answer, for the diagnostic log only. */
+    val raw: String = "",
+) {
+    /** The programme's start and end (epoch ms), when the TV gave a start and a length. */
+    val programWindow: Pair<Long, Long>?
+        get() {
+            val start = programStart?.let { parseTvTime(it) } ?: return null
+            val seconds = programSeconds?.takeIf { it > 0 } ?: return null
+            return start to start + seconds * 1000L
+        }
+}
+
+/** The TV writes times like 2026-10-25T21:05:00+0200 (no colon in the offset); +02:00 also works. */
+internal fun parseTvTime(text: String): Long? = runCatching {
+    java.time.OffsetDateTime.parse(text, java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss[XXX][XX]"))
+        .toInstant().toEpochMilli()
+}.getOrNull()
 
 /** Result of PIN pairing: the cookie the TV handed out and when it stops working. */
 data class PairingResult(

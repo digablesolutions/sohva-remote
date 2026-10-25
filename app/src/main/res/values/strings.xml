@@ -44,6 +44,7 @@
     <string name="favorite_pinned">Pinned</string>
     <string name="fast_keys_refused">Fast keys stopped working, so keys are slower. The TV needs this phone paired again.</string>
     <string name="fast_keys_pair_again">Pair again</string>
+    <string name="programme_time">%1$s–%2$s</string>
     <string name="touchpad_on">Use the touchpad</string>
     <string name="touchpad_off">Use the arrow buttons</string>
     <string name="touchpad_description">Touchpad: swipe to move, tap for OK. Left edge volume, right edge channels.</string>
