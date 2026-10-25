@@ -8,7 +8,7 @@ Key facts:
 - Get it: APK from GitHub releases (https://github.com/digablesolutions/sohva-remote/releases/latest). Coming to Google Play (package fi.digable.sohva).
 - TV setup: Settings > Network > Home network setup > IP control: Authentication "Normal and Pre-Shared Key", Remote start On. The app finds the TV and asks for the PIN shown on the TV.
 - Languages: English and Finnish UI; voice commands in Finnish and English.
-- Source code: https://github.com/digablesolutions/sohva-remote
+- Source code: https://github.com/digablesolutions/sohva-remote (free software, GPL-3.0-or-later)
 
 ## Pages
 

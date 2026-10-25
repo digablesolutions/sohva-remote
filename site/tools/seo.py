@@ -55,6 +55,7 @@ def json_ld(page):
         "softwareVersion": "1.0.0",
         "inLanguage": ["en", "fi"],
         "isAccessibleForFree": True,
+        "license": "https://www.gnu.org/licenses/gpl-3.0.html",
         "offers": {"@type": "Offer", "price": "0", "priceCurrency": "EUR"},
         "downloadUrl": REPO + "/releases/latest",
         "installUrl": REPO + "/releases/latest",
