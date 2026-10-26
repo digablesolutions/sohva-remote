@@ -9,7 +9,6 @@ name "Sohva Remote", targetSdk 36, `SCHEDULE_EXACT_ALARM` instead of `USE_EXACT_
 Timers tab, inexact fallback), privacy pages live in English and Finnish, launcher icon = store icon,
 Finnish UI. Still open, outside the repo:
 
-- **Contact email**: decide an address Digable monitors (placeholder below).
 - **Promo video**: upload `fastlane/video/promo-<locale>.mp4` to YouTube (unlisted, embeddable, no ads)
   and put the URLs in `metadata/android/<locale>/video.txt`. Optional for the listing.
 - **Organization account** verification (D-U-N-S, address, phone).
@@ -28,7 +27,7 @@ Finnish UI. Still open, outside the repo:
   and would rank against much bigger apps.
 - Tags (choose up to 5 that the console offers; closest matches): Remote control, Smart home,
   TV, Utilities, Wi-Fi tools (pick whatever of these exists in the tag picker).
-- Contact email: `<support@your-domain>` (**placeholder: decide an address that Digable monitors**)
+- Contact email: `perttu@digable.fi` (also the privacy pages' contact)
 - Website: https://digablesolutions.github.io/sohva-remote/
 - Privacy policy: https://digablesolutions.github.io/sohva-remote/privacy.html
 - External marketing: allow (default).
