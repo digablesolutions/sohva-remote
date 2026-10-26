@@ -1,12 +1,12 @@
 # Promo video storyboard (Sohva Remote)
 
-**Done 2026-10-25:** `fastlane/video/promo-en-US.mp4` and `promo-fi-FI.mp4` (35.8 s, 1080x1920,
-captions burned in, end card). Made with `tools/record_promo.sh` (scripted phone recording, with
-System UI demo mode at 18:30) and `tools/promo.py` (frames, captions, end card; ffmpeg from the
-`imageio-ffmpeg` pip package works). Voice was left out: speech can't be scripted over adb.
-**Out of date since 1.1.0** (the More sheet's layout) **and 1.4.0** (Ad break): re-record before
-uploading, when the TV is free. Add an Ad break shot after the scene chip: tap Ad break, the card
-shows "muted" and the chip counts down; tap the countdown to bring the sound back.
+**Done 2026-10-26 (1.5.0):** `fastlane/video/promo-en-US.mp4` and `promo-fi-FI.mp4` (43.2 s,
+1080x1920, captions burned in, end card). Recorded with `tools/record_promo.sh` (scripted phone run,
+System UI demo mode at 18:30, D-pad mode, chat bubbles off) and composed with `tools/promo.py`
+(ffmpeg from the `imageio-ffmpeg` pip package). The run: volume up, swipe the card to the next
+channel, Ad break (muted, countdown, tap to come back), touchpad, the Timers tab, the Scenes tab,
+and Run on Emmerdale, which switches the TV to MTV3. Pinned apps push the Emmerdale chip off-screen,
+so the scene runs from the Scenes tab. Voice was left out: speech can't be scripted over adb.
 **To publish:** upload each to YouTube as Unlisted, embedding on, monetisation off, not "made for
 kids"; put the URL in `metadata/android/<locale>/video.txt`.
 

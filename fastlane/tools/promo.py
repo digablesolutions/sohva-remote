@@ -31,18 +31,20 @@ END_SECONDS = 3
 # (start, end, en, fi): seconds on the output timeline (the phone records variable frame rate, so
 # take times from frames of the composed video, not by seeking in the raw recording).
 CAPTIONS = [
-    (0.0, 4.5, ("Your TV, from the <em>sofa</em>", "No ads, no account. Every key lands right away."),
+    (0.0, 7.0, ("Your TV, from the <em>sofa</em>", "No ads, no account. Every key lands right away."),
                ("Telkkari hoituu <em>sohvalta</em>", "Ei mainoksia, ei tiliä. Painallukset perille heti.")),
-    (4.5, 9.5, ("Swipe for the next <em>channel</em>", "Volume and channels respond instantly."),
-               ("Pyyhkäise seuraavalle <em>kanavalle</em>", "Ääni ja kanavat vastaavat heti.")),
-    (9.5, 14.3, ("One tap for <em>Emmerdale</em>", "Scenes switch the TV to the right channel."),
-                ("<em>Emmerdale</em> yhdellä napautuksella", "Kohtaus vaihtaa oikealle kanavalle.")),
-    (14.3, 25.2, ("Or just <em>swipe</em>", "Touchpad mode: swipe to move, tap for OK."),
+    (7.0, 11.0, ("Swipe for the next <em>channel</em>", "Volume and channels respond instantly."),
+                ("Pyyhkäise seuraavalle <em>kanavalle</em>", "Ääni ja kanavat vastaavat heti.")),
+    (11.0, 17.5, ("Mute the <em>ad break</em>", "One tap. The sound comes back by itself."),
+                 ("Mykistä <em>mainoskatko</em>", "Yksi napautus. Ääni palaa itsestään.")),
+    (17.5, 27.5, ("Or just <em>swipe</em>", "Touchpad mode: swipe to move, tap for OK."),
                  ("Tai vain <em>pyyhkäise</em>", "Kosketuslevy: pyyhkäise ja napauta OK.")),
-    (25.2, 28.3, ("Sleep timer and <em>wake-up</em>", "Fades out at night, turns the TV on at 06:15."),
+    (27.5, 32.5, ("Sleep timer and <em>wake-up</em>", "Fades out at night, turns the TV on at 06:15."),
                  ("Uniajastin ja <em>herätys</em>", "Hiljenee illalla, käynnistyy aamulla 6.15.")),
-    (28.3, 99.0, ("Your weekday evening, <em>scheduled</em>", "18:30 Emmerdale, then the news."),
+    (32.5, 36.0, ("Your weekday evening, <em>scheduled</em>", "18:30 Emmerdale, then the news."),
                  ("Arki-ilta <em>ajastettuna</em>", "18.30 Emmerdale, sitten uutiset.")),
+    (36.0, 99.0, ("One tap for <em>Emmerdale</em>", "Scenes switch the TV to the right channel."),
+                 ("<em>Emmerdale</em> yhdellä napautuksella", "Kohtaus vaihtaa oikealle kanavalle.")),
 ]
 
 BASE = f"""<!doctype html><html><head><meta charset="utf-8"><style>

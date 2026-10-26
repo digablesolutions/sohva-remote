@@ -13,10 +13,8 @@ Finnish UI. Still open, outside the repo:
 - **Promo video**: upload `fastlane/video/promo-<locale>.mp4` to YouTube (unlisted, embeddable, no ads)
   and put the URLs in `metadata/android/<locale>/video.txt`. Optional for the listing.
 - **Organization account** verification (D-U-N-S, address, phone).
-- **Promo videos** (`fastlane/video/`) show the half-height sheet and scrolling tab row of 1.1.0, and
-  no Ad break: re-record them when the TV is free (`tools/record_promo.sh` presses TV keys; re-measure
-  its taps, since the chip row now starts with Ad break) and compose with `tools/promo.py` before
-  uploading. The phone and 10-inch tablet screenshots are current as of 1.5.0.
+- **Promo videos** (`fastlane/video/`) were re-recorded for 1.5.0 (with Ad break). The phone and
+  10-inch tablet screenshots are current as of 1.5.0.
 
 ## 1. App details (Grow > Store presence > Main store listing)
 
