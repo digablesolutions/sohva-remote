@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -76,7 +78,8 @@ fun DiscoverScreen(
             )
         },
     ) { padding ->
-        LazyColumn(Modifier.padding(padding).fillMaxWidth(), contentPadding = androidx.compose.foundation.layout.PaddingValues(16.dp)) {
+        // On a tablet the list stays at a readable width, centred.
+        LazyColumn(Modifier.padding(padding).fillMaxWidth().wrapContentWidth().widthIn(max = 600.dp), contentPadding = androidx.compose.foundation.layout.PaddingValues(16.dp)) {
             if (state.wifiOff) {
                 item { Text(stringResource(R.string.discover_wifi_off), color = MaterialTheme.colorScheme.error) }
                 item { Spacer(Modifier.height(12.dp)) }

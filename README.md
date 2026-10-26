@@ -72,7 +72,8 @@ service, so they work with the app closed and the phone in Doze.
 
 ## Requirements
 
-- Android 8.0 (API 26) or newer.
+- Android 8.0 (API 26) or newer, phone or tablet. On a tablet the More tabs sit beside the remote
+  (landscape) or above it (portrait).
 - On the TV: Settings › Network › Home network setup › IP control
   - Authentication: "Normal and Pre-Shared Key"
   - Remote start: On (needed to switch the TV on from standby)

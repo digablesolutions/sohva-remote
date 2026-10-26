@@ -85,6 +85,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -125,10 +126,28 @@ private enum class MoreTab(val labelRes: Int, val icon: ImageVector) {
 @Composable
 fun MoreSheet(viewModel: RemoteViewModel, onDismiss: () -> Unit, onAddTv: () -> Unit, onFastKeys: (SavedTv) -> Unit) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    var tab by remember { mutableIntStateOf(0) }
-    val haptics by viewModel.hapticsEnabled.collectAsStateWithLifecycle()
-
     ModalBottomSheet(onDismissRequest = onDismiss, sheetState = sheetState) {
+        // The full height of the sheet, so long tabs scroll inside it instead of leaving the remote half-covered.
+        MoreContent(viewModel, onDone = onDismiss, onAddTv = onAddTv, onFastKeys = onFastKeys, modifier = Modifier.fillMaxHeight())
+    }
+}
+
+/**
+ * The More tabs: in the bottom sheet on a phone, always open beside the remote on a wide screen.
+ * [onDone] closes the sheet after picking a source, channel or scene; inline it does nothing.
+ */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun MoreContent(
+    viewModel: RemoteViewModel,
+    onDone: () -> Unit,
+    onAddTv: () -> Unit,
+    onFastKeys: (SavedTv) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    var tab by rememberSaveable { mutableIntStateOf(0) }
+    val haptics by viewModel.hapticsEnabled.collectAsStateWithLifecycle()
+    Column(modifier) {
         // Six fixed tabs, an icon over a short label, so every tab is in sight: a scrolling row hid the
         // last two off the edge. The content-slot Tab skips the default 16 dp side padding the labels need.
         PrimaryTabRow(selectedTabIndex = tab, containerColor = Color.Transparent) {
@@ -153,21 +172,19 @@ fun MoreSheet(viewModel: RemoteViewModel, onDismiss: () -> Unit, onAddTv: () -> 
                 }
             }
         }
-        // The full height of the sheet, so long tabs scroll inside it instead of leaving the remote half-covered.
-        Box(Modifier.fillMaxWidth().fillMaxHeight().padding(horizontal = 16.dp).padding(top = 12.dp)) {
+        Box(Modifier.fillMaxWidth().weight(1f).padding(horizontal = 16.dp).padding(top = 12.dp)) {
             when (MoreTab.entries[tab]) {
-                MoreTab.WATCH -> WatchTab(viewModel, onDismiss)
-                MoreTab.CHANNELS -> ChannelsTab(viewModel, onDismiss)
+                MoreTab.WATCH -> WatchTab(viewModel, onDone)
+                MoreTab.CHANNELS -> ChannelsTab(viewModel, onDone)
                 MoreTab.KEYS -> KeysTab(viewModel, haptics)
                 MoreTab.TIMERS -> TimersTab(viewModel)
-                MoreTab.SCENES -> ScenesTab(viewModel, onDismiss)
+                MoreTab.SCENES -> ScenesTab(viewModel, onDone)
                 MoreTab.SETTINGS -> SettingsTab(viewModel, haptics, onAddTv, onFastKeys)
             }
         }
     }
 }
 
-/** Inputs as a list (one row per device name, connected first), then the TV's apps as a grid. */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun WatchTab(viewModel: RemoteViewModel, onDone: () -> Unit) {

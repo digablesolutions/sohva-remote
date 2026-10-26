@@ -97,6 +97,12 @@ Play only allows `USE_EXACT_ALARM` for alarm/calendar apps, so the app uses the 
 ## UI rules
 
 - One remote screen with the essentials; everything else goes in the More sheet.
+- Window sizes (`RemoteScreen`): a phone gets one column, at most 440 dp wide. A tablet held upright
+  (600 dp wide, 1000 dp tall) shows the More tabs (`MoreContent`) inline between the card and the
+  remote; a tablet on its side (840 x 560 dp) puts them in a left pane beside the remote. The remote
+  keeps its phone size in all three. Phones stay portrait (manifest); `MainActivity` frees the
+  orientation from smallest width 600 dp. Check a layout change on a phone and both tablet
+  orientations (`wm size 1080x2520` + `wm density 420` makes a tablet act as a phone; reset after).
 - Every control has a `contentDescription`, a 48 dp or larger touch target, and works
   with dynamic font size. Dark and light theme both have to read well.
 - Haptics are a user setting; respect `TvStore.hapticsEnabled`.

@@ -22,6 +22,9 @@ import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -183,133 +186,199 @@ fun RemoteScreen(
         onPauseOrDispose { viewModel.onHidden() }
     }
 
-    Scaffold(snackbarHost = { SnackbarHost(snackbars) }) { padding ->
-        Column(
-            Modifier.padding(padding).fillMaxSize().padding(horizontal = 16.dp, vertical = 12.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            NowPlayingCard(
-                state = state,
-                sources = quickSources(inputs, tvSources, stringResource(R.string.more_tv_input)),
-                playing = playing,
-                appTitle = appTitle,
-                sleepAt = sleepAt,
-                inputs = inputs,
+    // What's on, where to switch, and the chips under the card. [inlineMore]: the More tabs are
+    // already on screen (two panes), so the card has no "More" button.
+    val header: @Composable (inlineMore: Boolean) -> Unit = { inlineMore ->
+        NowPlayingCard(
+            state = state,
+            sources = quickSources(inputs, tvSources, stringResource(R.string.more_tv_input)),
+            playing = playing,
+            appTitle = appTitle,
+            sleepAt = sleepAt,
+            inputs = inputs,
+            haptics = haptics,
+            onPower = viewModel::togglePower,
+            onVoice = onVoice,
+            onRetry = viewModel::refresh,
+            onPairAgain = onPairAgain,
+            onSelect = viewModel::selectInput,
+            onChannel = viewModel::changeChannel,
+            onMore = if (inlineMore) null else { { showMore = true } },
+        )
+        val tv = state.tvOrNull
+        if (fastKeysRefused && tv != null) {
+            // Keys still work over IRCC; say why the remote got slower and how to fix it.
+            Row(
+                Modifier.fillMaxWidth().padding(top = 10.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(
+                    stringResource(R.string.fast_keys_refused),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.weight(1f),
+                )
+                FilledTonalButton(onClick = { onFastKeys(tv) }) { Text(stringResource(R.string.fast_keys_pair_again)) }
+            }
+        }
+        val onLiveTv = playing?.uri?.startsWith("tv:") == true
+        QuickChips(
+            adBreak = adBreak,
+            canStartAdBreak = onLiveTv && state is ConnectionState.Connected,
+            onAdBreak = {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+                    ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED
+                ) {
+                    notificationPermission.launch(Manifest.permission.POST_NOTIFICATIONS)
+                }
+                viewModel.startAdBreak()
+            },
+            onAdBreakMore = viewModel::extendAdBreak,
+            onAdBreakEnd = viewModel::endAdBreak,
+            previous = previousChannel?.takeIf { onLiveTv && state is ConnectionState.Connected },
+            favorites = favoriteApps,
+            scenes = scenes,
+            onJumpBack = viewModel::jumpBack,
+            onApp = { viewModel.launchApp(it.uri) },
+            onScene = viewModel::runScene,
+        )
+        if (textFieldOpen && !showKeyboard) {
+            FilledTonalButton(onClick = { showKeyboard = true }, modifier = Modifier.padding(top = 12.dp)) {
+                Icon(Icons.Default.Keyboard, contentDescription = null, modifier = Modifier.size(18.dp))
+                Spacer(Modifier.width(8.dp))
+                Text(stringResource(R.string.type_title))
+            }
+        }
+    }
+    // The pad (ring or touchpad), the system keys and the volume and channel rockers.
+    val controls: @Composable () -> Unit = {
+        Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+            if (touchpad) {
+                Touchpad(haptics, viewModel::press, viewModel::pressRepeat, viewModel::hold)
+            } else {
+                DPadRing(haptics, viewModel::press, viewModel::pressRepeat)
+            }
+            // Switches between the ring and the touchpad; remembered.
+            IconButton(onClick = { viewModel.setTouchpad(!touchpad) }, modifier = Modifier.align(Alignment.TopEnd)) {
+                Icon(
+                    if (touchpad) Icons.Default.Gamepad else Icons.Default.TouchApp,
+                    contentDescription = stringResource(if (touchpad) R.string.touchpad_off else R.string.touchpad_on),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+        }
+        Spacer(Modifier.height(16.dp))
+        Row(horizontalArrangement = Arrangement.spacedBy(20.dp)) {
+            SystemKey(stringResource(R.string.remote_back), Icons.AutoMirrored.Filled.ArrowBack, haptics) { viewModel.press(RemoteKey.RETURN) }
+            SystemKey(stringResource(R.string.remote_home), Icons.Default.Home, haptics) { viewModel.press(RemoteKey.HOME) }
+            SystemKey(stringResource(R.string.key_guide), Icons.AutoMirrored.Filled.ListAlt, haptics) { viewModel.press(RemoteKey.GUIDE) }
+            SystemKey(stringResource(R.string.remote_options), Icons.Default.Menu, haptics) { viewModel.press(RemoteKey.ACTION_MENU) }
+        }
+        Spacer(Modifier.height(20.dp))
+        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+            Rocker(
+                label = stringResource(R.string.remote_volume_short),
+                upLabel = stringResource(R.string.remote_volume_up), upIcon = Icons.Default.Add,
+                downLabel = stringResource(R.string.remote_volume_down), downIcon = Icons.Default.Remove,
                 haptics = haptics,
-                onPower = viewModel::togglePower,
-                onVoice = onVoice,
-                onRetry = viewModel::refresh,
-                onPairAgain = onPairAgain,
-                onSelect = viewModel::selectInput,
-                onChannel = viewModel::changeChannel,
-                onMore = { showMore = true },
+                onUp = { viewModel.press(RemoteKey.VOLUME_UP) },
+                onDown = { viewModel.press(RemoteKey.VOLUME_DOWN) },
+                onUpRepeat = { viewModel.pressRepeat(RemoteKey.VOLUME_UP) },
+                onDownRepeat = { viewModel.pressRepeat(RemoteKey.VOLUME_DOWN) },
             )
-            val tv = state.tvOrNull
-            if (fastKeysRefused && tv != null) {
-                // Keys still work over IRCC; say why the remote got slower and how to fix it.
-                Row(
-                    Modifier.fillMaxWidth().padding(top = 10.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Text(
-                        stringResource(R.string.fast_keys_refused),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.weight(1f),
-                    )
-                    FilledTonalButton(onClick = { onFastKeys(tv) }) { Text(stringResource(R.string.fast_keys_pair_again)) }
-                }
-            }
-            val onLiveTv = playing?.uri?.startsWith("tv:") == true
-            QuickChips(
-                adBreak = adBreak,
-                canStartAdBreak = onLiveTv && state is ConnectionState.Connected,
-                onAdBreak = {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
-                        ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED
-                    ) {
-                        notificationPermission.launch(Manifest.permission.POST_NOTIFICATIONS)
-                    }
-                    viewModel.startAdBreak()
-                },
-                onAdBreakMore = viewModel::extendAdBreak,
-                onAdBreakEnd = viewModel::endAdBreak,
-                previous = previousChannel?.takeIf { onLiveTv && state is ConnectionState.Connected },
-                favorites = favoriteApps,
-                scenes = scenes,
-                onJumpBack = viewModel::jumpBack,
-                onApp = { viewModel.launchApp(it.uri) },
-                onScene = viewModel::runScene,
-            )
-            if (textFieldOpen && !showKeyboard) {
-                FilledTonalButton(onClick = { showKeyboard = true }, modifier = Modifier.padding(top = 12.dp)) {
-                    Icon(Icons.Default.Keyboard, contentDescription = null, modifier = Modifier.size(18.dp))
-                    Spacer(Modifier.width(8.dp))
-                    Text(stringResource(R.string.type_title))
-                }
-            }
-            Spacer(Modifier.weight(1f))
-            Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-                if (touchpad) {
-                    Touchpad(haptics, viewModel::press, viewModel::pressRepeat, viewModel::hold)
-                } else {
-                    DPadRing(haptics, viewModel::press, viewModel::pressRepeat)
-                }
-                // Switches between the ring and the touchpad; remembered.
-                IconButton(onClick = { viewModel.setTouchpad(!touchpad) }, modifier = Modifier.align(Alignment.TopEnd)) {
+            Column(
+                Modifier.weight(1f).padding(horizontal = 10.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(10.dp),
+            ) {
+                val muted = (state as? ConnectionState.Connected)?.volume?.mute == true
+                TextButton(onClick = viewModel::toggleMute) {
                     Icon(
-                        if (touchpad) Icons.Default.Gamepad else Icons.Default.TouchApp,
-                        contentDescription = stringResource(if (touchpad) R.string.touchpad_off else R.string.touchpad_on),
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                        if (muted) Icons.AutoMirrored.Filled.VolumeUp else Icons.AutoMirrored.Filled.VolumeOff,
+                        contentDescription = null,
+                        modifier = Modifier.size(18.dp),
                     )
+                    Spacer(Modifier.width(6.dp))
+                    Text(stringResource(if (muted) R.string.remote_unmute else R.string.remote_mute))
                 }
+                PlaybackBar(haptics, viewModel::press)
             }
-            Spacer(Modifier.height(16.dp))
-            Row(horizontalArrangement = Arrangement.spacedBy(20.dp)) {
-                SystemKey(stringResource(R.string.remote_back), Icons.AutoMirrored.Filled.ArrowBack, haptics) { viewModel.press(RemoteKey.RETURN) }
-                SystemKey(stringResource(R.string.remote_home), Icons.Default.Home, haptics) { viewModel.press(RemoteKey.HOME) }
-                SystemKey(stringResource(R.string.key_guide), Icons.AutoMirrored.Filled.ListAlt, haptics) { viewModel.press(RemoteKey.GUIDE) }
-                SystemKey(stringResource(R.string.remote_options), Icons.Default.Menu, haptics) { viewModel.press(RemoteKey.ACTION_MENU) }
-            }
-            Spacer(Modifier.height(20.dp))
-            Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                Rocker(
-                    label = stringResource(R.string.remote_volume_short),
-                    upLabel = stringResource(R.string.remote_volume_up), upIcon = Icons.Default.Add,
-                    downLabel = stringResource(R.string.remote_volume_down), downIcon = Icons.Default.Remove,
-                    haptics = haptics,
-                    onUp = { viewModel.press(RemoteKey.VOLUME_UP) },
-                    onDown = { viewModel.press(RemoteKey.VOLUME_DOWN) },
-                    onUpRepeat = { viewModel.pressRepeat(RemoteKey.VOLUME_UP) },
-                    onDownRepeat = { viewModel.pressRepeat(RemoteKey.VOLUME_DOWN) },
-                )
-                Column(
-                    Modifier.weight(1f).padding(horizontal = 10.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(10.dp),
+            Rocker(
+                label = stringResource(R.string.remote_channel_short),
+                upLabel = stringResource(R.string.remote_channel_up), upIcon = Icons.Default.KeyboardArrowUp,
+                downLabel = stringResource(R.string.remote_channel_down), downIcon = Icons.Default.KeyboardArrowDown,
+                haptics = haptics,
+                onUp = { viewModel.press(RemoteKey.CHANNEL_UP) },
+                onDown = { viewModel.press(RemoteKey.CHANNEL_DOWN) },
+                onUpRepeat = { viewModel.pressRepeat(RemoteKey.CHANNEL_UP) },
+                onDownRepeat = { viewModel.pressRepeat(RemoteKey.CHANNEL_DOWN) },
+            )
+        }
+    }
+
+    Scaffold(snackbarHost = { SnackbarHost(snackbars) }) { padding ->
+        BoxWithConstraints(Modifier.padding(padding).fillMaxSize()) {
+            if (maxWidth >= TWO_PANE_MIN_WIDTH && maxHeight >= TWO_PANE_MIN_HEIGHT) {
+                // A tablet on its side: what's on and the More tabs, always open, beside the remote.
+                Row(
+                    Modifier.fillMaxSize().padding(horizontal = 24.dp, vertical = 16.dp),
+                    horizontalArrangement = Arrangement.spacedBy(32.dp),
                 ) {
-                    val muted = (state as? ConnectionState.Connected)?.volume?.mute == true
-                    TextButton(onClick = viewModel::toggleMute) {
-                        Icon(
-                            if (muted) Icons.AutoMirrored.Filled.VolumeUp else Icons.AutoMirrored.Filled.VolumeOff,
-                            contentDescription = null,
-                            modifier = Modifier.size(18.dp),
+                    Column(Modifier.weight(1f).fillMaxHeight()) {
+                        header(true)
+                        MoreContent(
+                            viewModel,
+                            onDone = {},
+                            onAddTv = onAddTv,
+                            onFastKeys = onFastKeys,
+                            modifier = Modifier.weight(1f).padding(top = 16.dp),
                         )
-                        Spacer(Modifier.width(6.dp))
-                        Text(stringResource(if (muted) R.string.remote_unmute else R.string.remote_mute))
                     }
-                    PlaybackBar(haptics, viewModel::press)
+                    Column(
+                        Modifier.width(REMOTE_WIDTH).fillMaxHeight(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center,
+                    ) {
+                        controls()
+                    }
                 }
-                Rocker(
-                    label = stringResource(R.string.remote_channel_short),
-                    upLabel = stringResource(R.string.remote_channel_up), upIcon = Icons.Default.KeyboardArrowUp,
-                    downLabel = stringResource(R.string.remote_channel_down), downIcon = Icons.Default.KeyboardArrowDown,
-                    haptics = haptics,
-                    onUp = { viewModel.press(RemoteKey.CHANNEL_UP) },
-                    onDown = { viewModel.press(RemoteKey.CHANNEL_DOWN) },
-                    onUpRepeat = { viewModel.pressRepeat(RemoteKey.CHANNEL_UP) },
-                    onDownRepeat = { viewModel.pressRepeat(RemoteKey.CHANNEL_DOWN) },
-                )
+            } else if (maxWidth >= TALL_PANE_MIN_WIDTH && maxHeight >= TALL_PANE_MIN_HEIGHT) {
+                // A tablet held upright: the More tabs fill the space between the card and the remote,
+                // which keeps its phone size at the bottom, under the thumb.
+                Column(
+                    Modifier
+                        .align(Alignment.TopCenter)
+                        .widthIn(max = TALL_WIDTH)
+                        .fillMaxHeight()
+                        .padding(horizontal = 24.dp, vertical = 16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    header(true)
+                    MoreContent(
+                        viewModel,
+                        onDone = {},
+                        onAddTv = onAddTv,
+                        onFastKeys = onFastKeys,
+                        modifier = Modifier.weight(1f).padding(vertical = 16.dp),
+                    )
+                    Column(Modifier.widthIn(max = REMOTE_WIDTH), horizontalAlignment = Alignment.CenterHorizontally) {
+                        controls()
+                    }
+                }
+            } else {
+                // A phone: one column, the keys at the bottom under the thumb.
+                Column(
+                    Modifier
+                        .align(Alignment.TopCenter)
+                        .widthIn(max = REMOTE_WIDTH)
+                        .fillMaxHeight()
+                        .padding(horizontal = 16.dp, vertical = 12.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    header(false)
+                    Spacer(Modifier.weight(1f))
+                    controls()
+                }
             }
         }
     }
@@ -397,7 +466,7 @@ private fun NowPlayingCard(
     onPairAgain: (SavedTv) -> Unit,
     onSelect: (String) -> Unit,
     onChannel: (next: Boolean) -> Unit,
-    onMore: () -> Unit,
+    onMore: (() -> Unit)?,
 ) {
     Column(
         Modifier
@@ -501,7 +570,7 @@ private fun NowPlayingCard(
                             )
                         }
                     }
-                    TextButton(onClick = onMore) { Text(stringResource(R.string.remote_all_sources)) }
+                    if (onMore != null) TextButton(onClick = onMore) { Text(stringResource(R.string.remote_all_sources)) }
                 }
             }
             is ConnectionState.Connecting -> CircularProgressIndicator(Modifier.size(20.dp), strokeWidth = 2.dp)
@@ -853,3 +922,15 @@ private fun Modifier.horizontalFade(scroll: ScrollState, width: Dp = 28.dp) = th
             )
         }
     }
+
+/** The remote's width on a phone; wider screens keep it, so keys stay where the thumb expects them. */
+private val REMOTE_WIDTH = 440.dp
+
+/** From this window size (a tablet on its side) the More tabs sit beside the remote instead of in a sheet. */
+private val TWO_PANE_MIN_WIDTH = 840.dp
+private val TWO_PANE_MIN_HEIGHT = 560.dp
+
+/** A tablet held upright: room for the More tabs between the card and the remote, at this width. */
+private val TALL_PANE_MIN_WIDTH = 600.dp
+private val TALL_PANE_MIN_HEIGHT = 1000.dp
+private val TALL_WIDTH = 640.dp

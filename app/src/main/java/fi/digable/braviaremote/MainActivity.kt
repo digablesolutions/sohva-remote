@@ -2,6 +2,7 @@ package fi.digable.braviaremote
 
 import android.content.Context
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.view.KeyEvent
 import androidx.activity.ComponentActivity
@@ -40,6 +41,11 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
         super.onCreate(savedInstanceState)
+        // The manifest keeps phones upright (the remote is one tall column). A tablet turns freely:
+        // on its side the remote gets two panes. Android 16 ignores the lock on large screens anyway.
+        if (resources.configuration.smallestScreenWidthDp >= 600) {
+            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+        }
         enableEdgeToEdge()
         takeDebugVoice(intent)
         openTvApp(intent)

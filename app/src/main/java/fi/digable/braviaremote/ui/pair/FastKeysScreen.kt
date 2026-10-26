@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -52,7 +54,8 @@ fun FastKeysScreen(
 
     Scaffold(topBar = { TopAppBar(title = { Text(stringResource(R.string.fast_keys_title)) }) }) { padding ->
         Column(
-            Modifier.padding(padding).fillMaxSize().padding(24.dp),
+            // On a tablet the steps stay at a readable width, centred.
+            Modifier.padding(padding).fillMaxSize().wrapContentWidth().widthIn(max = 600.dp).padding(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             when (val step = state.step) {
