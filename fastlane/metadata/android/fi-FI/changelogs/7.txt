@@ -1,0 +1,3 @@
+• Kaukosäädin näyttää kanavan ja ohjelman heti, kun televisio on käynnistänyt tv-lähetyksen, myös heti päälle kytkemisen jälkeen.
+• Kun kytket television päälle sen omalla kaukosäätimellä sovelluksen ollessa auki, sovellus huomaa sen sekunneissa ilman Yritä uudelleen -painiketta.
+• Sovellus kysyy televisiolta vielä kerran ennen kuin kertoo, ettei se vastaa, joten hidas ensimmäinen yhteys ei enää näytä virhettä.

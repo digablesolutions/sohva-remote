@@ -1,6 +1,6 @@
 # Play Console checklist: Sohva Remote
 
-The answers below match the code as of 1.2.0 (versionCode 6).
+The answers below match the code as of 1.3.0 (versionCode 7).
 
 ## 0. Status
 
@@ -177,8 +177,8 @@ No / None / No.
       crash on the first-run / no-TV path).
 - [ ] Store listing: upload `icon.png`, `featureGraphic.png`, `phoneScreenshots/1-7.png` for en-US and
       fi-FI (or `fastlane supply --skip_upload_apk --skip_upload_aab`).
-- [ ] Release notes from `changelogs/<versionCode>.txt` (the first Play upload is versionCode 6,
-      `changelogs/6.txt`; 3-5 went out only as GitHub APKs).
+- [ ] Release notes from `changelogs/<versionCode>.txt` (the first Play upload is versionCode 7,
+      `changelogs/7.txt`; 3-6 went out only as GitHub APKs).
 - [ ] Countries: Finland first (plus the Nordics/EU if wanted). The app works anywhere with a Bravia.
 - [ ] Optional: promo video URL in `video.txt` (see `fastlane/VIDEO.md`).
 - [ ] After approval: staged rollout (e.g. 20%) and watch Android vitals for ANRs/crashes.

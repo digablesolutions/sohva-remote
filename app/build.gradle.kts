@@ -18,8 +18,8 @@ android {
         applicationId = "fi.digable.sohva"
         minSdk = 26
         targetSdk = 36
-        versionCode = 6
-        versionName = "1.2.0"
+        versionCode = 7
+        versionName = "1.3.0"
         vectorDrawables.useSupportLibrary = true
         // Release builds log nothing; `-Psohva.logs=true` builds one that logs, for diagnosing on
         // the family's phone without re-pairing (same package and signature as the release).

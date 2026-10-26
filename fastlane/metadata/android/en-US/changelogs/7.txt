@@ -1,0 +1,3 @@
+• The remote shows the channel and programme as soon as the TV has started live TV, also right after switching the TV on.
+• Switch the TV on with its own remote while the app is open and the app notices within seconds, no Retry needed.
+• The app asks the TV once more before saying it can't be reached, so a slow first connection no longer shows an error.
