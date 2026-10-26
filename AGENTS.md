@@ -56,8 +56,10 @@ Play only allows `USE_EXACT_ALARM` for alarm/calendar apps, so the app uses the 
 - "Fast keys" use the TV's Android TV Remote Service (TLS, ports 6467 pairing / 6466 keys).
   The phone's identity is a Keystore RSA key (`AtvIdentity`). Conscrypt signs the TLS 1.2
   handshake with raw RSA, so that key must allow `ENCRYPTION_PADDING_NONE` and `DIGEST_NONE`;
-  without them the handshake fails with `INCOMPATIBLE_PADDING_MODE`. The TV's certificate from
-  pairing is kept in `CredentialStore` and marks the TV as paired.
+  without them the handshake fails with `INCOMPATIBLE_PADDING_MODE`. The TV tells paired clients
+  apart by certificate subject and serial number, so each install's are random; up to 1.5.1 all
+  installs shared one, and pairing a second device replaced the first one's pairing. The TV's
+  certificate from pairing is kept in `CredentialStore` and marks the TV as paired.
 - `TvController` keeps the fast key channel (`AtvRemote`) open only while the remote screen is
   in the foreground and the TV is on. Every key still goes through the one send queue; the
   transport is picked when its turn comes (`RemoteKey.atvKeyCode` non-null and channel open),

@@ -1,0 +1,3 @@
+• Pikanäppäimet toimivat sekä puhelimessa että tabletissa: toisen yhdistäminen ei enää vaadi yhdistämään toista uudelleen.
+• Ajastettu kohtaus vaihtaa takaisin kanavalleen, jos pelikonsoli tai soundbar ottaa ruudun HDMI:n kautta.
+• Takaisin näyttää kaukosäätimen Takaisin-painikkeelta, ja Takaisin-, Koti-, Opas- ja Valinnat-painikkeissa on nyt nimet.

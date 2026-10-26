@@ -118,7 +118,8 @@ network. The TV's cookie, PSK and Android TV Remote certificate are stored encry
 - With an HDMI-CEC soundbar the TV moves the volume two steps per key and one step per
   "set volume" call; the app steps and reads back to reach a level.
 - Devices found over HDMI-CEC (e.g. a PS5) are listed only while awake; scenes save
-  them by HDMI port so they still work when the device sleeps.
+  them by HDMI port so they still work when the device sleeps. A console or soundbar can take
+  the screen back over HDMI-CEC right after a channel scene; the scene checks and switches again.
 - Apps with their own on-screen keyboard (YouTube) don't raise the TV's keyboard, so
   there is nothing to type into.
 - Live TV can't be previewed on the phone (protected video).

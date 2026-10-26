@@ -1,0 +1,3 @@
+• Fast keys keep working on both your phone and your tablet: pairing one no longer makes the other pair again.
+• A scheduled scene switches back to its channel if a console or soundbar takes the screen over HDMI.
+• Back looks like the Back key on a TV remote, and Back, Home, Guide and Options now have labels.
