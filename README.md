@@ -38,8 +38,10 @@ kaukosäädin Sony Bravia -televisioille).
 - Pin apps (long-press in Sources): one-tap chips under the card and launcher
   shortcuts (long-press the app icon).
 - More sheet: the TV's inputs, installed apps (icons cached on the phone), the channel
-  list, number pad and extra keys, timers, scenes, and Settings (saved TVs, vibration, call
-  mute, notification remote).
+  list, number pad and extra keys, timers, scenes, and Settings (saved TVs, language, vibration,
+  call mute, notification remote).
+- English or Finnish whatever the phone's language: Settings › Language in the app, or Android's
+  per-app language setting on Android 13+.
 - Type on the TV: when the TV's keyboard is up, type (or dictate) from the phone.
 - Voice commands in Finnish and English: "kanava 3", "volume 20", "Netflix",
   "PlayStation", "mute", "turn off".

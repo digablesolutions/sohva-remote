@@ -193,6 +193,8 @@
     <string name="target_none">Älä muuta</string>
     <string name="more_settings">Asetukset</string>
     <string name="more_this_phone">Tässä puhelimessa</string>
+    <string name="language_title">Kieli</string>
+    <string name="language_phone">Sama kuin puhelimessa</string>
     <string name="forget_title">Unohdetaanko %1$s?</string>
     <string name="forget_body">Sen yhdistys poistetaan tästä puhelimesta. Jos haluat käyttää sitä taas, lisää se ja kirjoita television näyttämä uusi PIN-koodi.</string>
     <string name="scene_delete_title">Poistetaanko %1$s?</string>

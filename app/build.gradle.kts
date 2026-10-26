@@ -63,6 +63,10 @@ android {
     kotlinOptions {
         jvmTarget = "17"
     }
+    // Lists en and fi to Android 13+, so the app shows up under the phone's per-app language settings.
+    androidResources {
+        generateLocaleConfig = true
+    }
     buildFeatures {
         compose = true
         buildConfig = true

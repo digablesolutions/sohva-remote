@@ -1,11 +1,13 @@
 package fi.digable.braviaremote
 
 import android.app.Application
+import android.content.Context
 import coil.ImageLoader
 import coil.ImageLoaderFactory
 import coil.util.DebugLogger
 import dagger.Lazy
 import dagger.hilt.android.HiltAndroidApp
+import fi.digable.braviaremote.data.AppLanguage
 import fi.digable.braviaremote.data.CredentialStore
 import fi.digable.braviaremote.data.SceneSchedule
 import fi.digable.braviaremote.data.SleepTimer
@@ -31,6 +33,9 @@ class BraviaRemoteApp : Application(), ImageLoaderFactory {
     @Inject lateinit var sceneSchedule: Lazy<SceneSchedule>
     @Inject lateinit var notificationRemote: Lazy<NotificationRemote>
     @Inject @ApplicationScope lateinit var scope: CoroutineScope
+
+    // Before Android 13, the in-app language choice; tiles, widget and notifications use this context.
+    override fun attachBaseContext(base: Context) = super.attachBaseContext(AppLanguage.wrap(base))
 
     override fun onCreate() {
         super.onCreate()

@@ -194,6 +194,10 @@
     <string name="target_none">Leave as it is</string>
     <string name="more_settings">Settings</string>
     <string name="more_this_phone">On this phone</string>
+    <string name="language_title">Language</string>
+    <string name="language_phone">Same as the phone</string>
+    <string name="language_en" translatable="false">English</string>
+    <string name="language_fi" translatable="false">Suomi</string>
     <string name="forget_title">Forget %1$s?</string>
     <string name="forget_body">Its pairing is removed from this phone. To use it again, add it and type the new PIN the TV shows.</string>
     <string name="scene_delete_title">Delete %1$s?</string>

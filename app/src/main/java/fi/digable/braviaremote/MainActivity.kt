@@ -1,5 +1,6 @@
 package fi.digable.braviaremote
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.KeyEvent
@@ -11,6 +12,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import dagger.hilt.android.AndroidEntryPoint
+import fi.digable.braviaremote.data.AppLanguage
 import fi.digable.braviaremote.data.AppShortcuts
 import fi.digable.braviaremote.data.ConnectionState
 import fi.digable.braviaremote.data.HardwareKeys
@@ -31,6 +33,9 @@ class MainActivity : ComponentActivity() {
     @Inject lateinit var voiceInbox: VoiceInbox
     @Inject lateinit var controller: TvController
     @Inject @ApplicationScope lateinit var scope: CoroutineScope
+
+    // Before Android 13, the in-app language choice (Settings tab); later the system applies it.
+    override fun attachBaseContext(newBase: Context) = super.attachBaseContext(AppLanguage.wrap(newBase))
 
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()

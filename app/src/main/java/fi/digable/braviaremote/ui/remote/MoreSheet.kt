@@ -1,6 +1,9 @@
 package fi.digable.braviaremote.ui.remote
 
 import android.Manifest
+import android.app.Activity
+import android.content.Context
+import android.content.ContextWrapper
 import android.content.pm.PackageManager
 import android.os.Build
 import android.text.format.DateFormat
@@ -10,6 +13,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.material3.AlertDialog
@@ -69,6 +73,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.PrimaryTabRow
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
@@ -90,6 +95,7 @@ import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -98,6 +104,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.SubcomposeAsyncImage
 import fi.digable.braviaremote.BuildConfig
 import fi.digable.braviaremote.R
+import fi.digable.braviaremote.data.AppLanguage
 import fi.digable.braviaremote.data.ConnectionState
 import fi.digable.braviaremote.data.SavedTv
 import fi.digable.braviaremote.protocol.ExternalInput
@@ -480,6 +487,66 @@ internal fun SleepTimerSection(viewModel: RemoteViewModel) {
     }
 }
 
+/**
+ * The app's language: the phone's, or English or Finnish whatever the phone uses. The languages are
+ * named in themselves, so each is recognisable from the other.
+ */
+@Composable
+private fun LanguageSetting() {
+    val context = LocalContext.current
+    val current = remember { AppLanguage.current(context) }
+    var choosing by remember { mutableStateOf(false) }
+    val names = mapOf("en" to stringResource(R.string.language_en), "fi" to stringResource(R.string.language_fi))
+    val phone = stringResource(R.string.language_phone)
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(12.dp)).clickable { choosing = true }.padding(vertical = 8.dp),
+    ) {
+        Column(Modifier.weight(1f)) {
+            Text(stringResource(R.string.language_title))
+            Text(
+                current?.let { names[it] } ?: phone,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+    }
+    if (choosing) {
+        AlertDialog(
+            onDismissRequest = { choosing = false },
+            title = { Text(stringResource(R.string.language_title)) },
+            text = {
+                Column {
+                    for (tag in listOf(null) + AppLanguage.TAGS) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .selectable(selected = tag == current, role = Role.RadioButton) {
+                                    choosing = false
+                                    if (tag != current) context.findActivity()?.let { AppLanguage.set(it, tag) }
+                                }
+                                .padding(vertical = 12.dp),
+                        ) {
+                            RadioButton(selected = tag == current, onClick = null)
+                            Spacer(Modifier.width(12.dp))
+                            Text(tag?.let { names[it] } ?: phone)
+                        }
+                    }
+                }
+            },
+            confirmButton = {},
+            dismissButton = { TextButton(onClick = { choosing = false }) { Text(stringResource(R.string.dialog_cancel)) } },
+        )
+    }
+}
+
+private tailrec fun Context.findActivity(): Activity? = when (this) {
+    is Activity -> this
+    is ContextWrapper -> baseContext.findActivity()
+    else -> null
+}
+
 /** Mute the TV while a phone call rings or is on; asks for the phone-state permission when turned on. */
 @Composable
 private fun CallMuteSetting(viewModel: RemoteViewModel) {
@@ -600,6 +667,7 @@ private fun SettingsTab(viewModel: RemoteViewModel, haptics: Boolean, onAddTv: (
         item { SectionHeader(stringResource(R.string.more_this_phone)) }
         item {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.padding(bottom = 16.dp)) {
+                LanguageSetting()
                 Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
                     Text(stringResource(R.string.more_haptics), Modifier.weight(1f))
                     Switch(checked = haptics, onCheckedChange = viewModel::setHaptics)
