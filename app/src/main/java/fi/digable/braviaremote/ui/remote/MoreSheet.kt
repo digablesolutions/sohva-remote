@@ -1,5 +1,16 @@
 package fi.digable.braviaremote.ui.remote
 
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.BlendMode
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.graphics.CompositingStrategy
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.unit.Dp
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.material3.NavigationRailItem
+import androidx.compose.material3.NavigationRail
 import android.Manifest
 import android.app.Activity
 import android.content.Context
@@ -21,6 +32,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -133,10 +145,10 @@ fun MoreSheet(viewModel: RemoteViewModel, onDismiss: () -> Unit, onAddTv: () -> 
 }
 
 /**
- * The More tabs: in the bottom sheet on a phone, always open beside the remote on a wide screen.
- * [onDone] closes the sheet after picking a source, channel or scene; inline it does nothing.
+ * The More tabs over their content: in the bottom sheet on a phone, and in the tablet's upright
+ * panel. [onDone] closes the sheet after picking a source, channel or scene; inline it does nothing.
+ * With [fadeBottom] the content fades out at the panel's lower edge instead of being cut there.
  */
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MoreContent(
     viewModel: RemoteViewModel,
@@ -144,46 +156,101 @@ fun MoreContent(
     onAddTv: () -> Unit,
     onFastKeys: (SavedTv) -> Unit,
     modifier: Modifier = Modifier,
+    fadeBottom: Boolean = false,
 ) {
     var tab by rememberSaveable { mutableIntStateOf(0) }
-    val haptics by viewModel.hapticsEnabled.collectAsStateWithLifecycle()
     Column(modifier) {
-        // Six fixed tabs, an icon over a short label, so every tab is in sight: a scrolling row hid the
-        // last two off the edge. The content-slot Tab skips the default 16 dp side padding the labels need.
-        PrimaryTabRow(selectedTabIndex = tab, containerColor = Color.Transparent) {
-            MoreTab.entries.forEachIndexed { i, t ->
-                Tab(
-                    selected = tab == i,
-                    onClick = { tab = i },
-                    selectedContentColor = MaterialTheme.colorScheme.primary,
-                    unselectedContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                ) {
-                    Column(Modifier.padding(vertical = 8.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-                        Icon(t.icon, contentDescription = null, modifier = Modifier.size(22.dp))
-                        Spacer(Modifier.height(4.dp))
-                        Text(
-                            stringResource(t.labelRes),
-                            style = MaterialTheme.typography.labelSmall,
-                            maxLines = 1,
-                            softWrap = false,
-                            overflow = TextOverflow.Ellipsis,
-                        )
-                    }
+        MoreTabRow(tab, onTab = { tab = it })
+        MoreTabBody(
+            tab, viewModel, onDone, onAddTv, onFastKeys,
+            Modifier.weight(1f).then(if (fadeBottom) Modifier.fadeBottom() else Modifier),
+        )
+    }
+}
+
+/** Six fixed tabs, an icon over a short label, so every tab is in sight. */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun MoreTabRow(tab: Int, onTab: (Int) -> Unit) {
+    // A scrolling row hid the last two off the edge. The content-slot Tab skips the default 16 dp
+    // side padding the labels need.
+    PrimaryTabRow(selectedTabIndex = tab, containerColor = Color.Transparent) {
+        MoreTab.entries.forEachIndexed { i, t ->
+            Tab(
+                selected = tab == i,
+                onClick = { onTab(i) },
+                selectedContentColor = MaterialTheme.colorScheme.primary,
+                unselectedContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+            ) {
+                Column(Modifier.padding(vertical = 8.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+                    Icon(t.icon, contentDescription = null, modifier = Modifier.size(22.dp))
+                    Spacer(Modifier.height(4.dp))
+                    Text(
+                        stringResource(t.labelRes),
+                        style = MaterialTheme.typography.labelSmall,
+                        maxLines = 1,
+                        softWrap = false,
+                        overflow = TextOverflow.Ellipsis,
+                    )
                 }
-            }
-        }
-        Box(Modifier.fillMaxWidth().weight(1f).padding(horizontal = 16.dp).padding(top = 12.dp)) {
-            when (MoreTab.entries[tab]) {
-                MoreTab.WATCH -> WatchTab(viewModel, onDone)
-                MoreTab.CHANNELS -> ChannelsTab(viewModel, onDone)
-                MoreTab.KEYS -> KeysTab(viewModel, haptics)
-                MoreTab.TIMERS -> TimersTab(viewModel)
-                MoreTab.SCENES -> ScenesTab(viewModel, onDone)
-                MoreTab.SETTINGS -> SettingsTab(viewModel, haptics, onAddTv, onFastKeys)
             }
         }
     }
 }
+
+/** The same tabs as a navigation rail down the left edge, for a tablet on its side. */
+@Composable
+fun MoreTabRail(tab: Int, onTab: (Int) -> Unit, modifier: Modifier = Modifier) {
+    // From the top, level with the card beside it.
+    NavigationRail(modifier, containerColor = Color.Transparent) {
+        MoreTab.entries.forEachIndexed { i, t ->
+            NavigationRailItem(
+                selected = tab == i,
+                onClick = { onTab(i) },
+                icon = { Icon(t.icon, contentDescription = null) },
+                label = { Text(stringResource(t.labelRes), style = MaterialTheme.typography.labelMedium, maxLines = 1) },
+                modifier = Modifier.padding(vertical = 4.dp),
+            )
+        }
+    }
+}
+
+/** The content of More tab [tab]. */
+@Composable
+fun MoreTabBody(
+    tab: Int,
+    viewModel: RemoteViewModel,
+    onDone: () -> Unit,
+    onAddTv: () -> Unit,
+    onFastKeys: (SavedTv) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val haptics by viewModel.hapticsEnabled.collectAsStateWithLifecycle()
+    Box(modifier.fillMaxWidth().padding(horizontal = 16.dp).padding(top = 12.dp)) {
+        when (MoreTab.entries[tab]) {
+            MoreTab.WATCH -> WatchTab(viewModel, onDone)
+            MoreTab.CHANNELS -> ChannelsTab(viewModel, onDone)
+            MoreTab.KEYS -> KeysTab(viewModel, haptics)
+            MoreTab.TIMERS -> TimersTab(viewModel)
+            MoreTab.SCENES -> ScenesTab(viewModel, onDone)
+            MoreTab.SETTINGS -> SettingsTab(viewModel, haptics, onAddTv, onFastKeys)
+        }
+    }
+}
+
+/** Fades the lower edge to nothing, so a list running on past the panel reads as "scrolls", not as cut. */
+fun Modifier.fadeBottom(height: Dp = TAB_END_ROOM) = this
+    .graphicsLayer { compositingStrategy = CompositingStrategy.Offscreen }
+    .drawWithContent {
+        drawContent()
+        val fade = height.toPx()
+        drawRect(
+            Brush.verticalGradient(listOf(Color.Black, Color.Transparent), startY = size.height - fade, endY = size.height),
+            topLeft = Offset(0f, size.height - fade),
+            size = Size(size.width, fade),
+            blendMode = BlendMode.DstIn,
+        )
+    }
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -214,12 +281,13 @@ private fun WatchTab(viewModel: RemoteViewModel, onDone: () -> Unit) {
     val playingUri = playing?.uri
     LazyVerticalGrid(
         columns = GridCells.Adaptive(88.dp),
+        contentPadding = PaddingValues(bottom = TAB_END_ROOM),
         verticalArrangement = Arrangement.spacedBy(4.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         item(span = { GridItemSpan(maxLineSpan) }) { SectionHeader(stringResource(R.string.more_inputs)) }
         sources.firstOrNull()?.let { tuner ->
-            item(span = { GridItemSpan(maxLineSpan) }) {
+            item(span = { GridItemSpan(inputSpan(maxLineSpan)) }) {
                 InputRow(
                     name = stringResource(R.string.more_tv_input),
                     icon = Icons.Default.Tv,
@@ -229,7 +297,7 @@ private fun WatchTab(viewModel: RemoteViewModel, onDone: () -> Unit) {
                 )
             }
         }
-        items(rows, key = { it.uri }, span = { GridItemSpan(maxLineSpan) }) { input ->
+        items(rows, key = { it.uri }, span = { GridItemSpan(inputSpan(maxLineSpan)) }) { input ->
             InputRow(
                 name = input.displayName,
                 icon = inputIcon(input),
@@ -352,8 +420,14 @@ private fun ChannelsTab(viewModel: RemoteViewModel, onDone: () -> Unit) {
     }
 
     val currentIndex = channels.indexOfFirst { it.uri == playing?.uri }
-    val listState = rememberLazyListState(initialFirstVisibleItemIndex = (currentIndex - 2).coerceAtLeast(0))
-    LazyColumn(state = listState) {
+    val gridState = rememberLazyGridState(initialFirstVisibleItemIndex = (currentIndex - 2).coerceAtLeast(0))
+    // One column on a phone; two on a tablet's wider pane, so twice the channels are in sight.
+    LazyVerticalGrid(
+        columns = GridCells.Adaptive(WIDE_ROW_MIN),
+        state = gridState,
+        contentPadding = PaddingValues(bottom = TAB_END_ROOM),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
         items(channels, key = { it.uri }) { channel ->
             val current = channel.uri == playing?.uri
             ListItem(
@@ -414,55 +488,72 @@ private fun inputIcon(input: ExternalInput): ImageVector {
 /** Number pad with Guide and Info, track and stop keys, colour keys and the rarer remote keys. */
 @Composable
 private fun KeysTab(viewModel: RemoteViewModel, haptics: Boolean) {
-    Column(
-        Modifier.verticalScroll(rememberScrollState()).fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(12.dp),
-    ) {
-        for (row in RemoteKey.digits.take(9).chunked(3)) {
+    val numberPad: @Composable () -> Unit = {
+        Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            for (row in RemoteKey.digits.take(9).chunked(3)) {
+                Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                    for (key in row) PadKey(stringResource(R.string.more_digit, key.digit ?: 0), key.digit.toString(), haptics) { viewModel.press(key) }
+                }
+            }
             Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                for (key in row) PadKey(stringResource(R.string.more_digit, key.digit ?: 0), key.digit.toString(), haptics) { viewModel.press(key) }
+                PadKey(stringResource(R.string.key_guide), stringResource(R.string.key_guide), haptics) { viewModel.press(RemoteKey.GUIDE) }
+                PadKey(stringResource(R.string.more_digit, 0), "0", haptics) { viewModel.press(RemoteKey.NUM0) }
+                PadKey(stringResource(R.string.key_info), stringResource(R.string.key_info), haptics) { viewModel.press(RemoteKey.DISPLAY) }
             }
         }
-        Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-            PadKey(stringResource(R.string.key_guide), stringResource(R.string.key_guide), haptics) { viewModel.press(RemoteKey.GUIDE) }
-            PadKey(stringResource(R.string.more_digit, 0), "0", haptics) { viewModel.press(RemoteKey.NUM0) }
-            PadKey(stringResource(R.string.key_info), stringResource(R.string.key_info), haptics) { viewModel.press(RemoteKey.DISPLAY) }
-        }
-
-        Row(horizontalArrangement = Arrangement.spacedBy(16.dp), modifier = Modifier.padding(top = 8.dp)) {
-            RemoteButton(stringResource(R.string.remote_previous), icon = Icons.Default.SkipPrevious, size = 56.dp, haptics = haptics, onPress = { viewModel.press(RemoteKey.PREV) })
-            RemoteButton(stringResource(R.string.remote_stop), icon = Icons.Default.Stop, size = 56.dp, haptics = haptics, onPress = { viewModel.press(RemoteKey.STOP) })
-            RemoteButton(stringResource(R.string.remote_next), icon = Icons.Default.SkipNext, size = 56.dp, haptics = haptics, onPress = { viewModel.press(RemoteKey.NEXT) })
-        }
-
-        Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            ColorKey(stringResource(R.string.key_red), Color(0xFFD32F2F), haptics) { viewModel.press(RemoteKey.RED) }
-            ColorKey(stringResource(R.string.key_green), Color(0xFF388E3C), haptics) { viewModel.press(RemoteKey.GREEN) }
-            ColorKey(stringResource(R.string.key_yellow), Color(0xFFFBC02D), haptics) { viewModel.press(RemoteKey.YELLOW) }
-            ColorKey(stringResource(R.string.key_blue), Color(0xFF1976D2), haptics) { viewModel.press(RemoteKey.BLUE) }
-        }
-
-        val keys = listOf(
-            R.string.key_subtitle to RemoteKey.SUBTITLE,
-            R.string.key_audio to RemoteKey.AUDIO,
-            R.string.key_input to RemoteKey.INPUT,
-            R.string.key_exit to RemoteKey.EXIT,
-            R.string.key_teletext to RemoteKey.TELETEXT,
-            R.string.key_netflix to RemoteKey.NETFLIX,
-            R.string.key_sleep to RemoteKey.SLEEP_TIMER,
-            R.string.key_picture_off to RemoteKey.PICTURE_OFF,
-        )
-        for (pair in keys.chunked(2)) {
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.fillMaxWidth()) {
-                for ((label, key) in pair) {
-                    FilledTonalButton(onClick = { viewModel.press(key) }, modifier = Modifier.weight(1f)) {
-                        Text(stringResource(label), maxLines = 1, overflow = TextOverflow.Ellipsis)
+    }
+    val otherKeys: @Composable () -> Unit = {
+        Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                RemoteButton(stringResource(R.string.remote_previous), icon = Icons.Default.SkipPrevious, size = 56.dp, haptics = haptics, onPress = { viewModel.press(RemoteKey.PREV) })
+                RemoteButton(stringResource(R.string.remote_stop), icon = Icons.Default.Stop, size = 56.dp, haptics = haptics, onPress = { viewModel.press(RemoteKey.STOP) })
+                RemoteButton(stringResource(R.string.remote_next), icon = Icons.Default.SkipNext, size = 56.dp, haptics = haptics, onPress = { viewModel.press(RemoteKey.NEXT) })
+            }
+            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                ColorKey(stringResource(R.string.key_red), Color(0xFFD32F2F), haptics) { viewModel.press(RemoteKey.RED) }
+                ColorKey(stringResource(R.string.key_green), Color(0xFF388E3C), haptics) { viewModel.press(RemoteKey.GREEN) }
+                ColorKey(stringResource(R.string.key_yellow), Color(0xFFFBC02D), haptics) { viewModel.press(RemoteKey.YELLOW) }
+                ColorKey(stringResource(R.string.key_blue), Color(0xFF1976D2), haptics) { viewModel.press(RemoteKey.BLUE) }
+            }
+            val keys = listOf(
+                R.string.key_subtitle to RemoteKey.SUBTITLE,
+                R.string.key_audio to RemoteKey.AUDIO,
+                R.string.key_input to RemoteKey.INPUT,
+                R.string.key_exit to RemoteKey.EXIT,
+                R.string.key_teletext to RemoteKey.TELETEXT,
+                R.string.key_netflix to RemoteKey.NETFLIX,
+                R.string.key_sleep to RemoteKey.SLEEP_TIMER,
+                R.string.key_picture_off to RemoteKey.PICTURE_OFF,
+            )
+            for (pair in keys.chunked(2)) {
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.fillMaxWidth()) {
+                    for ((label, key) in pair) {
+                        FilledTonalButton(onClick = { viewModel.press(key) }, modifier = Modifier.weight(1f)) {
+                            Text(stringResource(label), maxLines = 1, overflow = TextOverflow.Ellipsis)
+                        }
                     }
                 }
             }
         }
-        Spacer(Modifier.height(8.dp))
+    }
+    BoxWithConstraints(Modifier.fillMaxWidth()) {
+        val wide = maxWidth >= KEYS_SIDE_BY_SIDE
+        Column(
+            Modifier.verticalScroll(rememberScrollState()).fillMaxWidth().padding(bottom = TAB_END_ROOM),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            if (wide) {
+                // A tablet's pane: the number pad beside the rest, all in sight without scrolling.
+                Row(horizontalArrangement = Arrangement.spacedBy(40.dp, Alignment.CenterHorizontally), modifier = Modifier.fillMaxWidth()) {
+                    numberPad()
+                    Box(Modifier.width(320.dp)) { otherKeys() }
+                }
+            } else {
+                numberPad()
+                Spacer(Modifier.height(20.dp))
+                otherKeys()
+            }
+        }
     }
 }
 
@@ -647,7 +738,7 @@ private fun SettingsTab(viewModel: RemoteViewModel, haptics: Boolean, onAddTv: (
     val state by viewModel.state.collectAsStateWithLifecycle()
     val activeId = state.tvOrNull?.id
     var forgetting by remember { mutableStateOf<SavedTv?>(null) }
-    LazyColumn(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+    LazyColumn(verticalArrangement = Arrangement.spacedBy(4.dp), contentPadding = PaddingValues(bottom = TAB_END_ROOM)) {
         item { SectionHeader(stringResource(R.string.more_tvs)) }
         items(tvs, key = { it.id }) { tv ->
             ListItem(
@@ -721,3 +812,18 @@ private fun EmptyOrLoading(loading: Boolean, onRefresh: () -> Unit) {
         }
     }
 }
+
+/**
+ * Room after a tab's last row: on a tablet the panel fades out over this height, and the last row
+ * can scroll clear of the fade.
+ */
+internal val TAB_END_ROOM = 48.dp
+
+/** A list row needs this much width; a pane twice as wide shows rows side by side. */
+private val WIDE_ROW_MIN = 300.dp
+
+/** Grid cells (88 dp each, the app icons) an input row spans: the full row, or half on a wide pane. */
+private fun inputSpan(maxLineSpan: Int): Int = if (maxLineSpan >= 7) maxLineSpan / 2 else maxLineSpan
+
+/** From this pane width the Keys tab puts the number pad beside the other keys. */
+private val KEYS_SIDE_BY_SIDE = 600.dp

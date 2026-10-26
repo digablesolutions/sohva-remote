@@ -1,5 +1,7 @@
 package fi.digable.braviaremote.ui.remote
 
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import kotlinx.coroutines.delay
 import androidx.compose.runtime.produceState
 import android.Manifest
@@ -319,31 +321,32 @@ fun RemoteScreen(
     Scaffold(snackbarHost = { SnackbarHost(snackbars) }) { padding ->
         BoxWithConstraints(Modifier.padding(padding).fillMaxSize()) {
             if (maxWidth >= TWO_PANE_MIN_WIDTH && maxHeight >= TWO_PANE_MIN_HEIGHT) {
-                // A tablet on its side: what's on and the More tabs, always open, beside the remote.
-                Row(
-                    Modifier.fillMaxSize().padding(horizontal = 24.dp, vertical = 16.dp),
-                    horizontalArrangement = Arrangement.spacedBy(32.dp),
-                ) {
+                // A tablet on its side, three columns: the More tabs as a rail on the left, what's on
+                // and the chosen tab in the middle, the remote on the right under the thumb. The two
+                // panels share the top and bottom edges.
+                var moreTab by rememberSaveable { mutableIntStateOf(0) }
+                Row(Modifier.fillMaxSize().padding(top = 16.dp, bottom = 16.dp, end = 24.dp)) {
+                    MoreTabRail(moreTab, onTab = { moreTab = it }, modifier = Modifier.fillMaxHeight())
+                    Spacer(Modifier.width(8.dp))
                     Column(Modifier.weight(1f).fillMaxHeight()) {
                         header(true)
-                        MoreContent(
-                            viewModel,
-                            onDone = {},
-                            onAddTv = onAddTv,
-                            onFastKeys = onFastKeys,
-                            modifier = Modifier.weight(1f).padding(top = 16.dp),
-                        )
+                        Panel(Modifier.weight(1f).padding(top = 10.dp)) {
+                            MoreTabBody(moreTab, viewModel, {}, onAddTv, onFastKeys, Modifier.fillMaxSize().fadeBottom())
+                        }
                     }
-                    Column(
-                        Modifier.width(REMOTE_WIDTH).fillMaxHeight(),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center,
-                    ) {
-                        controls()
+                    Spacer(Modifier.width(24.dp))
+                    Panel(Modifier.width(REMOTE_WIDTH).fillMaxHeight()) {
+                        Column(
+                            Modifier.fillMaxSize().padding(horizontal = 16.dp, vertical = 24.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center,
+                        ) {
+                            controls()
+                        }
                     }
                 }
             } else if (maxWidth >= TALL_PANE_MIN_WIDTH && maxHeight >= TALL_PANE_MIN_HEIGHT) {
-                // A tablet held upright: the More tabs fill the space between the card and the remote,
+                // A tablet held upright: the More tabs in a panel between the card and the remote,
                 // which keeps its phone size at the bottom, under the thumb.
                 Column(
                     Modifier
@@ -354,13 +357,9 @@ fun RemoteScreen(
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     header(true)
-                    MoreContent(
-                        viewModel,
-                        onDone = {},
-                        onAddTv = onAddTv,
-                        onFastKeys = onFastKeys,
-                        modifier = Modifier.weight(1f).padding(vertical = 16.dp),
-                    )
+                    Panel(Modifier.weight(1f).padding(top = 10.dp, bottom = 24.dp)) {
+                        MoreContent(viewModel, onDone = {}, onAddTv = onAddTv, onFastKeys = onFastKeys, fadeBottom = true)
+                    }
                     Column(Modifier.widthIn(max = REMOTE_WIDTH), horizontalAlignment = Alignment.CenterHorizontally) {
                         controls()
                     }
@@ -549,8 +548,9 @@ private fun NowPlayingCard(
                         )
                     }
                 }
-                val switchTo = stringResource(R.string.remote_switch_to)
-                Row(verticalAlignment = Alignment.CenterVertically) {
+                // With the More tabs in sight (a tablet) the Sources tab lists these already.
+                if (onMore != null) Row(verticalAlignment = Alignment.CenterVertically) {
+                    val switchTo = stringResource(R.string.remote_switch_to)
                     // A plain scrolling row, not a LazyRow: sources arrive in two loads, and a
                     // LazyRow keeps its first visible chip anchored, scrolling "TV" off-screen.
                     val scroll = rememberScrollState()
@@ -570,7 +570,7 @@ private fun NowPlayingCard(
                             )
                         }
                     }
-                    if (onMore != null) TextButton(onClick = onMore) { Text(stringResource(R.string.remote_all_sources)) }
+                    TextButton(onClick = onMore) { Text(stringResource(R.string.remote_all_sources)) }
                 }
             }
             is ConnectionState.Connecting -> CircularProgressIndicator(Modifier.size(20.dp), strokeWidth = 2.dp)
@@ -934,3 +934,15 @@ private val TWO_PANE_MIN_HEIGHT = 560.dp
 private val TALL_PANE_MIN_WIDTH = 600.dp
 private val TALL_PANE_MIN_HEIGHT = 1000.dp
 private val TALL_WIDTH = 640.dp
+
+/** A tablet panel: the card's surface, outline and corners, so the panes read as one set. */
+@Composable
+private fun Panel(modifier: Modifier = Modifier, content: @Composable () -> Unit) {
+    Box(
+        modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(20.dp))
+            .background(MaterialTheme.colorScheme.surfaceContainerLow)
+            .border(1.dp, MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(20.dp)),
+    ) { content() }
+}

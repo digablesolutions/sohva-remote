@@ -17,7 +17,7 @@
     <string name="setup_step_menu">On the TV: Settings › Network › Home network setup › IP control.</string>
     <string name="setup_step_auth">Authentication: \"Normal and Pre-Shared Key\".</string>
     <string name="setup_step_start">Remote start: On, so the app can switch the TV on.</string>
-    <string name="setup_footer">Keep the phone on the same Wi-Fi as the TV. When you pick the TV here, it shows a 4-digit PIN to type in.</string>
+    <string name="setup_footer">Keep this device on the same Wi-Fi as the TV. When you pick the TV here, it shows a 4-digit PIN to type in.</string>
 
     <!-- Pairing -->
     <string name="pair_title">Pair with %1$s</string>
@@ -47,7 +47,7 @@
     <string name="favorite_add">Pin under the remote</string>
     <string name="favorite_remove">Unpin</string>
     <string name="favorite_pinned">Pinned</string>
-    <string name="fast_keys_refused">Fast keys stopped working, so keys are slower. The TV needs this phone paired again.</string>
+    <string name="fast_keys_refused">Fast keys stopped working, so keys are slower. The TV needs this device paired again.</string>
     <string name="fast_keys_pair_again">Pair again</string>
     <string name="programme_time">%1$s–%2$s</string>
     <string name="touchpad_on">Use the touchpad</string>
@@ -83,9 +83,9 @@
     <string name="state_connecting">Connecting to %1$s…</string>
     <string name="state_connected">%1$s</string>
     <string name="state_standby">%1$s is in standby. Press power to wake it.</string>
-    <string name="state_unreachable">Can\'t reach %1$s. Check that it\'s plugged in and on the same network as this phone.</string>
-    <string name="state_unreachable_offline">Can\'t reach %1$s: this phone isn\'t connected to a network.</string>
-    <string name="state_unreachable_mobile">Can\'t reach %1$s: this phone is on mobile data. Connect it to your home Wi-Fi.</string>
+    <string name="state_unreachable">Can\'t reach %1$s. Check that it\'s plugged in and on the same network as this device.</string>
+    <string name="state_unreachable_offline">Can\'t reach %1$s: this device isn\'t connected to a network.</string>
+    <string name="state_unreachable_mobile">Can\'t reach %1$s: this device is on mobile data. Connect it to your home Wi-Fi.</string>
     <string name="state_unreachable_vpn">Can\'t reach %1$s: a VPN is on. Turn it off, or allow local network access in the VPN app.</string>
     <string name="state_unauthorized">%1$s rejected the pairing. Pair again.</string>
     <string name="state_pair_again">Pair again</string>
@@ -193,13 +193,13 @@
     <string name="target_keep">Whatever was on last</string>
     <string name="target_none">Leave as it is</string>
     <string name="more_settings">Settings</string>
-    <string name="more_this_phone">On this phone</string>
+    <string name="more_this_phone">On this device</string>
     <string name="language_title">Language</string>
-    <string name="language_phone">Same as the phone</string>
+    <string name="language_phone">Same as the device</string>
     <string name="language_en" translatable="false">English</string>
     <string name="language_fi" translatable="false">Suomi</string>
     <string name="forget_title">Forget %1$s?</string>
-    <string name="forget_body">Its pairing is removed from this phone. To use it again, add it and type the new PIN the TV shows.</string>
+    <string name="forget_body">Its pairing is removed from this device. To use it again, add it and type the new PIN the TV shows.</string>
     <string name="scene_delete_title">Delete %1$s?</string>
     <string name="scene_delete_confirm">Delete</string>
     <string name="volume_set">Set the volume</string>

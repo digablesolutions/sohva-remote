@@ -15,7 +15,7 @@
     <string name="setup_step_menu">Televisiossa: Asetukset › Verkko › Kotiverkon asetukset › IP-ohjaus.</string>
     <string name="setup_step_auth">Todennus: \"Normaali ja esijaettu avain\" (Normal and Pre-Shared Key).</string>
     <string name="setup_step_start">Etäkäynnistys (Remote start): päällä, jotta sovellus voi käynnistää television.</string>
-    <string name="setup_footer">Pidä puhelin samassa wifi-verkossa kuin televisio. Kun valitset television täältä, se näyttää nelinumeroisen PIN-koodin, jonka kirjoitat sovellukseen.</string>
+    <string name="setup_footer">Pidä tämä laite samassa wifi-verkossa kuin televisio. Kun valitset television täältä, se näyttää nelinumeroisen PIN-koodin, jonka kirjoitat sovellukseen.</string>
 
     <!-- Pairing -->
     <string name="pair_title">Muodosta laitepari: %1$s</string>
@@ -45,7 +45,7 @@
     <string name="favorite_add">Kiinnitä kaukosäätimen alle</string>
     <string name="favorite_remove">Irrota</string>
     <string name="favorite_pinned">Kiinnitetty</string>
-    <string name="fast_keys_refused">Pikanäppäimet lakkasivat toimimasta, joten painallukset ovat hitaampia. Yhdistä puhelin televisioon uudelleen.</string>
+    <string name="fast_keys_refused">Pikanäppäimet lakkasivat toimimasta, joten painallukset ovat hitaampia. Yhdistä tämä laite televisioon uudelleen.</string>
     <string name="fast_keys_pair_again">Yhdistä uudelleen</string>
     <string name="programme_time">%1$s–%2$s</string>
     <string name="touchpad_on">Käytä kosketuslevyä</string>
@@ -81,9 +81,9 @@
     <string name="state_connecting">Yhdistetään: %1$s…</string>
     <string name="state_connected">%1$s</string>
     <string name="state_standby">%1$s on valmiustilassa. Käynnistä se virtapainikkeesta.</string>
-    <string name="state_unreachable">%1$s ei vastaa. Tarkista, että se on kytketty ja samassa verkossa kuin puhelin.</string>
-    <string name="state_unreachable_offline">%1$s ei vastaa: puhelin ei ole yhteydessä verkkoon.</string>
-    <string name="state_unreachable_mobile">%1$s ei vastaa: puhelin käyttää mobiilidataa. Yhdistä kodin Wi-Fi-verkkoon.</string>
+    <string name="state_unreachable">%1$s ei vastaa. Tarkista, että se on kytketty ja samassa verkossa kuin tämä laite.</string>
+    <string name="state_unreachable_offline">%1$s ei vastaa: laite ei ole yhteydessä verkkoon.</string>
+    <string name="state_unreachable_mobile">%1$s ei vastaa: laite käyttää mobiilidataa. Yhdistä kodin Wi-Fi-verkkoon.</string>
     <string name="state_unreachable_vpn">%1$s ei vastaa: VPN on päällä. Sulje se tai salli lähiverkon käyttö VPN-sovelluksessa.</string>
     <string name="state_unauthorized">%1$s hylkäsi laiteparipyynnön. Muodosta laitepari uudelleen.</string>
     <string name="state_pair_again">Muodosta laitepari uudelleen</string>
@@ -192,11 +192,11 @@
     <string name="target_keep">Viimeksi katsottu</string>
     <string name="target_none">Älä muuta</string>
     <string name="more_settings">Asetukset</string>
-    <string name="more_this_phone">Tässä puhelimessa</string>
+    <string name="more_this_phone">Tässä laitteessa</string>
     <string name="language_title">Kieli</string>
-    <string name="language_phone">Sama kuin puhelimessa</string>
+    <string name="language_phone">Sama kuin laitteessa</string>
     <string name="forget_title">Unohdetaanko %1$s?</string>
-    <string name="forget_body">Sen yhdistys poistetaan tästä puhelimesta. Jos haluat käyttää sitä taas, lisää se ja kirjoita television näyttämä uusi PIN-koodi.</string>
+    <string name="forget_body">Sen yhdistys poistetaan tästä laitteesta. Jos haluat käyttää sitä taas, lisää se ja kirjoita television näyttämä uusi PIN-koodi.</string>
     <string name="scene_delete_title">Poistetaanko %1$s?</string>
     <string name="scene_delete_confirm">Poista</string>
     <string name="volume_set">Aseta äänenvoimakkuus</string>

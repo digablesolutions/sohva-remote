@@ -1,5 +1,8 @@
 package fi.digable.braviaremote.ui.remote
 
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.PaddingValues
 import android.app.AlarmManager
 import android.content.Context
 import android.content.Intent
@@ -94,7 +97,7 @@ import kotlin.math.roundToInt
 /** The phone's timers: the sleep timer and the wake-up. */
 @Composable
 fun TimersTab(viewModel: RemoteViewModel) {
-    Column(Modifier.verticalScroll(rememberScrollState()).fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(16.dp)) {
+    Column(Modifier.verticalScroll(rememberScrollState()).fillMaxWidth().padding(bottom = TAB_END_ROOM), verticalArrangement = Arrangement.spacedBy(16.dp)) {
         ExactAlarmNotice()
         SleepTimerSection(viewModel)
         WakeUpSection(viewModel)
@@ -256,7 +259,28 @@ fun ScenesTab(viewModel: RemoteViewModel, onDone: () -> Unit) {
     val scenes by viewModel.scenes.collectAsStateWithLifecycle()
     var editing by remember { mutableStateOf<Scene?>(null) }
     var deleting by remember { mutableStateOf<Scene?>(null) }
-    LazyColumn {
+    if (scenes.isEmpty()) {
+        // Nothing saved yet: what a scene is and the button to make one, centred, not a bare list.
+        Column(
+            Modifier.fillMaxSize().padding(horizontal = 24.dp, vertical = 16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(12.dp, Alignment.CenterVertically),
+        ) {
+            Icon(Icons.Default.AutoAwesome, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(40.dp))
+            Text(
+                stringResource(R.string.scenes_hint),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.widthIn(max = 420.dp),
+            )
+            FilledTonalButton(onClick = { editing = Scene(UUID.randomUUID().toString(), "") }) {
+                Icon(Icons.Default.Add, contentDescription = null)
+                Spacer(Modifier.padding(start = 8.dp))
+                Text(stringResource(R.string.scene_add))
+            }
+        }
+    } else LazyColumn(contentPadding = PaddingValues(bottom = TAB_END_ROOM)) {
         if (scenes.any { it.scheduled }) item { ExactAlarmNotice() }
         item {
             Text(
