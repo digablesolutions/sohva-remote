@@ -934,20 +934,19 @@ class TvController @Inject constructor(
                 if (now.uri != left?.uri || last) {
                     DebugLog.d { "Playing: ${now.uri} ${now.raw}" }
                     _playing.value = now
+                    scheduleNextProgramme(now)
                 }
             }
         }
     }
 
-    /** Re-reads what the TV is showing, after [delayMs] for the TV to finish switching. */
     private var nextProgrammeJob: Job? = null
 
     /** Asks again just after the programme on now ends, so the card shows the next one. */
     private fun scheduleNextProgramme(playing: PlayingContent?) {
         nextProgrammeJob?.cancel()
         val end = playing?.programWindow?.second ?: return
-        val wait = end - System.currentTimeMillis() + PROGRAMME_END_GRACE_MS
-        if (wait <= 0 || wait > PROGRAMME_MAX_WAIT_MS) return
+        val wait = nextProgrammeCheckIn(end, System.currentTimeMillis()) ?: return
         nextProgrammeJob = scope.launch {
             delay(wait)
             if (_playing.value?.uri == playing.uri) refreshPlaying()
@@ -978,6 +977,7 @@ class TvController @Inject constructor(
         }
     }
 
+    /** Re-reads what the TV is showing, after [delayMs] for the TV to finish switching. */
     fun refreshPlaying(delayMs: Long = 0) {
         val client = api ?: return
         scope.launch {
@@ -1058,12 +1058,28 @@ class TvController @Inject constructor(
         const val RESTORE_ATTEMPTS = 4
         const val RESTORE_RETRY_MS = 3_000L
         const val SWITCH_SETTLE_MS = 2_500L
-        /** The TV switches its now-playing info a little after the scheduled end. */
-        const val PROGRAMME_END_GRACE_MS = 5_000L
-        const val PROGRAMME_MAX_WAIT_MS = 6 * 60 * 60_000L
         const val VOLUME_CONFIRM_MS = 1_500L
 
         /** How long a tile, widget or timer waits for the TV to answer before giving up. */
         const val SESSION_WAIT_MS = 6_000L
     }
+}
+
+/** The TV switches its now-playing info a little after the scheduled end. */
+private const val PROGRAMME_END_GRACE_MS = 5_000L
+private const val PROGRAMME_MAX_WAIT_MS = 6 * 60 * 60_000L
+
+/** A TV still reporting an ended programme is asked again this often, for this long after its end. */
+private const val PROGRAMME_STALE_RETRY_MS = 20_000L
+private const val PROGRAMME_STALE_MAX_MS = 15 * 60_000L
+
+/**
+ * How long to wait before asking the TV what's on again, for a programme ending at [end] (epoch ms),
+ * or null not to ask. Just after its end; and when the TV still reports a programme that has ended
+ * (broadcast data often switches late), again every 20 s for a quarter of an hour.
+ */
+internal fun nextProgrammeCheckIn(end: Long, now: Long): Long? = when {
+    end > now -> (end - now + PROGRAMME_END_GRACE_MS).takeIf { it <= PROGRAMME_MAX_WAIT_MS }
+    now - end < PROGRAMME_STALE_MAX_MS -> PROGRAMME_STALE_RETRY_MS
+    else -> null
 }
