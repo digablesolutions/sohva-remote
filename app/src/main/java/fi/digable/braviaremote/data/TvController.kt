@@ -125,6 +125,7 @@ class TvController @Inject constructor(
     @Volatile private var foreground = false
     @Volatile private var fastKeys: AtvRemote.Connection? = null
     private var fastKeysJob: Job? = null
+    private var wakeWatchJob: Job? = null
 
     /** Key presses run one after another so fast taps keep their order. */
     private val sendQueue = Channel<suspend () -> Unit>(Channel.UNLIMITED)
@@ -189,7 +190,16 @@ class TvController @Inject constructor(
             codes = IrccCodeTable(credentials.irccCodes(tv.id))
             try {
                 renewCookieIfNeeded(tv, client, cookie)
-                val power = client.getPowerStatus()
+                val power = try {
+                    client.getPowerStatus()
+                } catch (e: BraviaException.Unreachable) {
+                    // The first request after the app starts can fail while the phone's Wi-Fi wakes
+                    // up: ask once more before telling the user the TV can't be reached.
+                    DebugLog.w(e) { "Connect: no answer, asking again" }
+                    delay(UNREACHABLE_RETRY_MS)
+                    httpClient.connectionPool.evictAll()
+                    client.getPowerStatus()
+                }
                 DebugLog.d { "Power status: $power" }
                 when (power) {
                     PowerStatus.ACTIVE -> {
@@ -220,7 +230,7 @@ class TvController @Inject constructor(
     private fun warmUp(tv: SavedTv, client: BraviaApi) {
         startFastKeys()
         warmUpKeys()
-        refreshPlaying()
+        refreshPlayingAfterConnect(client)
         scope.launch {
             // The card names the app in front from this list; the cached one is there at once.
             if (_apps.value.isEmpty()) _apps.value = store.cachedApps(tv.id)
@@ -304,12 +314,35 @@ class TvController @Inject constructor(
     fun onForeground() {
         foreground = true
         startFastKeys()
+        watchForWake()
     }
 
     /** The app left the screen: the channel is not kept open in the background. */
     fun onBackground() {
         foreground = false
         stopFastKeys()
+        wakeWatchJob?.cancel()
+    }
+
+    /**
+     * While the remote is on screen and the TV is in standby or out of reach, asks it every few
+     * seconds, so a TV switched on with its own remote shows up without a tap on Retry. Quiet: the
+     * card only goes through "Connecting" once the TV answers that it is on (or answers at all,
+     * after being out of reach).
+     */
+    private fun watchForWake() {
+        if (wakeWatchJob?.isActive == true) return
+        wakeWatchJob = scope.launch {
+            while (foreground) {
+                delay(WAKE_WATCH_MS)
+                val now = state.value
+                if (now !is ConnectionState.Standby && now !is ConnectionState.Unreachable) continue
+                val client = api ?: continue
+                val power = runCatching { client.getPowerStatus() }.getOrNull() ?: continue
+                if (state.value != now) continue
+                if (now is ConnectionState.Unreachable || power == PowerStatus.ACTIVE) refresh()
+            }
+        }
     }
 
     private fun startFastKeys() {
@@ -921,6 +954,30 @@ class TvController @Inject constructor(
         }
     }
 
+    /**
+     * What's playing, read on connect. A TV that has only just been switched on reports nothing for
+     * some seconds while live TV starts, so a read that finds nothing is tried again a few times.
+     */
+    private fun refreshPlayingAfterConnect(client: BraviaApi) {
+        scope.launch {
+            for (wait in CONNECT_PLAYING_DELAYS_MS) {
+                delay(wait)
+                if (api !== client || state.value !is ConnectionState.Connected) return@launch
+                val now = runCatching { client.getPlayingContentInfo() }
+                    .onFailure { DebugLog.w(it) { "Playing content fetch failed" } }
+                    .getOrNull()
+                // A key or app switch meanwhile has its own read; don't overwrite a newer answer.
+                if (now == null && _playing.value != null) return@launch
+                _playing.value = now
+                if (now != null) {
+                    DebugLog.d { "Playing: ${now.uri} ${now.raw}" }
+                    scheduleNextProgramme(now)
+                    return@launch
+                }
+            }
+        }
+    }
+
     fun refreshPlaying(delayMs: Long = 0) {
         val client = api ?: return
         scope.launch {
@@ -963,6 +1020,15 @@ class TvController @Inject constructor(
 
         /** Gaps between reads of what is playing after a channel key (at 0.8, 1.8 and 3 s). */
         val CHANNEL_REFRESH_DELAYS_MS = longArrayOf(800, 1000, 1200)
+
+        /** Reads of what is playing after connecting, until the TV reports something (at 0, 2, 5 and 10 s). */
+        val CONNECT_PLAYING_DELAYS_MS = longArrayOf(0, 2_000, 3_000, 5_000)
+
+        /** A TV that doesn't answer on connect is asked once more after this. */
+        const val UNREACHABLE_RETRY_MS = 2_000L
+
+        /** How often the remote screen checks whether a TV in standby or out of reach is back. */
+        const val WAKE_WATCH_MS = 5_000L
 
         /** Lets the TV finish switching apps before asking what is playing. */
         const val APP_SWITCH_SETTLE_MS = 700L
