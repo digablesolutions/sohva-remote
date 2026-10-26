@@ -760,9 +760,17 @@ class TvController @Inject constructor(
         if (!ensureOn()) return false
         val client = api ?: return false
         if (target != null) {
-            runCatching {
-                if (target.kind == TvTarget.Kind.APP) client.setActiveApp(target.uri) else client.setPlayContent(target.uri)
-            }.onFailure { DebugLog.w(it) { "Switching to ${target.name} failed" } }
+            sendSwitch(client, target)
+            // A games console or sound system on HDMI can take the screen back over HDMI-CEC just
+            // after the TV leaves its input: a channel scene checks, and switches once more.
+            if (target.kind == TvTarget.Kind.CHANNEL) {
+                delay(CEC_RECLAIM_CHECK_MS)
+                val now = runCatching { client.getPlayingContentInfo() }.getOrNull()
+                if (now?.uri?.startsWith("extInput:") == true) {
+                    DebugLog.w { "${now.uri} took the screen back; switching to ${target.name} again" }
+                    sendSwitch(client, target)
+                }
+            }
             refreshPlaying(delayMs = 1500)
             // Switching input moves the sound (TV speakers or the CEC soundbar) about a second later,
             // which resets the volume the TV reports: set the scene's volume after that.
@@ -771,6 +779,12 @@ class TvController @Inject constructor(
         if (volume != null) setVolumeWithRetries(client, volume)
         DebugLog.d { "Applied ${target?.name ?: "no target"}, volume ${volume ?: "unchanged"}" }
         return true
+    }
+
+    private suspend fun sendSwitch(client: BraviaApi, target: TvTarget) {
+        runCatching {
+            if (target.kind == TvTarget.Kind.APP) client.setActiveApp(target.uri) else client.setPlayContent(target.uri)
+        }.onFailure { DebugLog.w(it) { "Switching to ${target.name} failed" } }
     }
 
     /** Steps to [level] and checks; a TV that has just woken may need a few tries. */
@@ -1086,6 +1100,9 @@ class TvController @Inject constructor(
         const val RESTORE_ATTEMPTS = 4
         const val RESTORE_RETRY_MS = 3_000L
         const val SWITCH_SETTLE_MS = 2_500L
+
+        /** When a channel scene checks that an HDMI device didn't take the screen back. */
+        const val CEC_RECLAIM_CHECK_MS = 4_000L
         const val VOLUME_CONFIRM_MS = 1_500L
 
         /** How long a tile, widget or timer waits for the TV to answer before giving up. */

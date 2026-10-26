@@ -118,6 +118,7 @@
     <string name="key_audio">Audio</string>
     <string name="key_info">Info</string>
     <string name="key_guide">Guide</string>
+    <string name="key_guide_short">Guide</string>
     <string name="key_exit">Exit</string>
     <string name="key_teletext">Teletext</string>
     <string name="key_netflix">Netflix</string>

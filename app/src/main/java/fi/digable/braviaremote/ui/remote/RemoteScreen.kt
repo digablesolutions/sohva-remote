@@ -46,7 +46,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.Undo
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.automirrored.filled.ListAlt
@@ -115,6 +115,7 @@ import androidx.compose.ui.semantics.customActions
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -294,11 +295,12 @@ fun RemoteScreen(
             }
         }
         Spacer(Modifier.height(16.dp))
-        Row(horizontalArrangement = Arrangement.spacedBy(20.dp)) {
-            SystemKey(stringResource(R.string.remote_back), Icons.AutoMirrored.Filled.ArrowBack, haptics) { viewModel.press(RemoteKey.RETURN) }
-            SystemKey(stringResource(R.string.remote_home), Icons.Default.Home, haptics) { viewModel.press(RemoteKey.HOME) }
-            SystemKey(stringResource(R.string.key_guide), Icons.AutoMirrored.Filled.ListAlt, haptics) { viewModel.press(RemoteKey.GUIDE) }
-            SystemKey(stringResource(R.string.remote_options), Icons.Default.Menu, haptics) { viewModel.press(RemoteKey.ACTION_MENU) }
+        // Captioned like the keys on the physical remote: an icon alone did not say "Guide".
+        Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+            SystemKey(stringResource(R.string.remote_back), stringResource(R.string.remote_back), Icons.AutoMirrored.Filled.Undo, haptics) { viewModel.press(RemoteKey.RETURN) }
+            SystemKey(stringResource(R.string.remote_home), stringResource(R.string.remote_home), Icons.Default.Home, haptics) { viewModel.press(RemoteKey.HOME) }
+            SystemKey(stringResource(R.string.key_guide), stringResource(R.string.key_guide_short), Icons.AutoMirrored.Filled.ListAlt, haptics) { viewModel.press(RemoteKey.GUIDE) }
+            SystemKey(stringResource(R.string.remote_options), stringResource(R.string.remote_options), Icons.Default.Menu, haptics) { viewModel.press(RemoteKey.ACTION_MENU) }
         }
         Spacer(Modifier.height(20.dp))
         Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
@@ -856,13 +858,24 @@ private fun DPadRing(haptics: Boolean, press: (RemoteKey) -> Unit, pressRepeat: 
 }
 
 @Composable
-private fun SystemKey(label: String, icon: androidx.compose.ui.graphics.vector.ImageVector, haptics: Boolean, onPress: () -> Unit) {
-    RemoteButton(
-        label, icon = icon, size = 60.dp, haptics = haptics, onPress = onPress,
-        containerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
-        contentColor = MaterialTheme.colorScheme.onSurface,
-        modifier = Modifier.border(1.dp, MaterialTheme.colorScheme.outlineVariant, CircleShape),
-    )
+private fun SystemKey(label: String, caption: String, icon: androidx.compose.ui.graphics.vector.ImageVector, haptics: Boolean, onPress: () -> Unit) {
+    Column(Modifier.width(76.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+        RemoteButton(
+            label, icon = icon, size = 60.dp, haptics = haptics, onPress = onPress,
+            containerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
+            contentColor = MaterialTheme.colorScheme.onSurface,
+            modifier = Modifier.border(1.dp, MaterialTheme.colorScheme.outlineVariant, CircleShape),
+        )
+        Text(
+            caption,
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            // The button already says this to TalkBack.
+            modifier = Modifier.padding(top = 6.dp).clearAndSetSemantics {},
+        )
+    }
 }
 
 /** A vertical pill with + and − like the volume and channel rockers on the physical remote. */

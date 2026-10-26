@@ -116,6 +116,7 @@
     <string name="key_audio">Ääni</string>
     <string name="key_info">Tiedot</string>
     <string name="key_guide">Ohjelmaopas</string>
+    <string name="key_guide_short">Opas</string>
     <string name="key_exit">Poistu</string>
     <string name="key_teletext">Teksti-TV</string>
     <string name="key_netflix">Netflix</string>
