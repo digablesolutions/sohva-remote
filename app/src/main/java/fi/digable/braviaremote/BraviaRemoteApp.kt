@@ -10,6 +10,7 @@ import dagger.hilt.android.HiltAndroidApp
 import fi.digable.braviaremote.data.AppLanguage
 import fi.digable.braviaremote.data.CredentialStore
 import fi.digable.braviaremote.data.SceneSchedule
+import fi.digable.braviaremote.data.AdBreak
 import fi.digable.braviaremote.data.SleepTimer
 import fi.digable.braviaremote.data.TvController
 import fi.digable.braviaremote.data.WakeUpAlarm
@@ -29,6 +30,7 @@ class BraviaRemoteApp : Application(), ImageLoaderFactory {
     @Inject lateinit var tvController: Lazy<TvController>
     @Inject lateinit var widgets: Lazy<WidgetUpdater>
     @Inject lateinit var sleepTimer: Lazy<SleepTimer>
+    @Inject lateinit var adBreak: Lazy<AdBreak>
     @Inject lateinit var wakeUp: Lazy<WakeUpAlarm>
     @Inject lateinit var sceneSchedule: Lazy<SceneSchedule>
     @Inject lateinit var notificationRemote: Lazy<NotificationRemote>
@@ -50,6 +52,7 @@ class BraviaRemoteApp : Application(), ImageLoaderFactory {
         scope.launch(Dispatchers.IO) {
             widgets.get().start()
             sleepTimer.get().restore()
+            adBreak.get().restore()
             wakeUp.get().reschedule()
             sceneSchedule.get().reschedule()
             notificationRemote.get().sync()

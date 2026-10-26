@@ -20,6 +20,7 @@ import javax.inject.Inject
 class CallMuteReceiver : InjectedReceiver() {
     @Inject lateinit var controller: TvController
     @Inject lateinit var store: TvStore
+    @Inject lateinit var adBreak: AdBreak
     @Inject @ApplicationScope lateinit var scope: CoroutineScope
 
     override fun onReceive(context: Context, intent: Intent) {
@@ -43,7 +44,12 @@ class CallMuteReceiver : InjectedReceiver() {
             // Android sends each state twice (with and without the number); the second finds the
             // TV already muted and changes nothing. A TV muted by its owner is not ours to unmute.
             TelephonyManager.EXTRA_STATE_RINGING, TelephonyManager.EXTRA_STATE_OFFHOOK -> {
-                if (controller.setMutedNow(true) == true) {
+                // Muted by an ad break: the call takes that mute over, so the break's end doesn't
+                // unmute mid-call and the call's end brings the sound back.
+                if (adBreak.handOverToCall()) {
+                    store.setMutedForCall(true)
+                    DebugLog.d { "Call: took the ad break's mute over" }
+                } else if (controller.setMutedNow(true) == true) {
                     store.setMutedForCall(true)
                     DebugLog.d { "Call: TV muted" }
                 }

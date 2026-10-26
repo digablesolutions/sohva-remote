@@ -2,14 +2,18 @@ package fi.digable.braviaremote.ui.remote
 
 import kotlinx.coroutines.delay
 import androidx.compose.runtime.produceState
+import android.Manifest
 import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
 import android.text.format.DateFormat
 import android.view.HapticFeedbackConstants
 import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.core.content.ContextCompat
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.core.Animatable
 import androidx.compose.foundation.background
@@ -55,6 +59,8 @@ import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.PowerSettingsNew
 import androidx.compose.material.icons.filled.Remove
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Timer
 import androidx.compose.material.icons.filled.TouchApp
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.CircularProgressIndicator
@@ -141,6 +147,9 @@ fun RemoteScreen(
     val scenes by viewModel.scenes.collectAsStateWithLifecycle()
     val favoriteApps by viewModel.favoriteApps.collectAsStateWithLifecycle()
     val fastKeysRefused by viewModel.fastKeysRefused.collectAsStateWithLifecycle()
+    val adBreak by viewModel.adBreakState.collectAsStateWithLifecycle()
+    // The ad break counts down in a notification; asked for once, the break works without it.
+    val notificationPermission = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { }
     var showMore by remember { mutableStateOf(false) }
     var showKeyboard by remember { mutableStateOf(false) }
     // Opens when the TV's keyboard comes up, not on every echo, so a dismissed sheet stays closed.
@@ -213,6 +222,18 @@ fun RemoteScreen(
             }
             val onLiveTv = playing?.uri?.startsWith("tv:") == true
             QuickChips(
+                adBreak = adBreak,
+                canStartAdBreak = onLiveTv && state is ConnectionState.Connected,
+                onAdBreak = {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+                        ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED
+                    ) {
+                        notificationPermission.launch(Manifest.permission.POST_NOTIFICATIONS)
+                    }
+                    viewModel.startAdBreak()
+                },
+                onAdBreakMore = viewModel::extendAdBreak,
+                onAdBreakEnd = viewModel::endAdBreak,
                 previous = previousChannel?.takeIf { onLiveTv && state is ConnectionState.Connected },
                 favorites = favoriteApps,
                 scenes = scenes,
@@ -595,6 +616,11 @@ private fun StatusLine(state: ConnectionState) {
  */
 @Composable
 private fun QuickChips(
+    adBreak: fi.digable.braviaremote.data.AdBreakState?,
+    canStartAdBreak: Boolean,
+    onAdBreak: () -> Unit,
+    onAdBreakMore: () -> Unit,
+    onAdBreakEnd: () -> Unit,
     previous: fi.digable.braviaremote.protocol.TvChannel?,
     favorites: List<fi.digable.braviaremote.protocol.TvApp>,
     scenes: List<fi.digable.braviaremote.data.Scene>,
@@ -602,12 +628,23 @@ private fun QuickChips(
     onApp: (fi.digable.braviaremote.protocol.TvApp) -> Unit,
     onScene: (fi.digable.braviaremote.data.Scene) -> Unit,
 ) {
-    if (previous == null && favorites.isEmpty() && scenes.isEmpty()) return
+    if (adBreak == null && !canStartAdBreak && previous == null && favorites.isEmpty() && scenes.isEmpty()) return
     val scroll = rememberScrollState()
     Row(
         Modifier.fillMaxWidth().padding(top = 10.dp).horizontalFade(scroll).horizontalScroll(scroll),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
+        if (adBreak != null) {
+            AdBreakChips(adBreak.endsAt, onMore = onAdBreakMore, onEnd = onAdBreakEnd)
+        } else if (canStartAdBreak) {
+            val hint = stringResource(R.string.ad_break_hint)
+            AssistChip(
+                onClick = onAdBreak,
+                label = { Text(stringResource(R.string.ad_break), maxLines = 1) },
+                leadingIcon = { Icon(Icons.Default.Timer, contentDescription = null, modifier = Modifier.size(18.dp)) },
+                modifier = Modifier.semantics { contentDescription = hint },
+            )
+        }
         if (previous != null) {
             AssistChip(
                 onClick = onJumpBack,
@@ -636,6 +673,26 @@ private fun QuickChips(
             )
         }
     }
+}
+
+/** A running ad break: "Back in 2:41" (tap to come back now) and "+1 min". */
+@Composable
+private fun AdBreakChips(endsAt: Long, onMore: () -> Unit, onEnd: () -> Unit) {
+    val left by produceState(endsAt - System.currentTimeMillis(), endsAt) {
+        while (true) {
+            value = endsAt - System.currentTimeMillis()
+            delay(1_000L - System.currentTimeMillis() % 1_000L)
+        }
+    }
+    val seconds = ((left + 999) / 1000).coerceAtLeast(0)
+    FilterChip(
+        selected = true,
+        onClick = onEnd,
+        label = { Text(stringResource(R.string.ad_break_back_in, "%d:%02d".format(seconds / 60, seconds % 60)), maxLines = 1) },
+        leadingIcon = { Icon(Icons.Default.Timer, contentDescription = null, modifier = Modifier.size(18.dp)) },
+        trailingIcon = { Icon(Icons.Default.Close, contentDescription = stringResource(R.string.ad_break_end), modifier = Modifier.size(18.dp)) },
+    )
+    AssistChip(onClick = onMore, label = { Text(stringResource(R.string.ad_break_more), maxLines = 1) })
 }
 
 /** Speak a channel, app, input or volume; the reply comes back as a snackbar. */

@@ -227,5 +227,11 @@
     <string name="scene_failed">%1$s: the TV did not come on</string>
     <string name="tile_scene">TV scene</string>
     <string name="tile_scene_none">Add a scene in the app</string>
+    <string name="ad_break">Ad break</string>
+    <string name="ad_break_hint">Mute the ad break; the sound comes back in 3 minutes</string>
+    <string name="ad_break_back_in">Back in %1$s</string>
+    <string name="ad_break_back_to">Back to %1$s when it ends</string>
+    <string name="ad_break_more">+1 min</string>
+    <string name="ad_break_end">Back now</string>
     <string name="jump_back">Back to the previous channel</string>
 </resources>

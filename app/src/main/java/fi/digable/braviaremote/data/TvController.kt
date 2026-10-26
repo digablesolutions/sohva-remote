@@ -824,6 +824,25 @@ class TvController @Inject constructor(
             .also { if (it == true) scheduleVolumeRefresh() }
     }
 
+    /** What the TV shows, asked fresh, for callers outside the remote screen; null when off or not known. */
+    suspend fun playingNow(): PlayingContent? {
+        if (awaitSession() !is ConnectionState.Connected) return null
+        val client = api ?: return null
+        return runCatching { client.getPlayingContentInfo() }
+            .onFailure { DebugLog.w(it) { "Playing content fetch failed" } }
+            .getOrNull()
+    }
+
+    /** Switches to [uri] (a channel or input) from outside the remote screen; false when it couldn't. */
+    suspend fun playNow(uri: String): Boolean {
+        if (awaitSession() !is ConnectionState.Connected) return false
+        val client = api ?: return false
+        return runCatching { client.setPlayContent(uri) }
+            .onFailure { DebugLog.w(it) { "setPlayContent($uri) failed" } }
+            .isSuccess
+            .also { if (it) refreshPlaying(delayMs = 1500) }
+    }
+
     /** Completes once the change has been sent, like [press]. */
     fun toggleMute(): Deferred<Unit>? {
         val client = api ?: return null

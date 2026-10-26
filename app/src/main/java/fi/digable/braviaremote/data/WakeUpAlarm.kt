@@ -192,6 +192,7 @@ class BootReceiver : InjectedReceiver() {
     @Inject lateinit var wakeUp: WakeUpAlarm
     @Inject lateinit var sleepTimer: SleepTimer
     @Inject lateinit var sceneSchedule: SceneSchedule
+    @Inject lateinit var adBreak: AdBreak
     @Inject @ApplicationScope lateinit var scope: CoroutineScope
 
     override fun onReceive(context: Context, intent: Intent) {
@@ -206,6 +207,7 @@ class BootReceiver : InjectedReceiver() {
                 wakeUp.reschedule()
                 sceneSchedule.reschedule()
                 sleepTimer.restore()
+                adBreak.restore()
             } finally {
                 pending.finish()
             }

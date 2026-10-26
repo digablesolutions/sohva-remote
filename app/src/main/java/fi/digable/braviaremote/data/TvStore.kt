@@ -57,6 +57,17 @@ class TvStore @Inject constructor(private val dataStore: DataStore<Preferences>)
 
     data class VolumeRestore(val tvId: String, val level: Int, val faded: Int)
 
+    /** The ad break running now, or null. */
+    val adBreak: Flow<AdBreakState?> = dataStore.data.map { prefs ->
+        prefs[AD_BREAK]?.let { runCatching { json.decodeFromString(AdBreakState.serializer(), it) }.getOrNull() }
+    }
+
+    suspend fun setAdBreak(running: AdBreakState?) {
+        dataStore.edit {
+            if (running == null) it.remove(AD_BREAK) else it[AD_BREAK] = json.encodeToString(AdBreakState.serializer(), running)
+        }
+    }
+
     /** When the sleep timer turns the TV off (epoch ms), or null when no timer is set. */
     val sleepAt: Flow<Long?> = dataStore.data.map { it[SLEEP_AT] }
 
@@ -176,6 +187,7 @@ class TvStore @Inject constructor(private val dataStore: DataStore<Preferences>)
         val MUTE_ON_CALLS = booleanPreferencesKey("mute_on_calls")
         val MUTED_FOR_CALL = booleanPreferencesKey("muted_for_call")
         val VOLUME_RESTORE = stringPreferencesKey("volume_restore")
+        val AD_BREAK = stringPreferencesKey("ad_break")
         val json = Json { ignoreUnknownKeys = true }
         val listSerializer = ListSerializer(SavedTv.serializer())
         val appListSerializer = ListSerializer(TvApp.serializer())

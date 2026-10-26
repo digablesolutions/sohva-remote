@@ -224,5 +224,11 @@
     <string name="scene_failed">%1$s: televisio ei käynnistynyt</string>
     <string name="tile_scene">TV-kohtaus</string>
     <string name="tile_scene_none">Lisää kohtaus sovelluksessa</string>
+    <string name="ad_break">Mainoskatko</string>
+    <string name="ad_break_hint">Mykistä mainoskatko; ääni palaa 3 minuutin päästä</string>
+    <string name="ad_break_back_in">Takaisin %1$s</string>
+    <string name="ad_break_back_to">Takaisin kanavalle %1$s, kun katko loppuu</string>
+    <string name="ad_break_more">+1 min</string>
+    <string name="ad_break_end">Takaisin nyt</string>
     <string name="jump_back">Takaisin edelliselle kanavalle</string>
 </resources>

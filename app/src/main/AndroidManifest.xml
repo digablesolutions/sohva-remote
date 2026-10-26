@@ -65,6 +65,10 @@
             android:foregroundServiceType="shortService" />
 
         <receiver
+            android:name=".data.AdBreakReceiver"
+            android:exported="false" />
+
+        <receiver
             android:name=".data.WakeUpReceiver"
             android:exported="false" />
 

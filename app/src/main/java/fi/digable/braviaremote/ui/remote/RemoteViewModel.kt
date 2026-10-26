@@ -13,6 +13,8 @@ import fi.digable.braviaremote.data.HardwareKeys
 import fi.digable.braviaremote.data.SavedTv
 import fi.digable.braviaremote.data.Scene
 import fi.digable.braviaremote.data.SceneSchedule
+import fi.digable.braviaremote.data.AdBreak
+import fi.digable.braviaremote.data.AdBreakState
 import fi.digable.braviaremote.data.SleepTimer
 import fi.digable.braviaremote.data.TvController
 import fi.digable.braviaremote.data.TvStore
@@ -47,6 +49,7 @@ class RemoteViewModel @Inject constructor(
     private val store: TvStore,
     private val credentials: CredentialStore,
     private val sleepTimer: SleepTimer,
+    private val adBreak: AdBreak,
     private val wakeUpAlarm: WakeUpAlarm,
     private val sceneSchedule: SceneSchedule,
     private val notificationRemote: NotificationRemote,
@@ -87,6 +90,14 @@ class RemoteViewModel @Inject constructor(
             inputs.filter { it.connection }.distinctBy { it.displayName }.map { TvTarget(TvTarget.Kind.INPUT, stableInputUri(it.uri), it.displayName) } +
             apps.map { TvTarget(TvTarget.Kind.APP, it.uri, it.title) }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+
+    /** The ad break running now; null when there is none. */
+    val adBreakState: StateFlow<AdBreakState?> =
+        adBreak.state.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
+
+    fun startAdBreak() = viewModelScope.launch { adBreak.start() }
+    fun extendAdBreak() = viewModelScope.launch { adBreak.extend() }
+    fun endAdBreak() = viewModelScope.launch { adBreak.end() }
 
     /** When the sleep timer turns the TV off (epoch ms); null when it is not set. */
     val sleepAt: StateFlow<Long?> =
