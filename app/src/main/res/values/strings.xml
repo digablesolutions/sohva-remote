@@ -233,5 +233,6 @@
     <string name="ad_break_back_to">Back to %1$s when it ends</string>
     <string name="ad_break_more">+1 min</string>
     <string name="ad_break_end">Back now</string>
+    <string name="ad_break_late">Without exact alarms the sound can come back a few minutes late.</string>
     <string name="jump_back">Back to the previous channel</string>
 </resources>

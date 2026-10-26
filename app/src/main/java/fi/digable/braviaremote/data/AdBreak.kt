@@ -125,6 +125,11 @@ class AdBreak @Inject constructor(
         }
     }
 
+    /** Shows the running break's countdown, once notifications are allowed. */
+    suspend fun showNotification() {
+        store.adBreak.first()?.let(::notify)
+    }
+
     /** One more minute. */
     suspend fun extend() = mutex.withLock {
         val running = store.adBreak.first() ?: return@withLock
@@ -139,6 +144,7 @@ class AdBreak @Inject constructor(
      */
     suspend fun end(onlyIfDue: Boolean = false) = mutex.withLock {
         val running = store.adBreak.first() ?: return@withLock
+        DebugLog.d { "Ad break: end (alarm: $onlyIfDue), due in ${running.endsAt - System.currentTimeMillis()} ms" }
         if (onlyIfDue && running.endsAt - System.currentTimeMillis() > DUE_SLACK_MS) {
             schedule(running)
             return@withLock
@@ -165,6 +171,7 @@ class AdBreak @Inject constructor(
     suspend fun restore() = mutex.withLock {
         val running = store.adBreak.first() ?: return@withLock
         val late = System.currentTimeMillis() - running.endsAt
+        DebugLog.d { "Ad break: restore, $late ms late" }
         when {
             late < 0 -> schedule(running)
             late < STALE_MS -> endLocked(running)
@@ -180,7 +187,9 @@ class AdBreak @Inject constructor(
         }
         try {
             // The sound first: it matters most if the TV is slow to answer.
-            if (running.shouldUnmute(store.mutedForCall.first()) && controller.setMutedNow(false) == null) {
+            val unmuted = if (running.shouldUnmute(store.mutedForCall.first())) controller.setMutedNow(false) else false
+            DebugLog.d { "Ad break over: unmute -> $unmuted, TV ${controller.state.value.javaClass.simpleName}" }
+            if (unmuted == null) {
                 // Off: nothing to bring back. On but not answering: try again shortly, a few times.
                 if (controller.state.value !is ConnectionState.Standby && running.retries < MAX_RETRIES) {
                     retryLater(running)
@@ -194,6 +203,7 @@ class AdBreak @Inject constructor(
             clear()
         } catch (e: CancellationException) {
             // Out of time (a receiver gets seconds): keep the break and try again shortly.
+            DebugLog.w(e) { "Ad break: end cut short, trying again" }
             withContext(NonCancellable) { retryLater(running) }
             throw e
         }
@@ -314,6 +324,7 @@ class AdBreakReceiver : InjectedReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         super.onReceive(context, intent)
         val pending = goAsync()
+        DebugLog.d { "Ad break receiver: ${intent.action}" }
         scope.launch {
             try {
                 withTimeoutOrNull(RECEIVER_BUDGET_MS) {

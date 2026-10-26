@@ -33,8 +33,9 @@ Play only allows `USE_EXACT_ALARM` for alarm/calendar apps, so the app uses the 
 - Treat JSON-RPC error 7 and 40005 as "TV in standby", HTTP 401/403 and error 403 as
   "pair again". Never retry a failed key press automatically. Reads may retry: connect asks the
   power state once more before "Can't reach", re-reads what's playing for a few seconds after
-  connecting (a just-woken TV reports nothing while live TV starts), and the visible remote polls a
-  TV in standby or out of reach every 5 s (`TvController.watchForWake`).
+  connecting (a just-woken TV reports nothing while live TV starts), and the visible remote asks the
+  TV's power every 5 s and reconnects when it differs from the card (`TvController.watchPower`), so the
+  TV's own remote switching it on or off shows up.
 - All HTTP goes through `BraviaApi.execute` / `Call.awaitBuffered`, which read the whole
   response on OkHttp's thread. Never touch an OkHttp `Response` after a coroutine resumes:
   view models run on the main thread, where a socket read throws

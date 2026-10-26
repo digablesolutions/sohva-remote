@@ -97,6 +97,7 @@ class RemoteViewModel @Inject constructor(
 
     fun startAdBreak() = viewModelScope.launch { adBreak.start() }
     fun extendAdBreak() = viewModelScope.launch { adBreak.extend() }
+    fun showAdBreakNotification() = viewModelScope.launch { adBreak.showNotification() }
     fun endAdBreak() = viewModelScope.launch { adBreak.end() }
 
     /** When the sleep timer turns the TV off (epoch ms); null when it is not set. */

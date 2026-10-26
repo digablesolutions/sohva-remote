@@ -1,5 +1,10 @@
 package fi.digable.braviaremote.ui.remote
 
+import androidx.compose.material3.SnackbarResult
+import androidx.compose.material3.SnackbarDuration
+import android.provider.Settings
+import android.net.Uri
+import android.app.AlarmManager
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import kotlinx.coroutines.delay
@@ -154,13 +159,19 @@ fun RemoteScreen(
     val fastKeysRefused by viewModel.fastKeysRefused.collectAsStateWithLifecycle()
     val adBreak by viewModel.adBreakState.collectAsStateWithLifecycle()
     // The ad break counts down in a notification; asked for once, the break works without it.
-    val notificationPermission = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { }
+    // The break starts while the question is still up, so a yes shows its countdown then.
+    val notificationPermission = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
+        if (granted) viewModel.showAdBreakNotification()
+    }
     var showMore by remember { mutableStateOf(false) }
     var showKeyboard by remember { mutableStateOf(false) }
     // Opens when the TV's keyboard comes up, not on every echo, so a dismissed sheet stays closed.
     val textFieldOpen = tvTextField != null
     LaunchedEffect(textFieldOpen) { showKeyboard = textFieldOpen }
     val snackbars = remember { SnackbarHostState() }
+    val uiScope = rememberCoroutineScope()
+    val adBreakLate = stringResource(R.string.ad_break_late)
+    val openSettings = stringResource(R.string.exact_alarm_allow)
     LaunchedEffect(Unit) { viewModel.voiceReplies.collect { snackbars.showSnackbar(it) } }
     val context = LocalContext.current
     val canListen = remember { SpeechRecognizer.isRecognitionAvailable(context) }
@@ -234,6 +245,19 @@ fun RemoteScreen(
                     notificationPermission.launch(Manifest.permission.POST_NOTIFICATIONS)
                 }
                 viewModel.startAdBreak()
+                // Without exact alarms Android may end the break minutes late; say so, with the way to fix it.
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S &&
+                    !context.getSystemService(AlarmManager::class.java).canScheduleExactAlarms()
+                ) {
+                    uiScope.launch {
+                        val result = snackbars.showSnackbar(adBreakLate, actionLabel = openSettings, duration = SnackbarDuration.Long)
+                        if (result == SnackbarResult.ActionPerformed) {
+                            context.startActivity(
+                                Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM, Uri.parse("package:${context.packageName}")),
+                            )
+                        }
+                    }
+                }
             },
             onAdBreakMore = viewModel::extendAdBreak,
             onAdBreakEnd = viewModel::endAdBreak,

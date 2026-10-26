@@ -125,7 +125,7 @@ class TvController @Inject constructor(
     @Volatile private var foreground = false
     @Volatile private var fastKeys: AtvRemote.Connection? = null
     private var fastKeysJob: Job? = null
-    private var wakeWatchJob: Job? = null
+    private var powerWatchJob: Job? = null
 
     /** Key presses run one after another so fast taps keep their order. */
     private val sendQueue = Channel<suspend () -> Unit>(Channel.UNLIMITED)
@@ -314,33 +314,42 @@ class TvController @Inject constructor(
     fun onForeground() {
         foreground = true
         startFastKeys()
-        watchForWake()
+        watchPower()
     }
 
     /** The app left the screen: the channel is not kept open in the background. */
     fun onBackground() {
         foreground = false
         stopFastKeys()
-        wakeWatchJob?.cancel()
+        powerWatchJob?.cancel()
     }
 
     /**
-     * While the remote is on screen and the TV is in standby or out of reach, asks it every few
-     * seconds, so a TV switched on with its own remote shows up without a tap on Retry. Quiet: the
-     * card only goes through "Connecting" once the TV answers that it is on (or answers at all,
-     * after being out of reach).
+     * While the remote is on screen, asks the TV's power state every few seconds, so the card follows
+     * the TV's own remote: a TV switched on shows up without a tap on Retry, and one switched off
+     * shows as in standby rather than still on. Quiet: the card only goes through "Connecting" once
+     * the answer differs from what it shows (or the TV answers at all, after being out of reach). A
+     * connected TV that misses one answer is left as it is; that is often just the network.
      */
-    private fun watchForWake() {
-        if (wakeWatchJob?.isActive == true) return
-        wakeWatchJob = scope.launch {
+    private fun watchPower() {
+        if (powerWatchJob?.isActive == true) return
+        powerWatchJob = scope.launch {
             while (foreground) {
-                delay(WAKE_WATCH_MS)
+                delay(POWER_WATCH_MS)
                 val now = state.value
-                if (now !is ConnectionState.Standby && now !is ConnectionState.Unreachable) continue
+                if (now !is ConnectionState.Connected && now !is ConnectionState.Standby && now !is ConnectionState.Unreachable) continue
                 val client = api ?: continue
                 val power = runCatching { client.getPowerStatus() }.getOrNull() ?: continue
                 if (state.value != now) continue
-                if (now is ConnectionState.Unreachable || power == PowerStatus.ACTIVE) refresh()
+                val changed = when (now) {
+                    is ConnectionState.Connected -> power != PowerStatus.ACTIVE
+                    is ConnectionState.Standby -> power == PowerStatus.ACTIVE
+                    else -> true
+                }
+                if (changed) {
+                    DebugLog.d { "Power watch: TV is now $power" }
+                    refresh()
+                }
             }
         }
     }
@@ -1046,8 +1055,8 @@ class TvController @Inject constructor(
         /** A TV that doesn't answer on connect is asked once more after this. */
         const val UNREACHABLE_RETRY_MS = 2_000L
 
-        /** How often the remote screen checks whether a TV in standby or out of reach is back. */
-        const val WAKE_WATCH_MS = 5_000L
+        /** How often the remote screen asks the TV whether it is on. */
+        const val POWER_WATCH_MS = 5_000L
 
         /** Lets the TV finish switching apps before asking what is playing. */
         const val APP_SWITCH_SETTLE_MS = 700L

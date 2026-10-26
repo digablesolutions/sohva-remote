@@ -230,5 +230,6 @@
     <string name="ad_break_back_to">Takaisin kanavalle %1$s, kun katko loppuu</string>
     <string name="ad_break_more">+1 min</string>
     <string name="ad_break_end">Takaisin nyt</string>
+    <string name="ad_break_late">Ilman tarkkoja hälytyksiä ääni voi palata muutaman minuutin myöhässä.</string>
     <string name="jump_back">Takaisin edelliselle kanavalle</string>
 </resources>
