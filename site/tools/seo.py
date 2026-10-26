@@ -65,7 +65,7 @@ def json_ld(page):
         "releaseNotes": REPO + "/releases",
         "url": BASE,
         "image": BASE + "img/og.jpg",
-        "screenshot": [BASE + f"img/{n}.png" for n in ("remote", "scenes", "timers", "channels", "inputs-apps")],
+        "screenshot": [BASE + f"img/{n}.png" for n in ("remote", "scenes", "timers", "channels", "inputs-apps", "tablet", "tablet-upright")],
         "featureList": FEATURES,
         "author": {"@id": org["@id"]},
         "publisher": {"@id": org["@id"]},

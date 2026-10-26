@@ -375,6 +375,23 @@ h1, h2, h3 { margin: 0; text-wrap: balance; }
 @media (min-width: 900px) { .extras { grid-template-columns: minmax(0, .85fr) minmax(0, 1fr); gap: clamp(3rem, 6vw, 6rem); } }
 @media (max-width: 899px) { .extras .photo { aspect-ratio: 4 / 3; } }
 
+/* Tablet: the landscape layout, with the upright one beside it on wide screens */
+.tablets { position: relative; }
+.tablet { margin: 0; padding: clamp(8px, 1.4vw, 16px); border-radius: clamp(18px, 2.6vw, 34px);
+  background: linear-gradient(150deg, #34343a 0%, #121214 22%, #0a0a0b 60%, #26262b 100%);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.14), inset 0 0 0 3px #050506, 0 40px 80px -30px rgba(0, 0, 0, .9); }
+.tablet.wide { max-width: 880px; box-shadow: inset 0 0 0 1px rgba(255,255,255,.14), inset 0 0 0 3px #050506, 0 60px 120px -40px rgba(255, 181, 71, .26), 0 40px 80px -30px rgba(0, 0, 0, .9); }
+.tablet-screen { border-radius: clamp(10px, 1.4vw, 20px); overflow: hidden; background: #000; }
+.tablet.wide .tablet-screen { aspect-ratio: 1920 / 1200; }
+.tablet.tall .tablet-screen { aspect-ratio: 1200 / 1920; }
+.tablet-screen img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.tablet.tall { display: none; }
+@media (min-width: 900px) {
+  .tablet.tall { display: block; position: absolute; right: 0; bottom: -2.5rem; width: clamp(180px, 20vw, 260px); padding: 10px; border-radius: 26px; }
+  .tablet.tall .tablet-screen { border-radius: 17px; }
+  .tablet.wide { margin-right: clamp(6rem, 12vw, 11rem); }
+}
+
 /* Screens gallery */
 .gallery-head { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 1rem; margin-bottom: 2rem; }
 .gallery-nav { display: flex; gap: .5rem; }
