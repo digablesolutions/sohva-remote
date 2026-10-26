@@ -93,6 +93,9 @@ Play only allows `USE_EXACT_ALARM` for alarm/calendar apps, so the app uses the 
 - Every control has a `contentDescription`, a 48 dp or larger touch target, and works
   with dynamic font size. Dark and light theme both have to read well.
 - Haptics are a user setting; respect `TvStore.hapticsEnabled`.
+- Every string lives in `res/values` and `res/values-fi`. The app language can differ from the phone's
+  (`data/AppLanguage.kt`): format day names with `LocalConfiguration.current.locales[0]`, never
+  `Locale.getDefault()`, and times with `DateFormat.getTimeFormat(context)`.
 
 ## Verification
 

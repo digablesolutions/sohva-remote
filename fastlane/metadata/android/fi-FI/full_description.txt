@@ -13,17 +13,18 @@ Koko televisio samassa paikassa
 • Kanavalista.
 • Kirjoita tai sanele suoraan television hakukenttään.
 • Äänikomennot suomeksi ja englanniksi: "kanava 3", "ääni 20", "Netflix", "mykistä", "sammuta".
+• Sovellus suomeksi tai englanniksi, puhelimen kielestä riippumatta.
 
 Illat yhdellä napautuksella
-• Tilanteet: televisio päälle, oikea kanava, tulo tai sovellus ja sopiva äänenvoimakkuus yhdellä napautuksella.
-• Ajastetut tilanteet toimivat valitsemiasi päivinä ja kellonaikoina. Ne toimivat vain, kun televisio on jo päällä, eivätkä koskaan käynnistä sitä itse.
-• Meillä arki-ilta menee näin: Emmerdale MTV3:lta klo 18.30, Seitsemän Uutiset 19.00, Yle Uutiset Yle TV1:ltä 20.30 ja Kymmenen Uutiset 22.00. Jokainen on oma tilanteensa, ja kanava vaihtuu ajallaan.
+• Kohtaukset: televisio päälle, oikea kanava, tulo tai sovellus ja sopiva äänenvoimakkuus yhdellä napautuksella.
+• Ajastetut kohtaukset toimivat valitsemiasi päivinä ja kellonaikoina. Ne toimivat vain, kun televisio on jo päällä, eivätkä koskaan käynnistä sitä itse.
+• Meillä arki-ilta menee näin: Emmerdale MTV3:lta klo 18.30, Seitsemän Uutiset 19.00, Yle Uutiset Yle TV1:ltä 20.30 ja Kymmenen Uutiset 22.00. Jokainen on oma kohtauksensa, ja kanava vaihtuu ajallaan.
 • Uniajastin hiljentää äänen viimeisen minuutin aikana ja sammuttaa sitten television, vaikka sovellus olisi kiinni. Äänenvoimakkuus palaa ennalleen seuraavalla kerralla.
 • Herätys-TV: televisio käynnistyy aamulla haluamaasi aikaan valitsemallesi kanavalle ja äänenvoimakkuudelle.
 • Television mykistys puhelun ajaksi (valinnainen, pois päältä kunnes otat sen käyttöön).
 
 Pikatoiminnot sovelluksen ulkopuolella
-• Pika-asetusten ruudut: virta, mykistys, ohjelmaopas ja ensimmäinen tilanteesi.
+• Pika-asetusten ruudut: virta, mykistys, ohjelmaopas ja ensimmäinen kohtauksesi.
 • Aloitusnäytön widget: äänenvoimakkuus, kanava ja mykistys.
 
 Yksityisyys

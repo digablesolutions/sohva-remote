@@ -27,6 +27,7 @@ FEATURES = [
     "Sleep timer that fades the sound over a minute; wake-up TV at a set time",
     "Quick Settings tiles, home-screen widget, remote in notifications and on the lock screen",
     "Mute the TV during phone calls; the phone's volume buttons control the TV",
+    "English or Finnish, chosen in the app whatever the phone's language",
     "Home network only: no ads, no account, no cloud, no analytics",
 ]
 
@@ -52,7 +53,7 @@ def json_ld(page):
         "applicationCategory": "UtilitiesApplication",
         "applicationSubCategory": "TV remote control",
         "operatingSystem": "Android 8.0 or newer",
-        "softwareVersion": "1.1.1",
+        "softwareVersion": "1.2.0",
         "inLanguage": ["en", "fi"],
         "isAccessibleForFree": True,
         "license": "https://www.gnu.org/licenses/gpl-3.0.html",

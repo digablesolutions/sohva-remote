@@ -1,0 +1,5 @@
+• Valitse sovelluksen kieli: suomi tai englanti puhelimen kielestä riippumatta. Sovelluksessa: Asetukset › Kieli. Android 13:sta alkaen myös puhelimen sovelluskohtaisissa kieliasetuksissa.
+• Valikko aukeaa koko korkuiseksi, kaikki kuusi välilehteä ja uusi Asetukset-välilehti näkyvissä.
+• Kaikki viikonpäivät mahtuvat; kellonajat puhelimen muodossa.
+• Television unohtaminen ja kohtauksen poisto kysyvät ensin.
+• "Etsi televisio" neuvoo IP-ohjauksen käyttöönoton.
