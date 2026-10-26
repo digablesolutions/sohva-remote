@@ -6,8 +6,8 @@ Sohva Remote is a free, ad-free Android phone remote for Sony Bravia TVs, made b
 - Download (APK): https://github.com/digablesolutions/sohva-remote/releases/latest
 - Google Play: coming soon (package id fi.digable.sohva)
 - Source code: https://github.com/digablesolutions/sohva-remote (free software, GPL-3.0-or-later; the name and icon are Digable trademarks)
-- Requirements: an Android phone with Android 8.0 or newer; a Sony Bravia TV with IP control on the same network
-- Version: 1.4.0 (October 2026). Languages: English, Finnish; chosen in the app (Settings › Language) or with Android's per-app language setting, whatever the phone's language.
+- Requirements: an Android phone or tablet with Android 8.0 or newer; a Sony Bravia TV with IP control on the same network
+- Version: 1.5.0 (October 2026). Languages: English, Finnish; chosen in the app (Settings › Language) or with Android's per-app language setting, whatever the phone's language.
 
 ## What it does
 
@@ -48,6 +48,7 @@ Privacy policy: https://digablesolutions.github.io/sohva-remote/privacy.html
 - Is it free? Yes: no ads, no paywall, no in-app purchases.
 - Does it work away from home? No. Phone and TV must be on the same network.
 - Is it made by Sony? No. It is an independent app by Digable, not affiliated with Sony.
+- Tablet? Yes: the More tabs (inputs, channels, timers, scenes) sit beside the remote on a tablet on its side, and between the card and the remote held upright.
 - iPhone? No, Android only.
 
 ## Known limits

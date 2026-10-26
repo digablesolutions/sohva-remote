@@ -1,6 +1,6 @@
 # Play Console checklist: Sohva Remote
 
-The answers below match the code as of 1.4.0 (versionCode 8).
+The answers below match the code as of 1.5.0 (versionCode 9).
 
 ## 0. Status
 
@@ -16,7 +16,7 @@ Finnish UI. Still open, outside the repo:
 - **Promo videos** (`fastlane/video/`) show the half-height sheet and scrolling tab row of 1.1.0, and
   no Ad break: re-record them when the TV is free (`tools/record_promo.sh` presses TV keys; re-measure
   its taps, since the chip row now starts with Ad break) and compose with `tools/promo.py` before
-  uploading. The store screenshots are current as of 1.4.0.
+  uploading. The phone and 10-inch tablet screenshots are current as of 1.5.0.
 
 ## 1. App details (Grow > Store presence > Main store listing)
 
@@ -175,10 +175,10 @@ No / None / No.
       production; organization accounts are exempt, but a closed test is still worth running.
 - [ ] Check the **pre-launch report** (it runs on devices without a Bravia; make sure the app does not
       crash on the first-run / no-TV path).
-- [ ] Store listing: upload `icon.png`, `featureGraphic.png`, `phoneScreenshots/1-7.png` for en-US and
-      fi-FI (or `fastlane supply --skip_upload_apk --skip_upload_aab`).
-- [ ] Release notes from `changelogs/<versionCode>.txt` (the first Play upload is versionCode 8,
-      `changelogs/8.txt`; 3-7 went out only as GitHub APKs).
+- [ ] Store listing: upload `icon.png`, `featureGraphic.png`, `phoneScreenshots/1-7.png` and
+      `tenInchScreenshots/1-4.png` (Galaxy Tab A9+, three landscape, one portrait) for en-US and fi-FI (or `fastlane supply --skip_upload_apk --skip_upload_aab`).
+- [ ] Release notes from `changelogs/<versionCode>.txt` (the first Play upload is versionCode 9,
+      `changelogs/9.txt`; 3-8 went out only as GitHub APKs).
 - [ ] Countries: Finland first (plus the Nordics/EU if wanted). The app works anywhere with a Bravia.
 - [ ] Optional: promo video URL in `video.txt` (see `fastlane/VIDEO.md`).
 - [ ] After approval: staged rollout (e.g. 20%) and watch Android vitals for ANRs/crashes.

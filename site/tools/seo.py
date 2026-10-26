@@ -29,6 +29,7 @@ FEATURES = [
     "Quick Settings tiles, home-screen widget, remote in notifications and on the lock screen",
     "Mute the TV during phone calls; the phone's volume buttons control the TV",
     "English or Finnish, chosen in the app whatever the phone's language",
+    "Phones and tablets: on a tablet the More tabs sit beside the remote",
     "Home network only: no ads, no account, no cloud, no analytics",
 ]
 
@@ -54,7 +55,7 @@ def json_ld(page):
         "applicationCategory": "UtilitiesApplication",
         "applicationSubCategory": "TV remote control",
         "operatingSystem": "Android 8.0 or newer",
-        "softwareVersion": "1.4.0",
+        "softwareVersion": "1.5.0",
         "inLanguage": ["en", "fi"],
         "isAccessibleForFree": True,
         "license": "https://www.gnu.org/licenses/gpl-3.0.html",

@@ -1,0 +1,3 @@
+• Tabletit: vaakatasossa tulot, kanavat, näppäimet, ajastimet, kohtaukset ja asetukset ovat auki kaukosäätimen vieressä. Pystyssä ne täyttävät tilan kortin ja kaukosäätimen välissä. Kaukosäädin pysyy samankokoisena, ja sovellus kääntyy tabletin mukana.
+• Käyttöönoton näkymät pysyvät luettavan levyisinä isoilla näytöillä.
+• Tekstit puhuvat laitteesta eivätkä puhelimesta.

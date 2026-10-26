@@ -97,10 +97,14 @@ Play only allows `USE_EXACT_ALARM` for alarm/calendar apps, so the app uses the 
 ## UI rules
 
 - One remote screen with the essentials; everything else goes in the More sheet.
-- Window sizes (`RemoteScreen`): a phone gets one column, at most 440 dp wide. A tablet held upright
-  (600 dp wide, 1000 dp tall) shows the More tabs (`MoreContent`) inline between the card and the
-  remote; a tablet on its side (840 x 560 dp) puts them in a left pane beside the remote. The remote
-  keeps its phone size in all three. Phones stay portrait (manifest); `MainActivity` frees the
+- Window sizes (`RemoteScreen`): a phone gets one column, at most 440 dp wide, with the More tabs
+  in a sheet. A tablet held upright (600 x 1000 dp) shows them (`MoreContent`) in a framed `Panel`
+  between the card and the remote. A tablet on its side (840 x 560 dp) has three columns: the tabs as
+  a `MoreTabRail`, the card over the chosen tab's `MoreTabBody` in a panel, and the remote in a
+  matching full-height panel. With the tabs on screen the card has no source chips. The remote keeps
+  its phone size in all three. Panels fade their lower edge (`fadeBottom`) and tabs leave
+  `TAB_END_ROOM` after their last row, so content is never cut by a frame. Wide panes show inputs
+  and channels two to a row and the Keys tab side by side. Phones stay portrait (manifest); `MainActivity` frees the
   orientation from smallest width 600 dp. Check a layout change on a phone and both tablet
   orientations (`wm size 1080x2520` + `wm density 420` makes a tablet act as a phone; reset after).
 - Every control has a `contentDescription`, a 48 dp or larger touch target, and works

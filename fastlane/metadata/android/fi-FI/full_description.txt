@@ -15,6 +15,7 @@ Koko televisio samassa paikassa
 • Kirjoita tai sanele suoraan television hakukenttään.
 • Äänikomennot suomeksi ja englanniksi: "kanava 3", "ääni 20", "Netflix", "mykistä", "sammuta".
 • Sovellus suomeksi tai englanniksi, puhelimen kielestä riippumatta.
+• Tabletilla tulot, kanavat, ajastimet ja kohtaukset ovat aivan kaukosäätimen vieressä.
 
 Illat yhdellä napautuksella
 • Kohtaukset: televisio päälle, oikea kanava, tulo tai sovellus ja sopiva äänenvoimakkuus yhdellä napautuksella.

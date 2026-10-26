@@ -1,0 +1,3 @@
+• Tablets: on its side, the inputs, channels, keys, timers, scenes and settings stay open beside the remote. Held upright, they fill the space between the card and the remote. The remote keeps its size, and the app turns with the tablet.
+• Setup screens stay at a readable width on large screens.
+• Texts say "this device" rather than "this phone".
