@@ -1,0 +1,3 @@
+• Sovellus seuraa television omaa kaukosäädintä: kun kytket television sillä päälle tai pois, sovellus näyttää sen sekunneissa.
+• Mainoskatko kertoo, jos ääni voi palata muutaman minuutin myöhässä (tarkat hälytykset eivät ole sallittuja), ja tarjoaa painikkeen niiden sallimiseen.
+• Kun sallit ilmoitukset mainoskatkon aikana, sen laskuri näkyy heti.

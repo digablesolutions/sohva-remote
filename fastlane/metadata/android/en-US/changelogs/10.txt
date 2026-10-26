@@ -1,0 +1,3 @@
+• The remote follows the TV's own remote: switch the TV on or off with it and the app shows it within seconds.
+• Ad break tells you when the sound may come back a few minutes late (no exact-alarm permission), with a button to allow it.
+• Allowing notifications during an ad break shows its countdown right away.
