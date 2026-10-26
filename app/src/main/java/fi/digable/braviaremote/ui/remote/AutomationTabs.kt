@@ -12,6 +12,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.CircleShape
@@ -185,7 +186,15 @@ private fun DayChips(days: Set<Int>, onChange: (Set<Int>) -> Unit) {
             val n = day.value
             val on = n in days
             val name = day.getDisplayName(TextStyle.FULL_STANDALONE, locale)
-            Box(Modifier.weight(1f), contentAlignment = Alignment.Center) {
+            // The whole cell, at least 48 dp tall, takes the tap; the circle inside stays small.
+            Box(
+                Modifier
+                    .weight(1f)
+                    .heightIn(min = 48.dp)
+                    .toggleable(value = on, role = Role.Checkbox) { onChange(if (on) days - n else days + n) }
+                    .semantics { contentDescription = name },
+                contentAlignment = Alignment.Center,
+            ) {
                 Box(
                     Modifier
                         .widthIn(max = 40.dp)
@@ -193,9 +202,7 @@ private fun DayChips(days: Set<Int>, onChange: (Set<Int>) -> Unit) {
                         .aspectRatio(1f)
                         .clip(CircleShape)
                         .background(if (on) MaterialTheme.colorScheme.primary else Color.Transparent)
-                        .border(1.dp, if (on) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline, CircleShape)
-                        .toggleable(value = on, role = Role.Checkbox) { onChange(if (on) days - n else days + n) }
-                        .semantics { contentDescription = name },
+                        .border(1.dp, if (on) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline, CircleShape),
                     contentAlignment = Alignment.Center,
                 ) {
                     Text(

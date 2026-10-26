@@ -106,6 +106,7 @@ fun DiscoverScreen(
                     }
                 }
             }
+            item { TvSetupSteps() }
             item {
                 Spacer(Modifier.height(24.dp))
                 Text(stringResource(R.string.discover_manual_title), style = MaterialTheme.typography.titleMedium)
@@ -129,10 +130,6 @@ fun DiscoverScreen(
                         Text(stringResource(R.string.discover_manual_add))
                     }
                 }
-            }
-            item {
-                Spacer(Modifier.height(24.dp))
-                TvSetupSteps()
             }
         }
     }

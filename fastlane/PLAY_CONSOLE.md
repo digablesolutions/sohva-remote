@@ -16,6 +16,8 @@ Finnish UI. Still open, outside the repo:
 - **Store screenshots 1, 2 and 7** (remote, touchpad) were captured before 1.1.0 and show neither the
   programme line nor the touchpad rails; recapture `tools/shots/<locale>/remote.png` and
   `touchpad.png` (demo mode, 18:30 with MTV3 on) and run `tools/render.py`.
+- **Promo videos** (`fastlane/video/`) show the half-height sheet and scrolling tab row of 1.1.0:
+  re-record them (`tools/record_promo.sh`, `tools/promo.py`) with the screenshots before uploading.
 
 ## 1. App details (Grow > Store presence > Main store listing)
 

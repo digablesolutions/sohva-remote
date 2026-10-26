@@ -1,7 +1,7 @@
-Viimeistelyä ennen Google Playta:
 • Kaukosäätimen alla oleva valikko aukeaa koko korkuiseksi, kaikki kuusi välilehteä näkyvissä.
-• Uusi Asetukset-välilehti: televisiot, värinä, mykistys puhelun ajaksi ja kaukosäädin ilmoituksissa.
+• Uusi Asetukset-välilehti: televisiot, värinä, mykistys puhelun ajaksi ja ilmoitusten kaukosäädin.
 • Kaikki seitsemän viikonpäivää mahtuvat näkyviin.
-• Kellonajat puhelimen muodossa, päivien nimet sovelluksen kielellä.
+• Kellonajat puhelimen muodossa, päivät sovelluksen kielellä.
+• "Aseta äänenvoimakkuus" -kytkin toimii selkeästi.
 • Television unohtaminen ja kohtauksen poisto kysyvät ensin.
 • "Etsi televisio" neuvoo IP-ohjauksen päälle kytkemisen.
