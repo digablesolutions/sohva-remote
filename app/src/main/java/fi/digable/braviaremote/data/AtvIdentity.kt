@@ -9,9 +9,11 @@ import java.security.KeyPairGenerator
 import java.security.KeyStore
 import java.security.Principal
 import java.security.PrivateKey
+import java.security.SecureRandom
 import java.security.cert.X509Certificate
 import java.security.interfaces.RSAPublicKey
 import java.util.Calendar
+import java.util.UUID
 import javax.inject.Inject
 import javax.inject.Singleton
 import javax.net.ssl.SSLEngine
@@ -38,6 +40,22 @@ class AtvIdentity @Inject constructor() {
 
     val publicKey: RSAPublicKey get() = certificate.publicKey as RSAPublicKey
 
+    /**
+     * Gives this install a certificate of its own before it pairs (call off the main thread). Up to
+     * 1.5.1 every install made one with the same subject and serial number, and the TV tells paired
+     * clients apart by those: pairing a second phone or tablet replaced the first one's pairing,
+     * which the TV then logged as an "unknown device". A new key also ends this install's pairings
+     * with other TVs, but those were made with the shared certificate too.
+     */
+    @Synchronized
+    fun ensureOwnCertificate() {
+        val current = keyStore.getCertificate(ALIAS) as? X509Certificate ?: return
+        if (current.serialNumber == BigInteger.ONE && current.subjectX500Principal == SHARED_SUBJECT) {
+            DebugLog.d { "Replacing the shared Android TV Remote client key" }
+            keyStore.deleteEntry(ALIAS)
+        }
+    }
+
     fun socketFactory(): SSLSocketFactory {
         val chain = arrayOf(certificate)
         val key = keyStore.getKey(ALIAS, null) as PrivateKey
@@ -60,8 +78,8 @@ class AtvIdentity @Inject constructor() {
             )
             .setSignaturePaddings(KeyProperties.SIGNATURE_PADDING_RSA_PKCS1)
             .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_NONE)
-            .setCertificateSubject(X500Principal("CN=SohvaRemote"))
-            .setCertificateSerialNumber(BigInteger.ONE)
+            .setCertificateSubject(X500Principal("CN=SohvaRemote-${UUID.randomUUID()}"))
+            .setCertificateSerialNumber(BigInteger(63, SecureRandom()).add(BigInteger.ONE))
             .setCertificateNotAfter(notAfter)
             .build()
         KeyPairGenerator.getInstance(KeyProperties.KEY_ALGORITHM_RSA, ANDROID_KEYSTORE).apply {
@@ -93,5 +111,8 @@ class AtvIdentity @Inject constructor() {
 
         /** Created without raw RSA, which the TLS handshake needs; never paired with a TV. */
         const val OLD_ALIAS = "atv_remote_client"
+
+        /** What every install's certificate said up to 1.5.1, with serial number 1. */
+        val SHARED_SUBJECT = X500Principal("CN=SohvaRemote")
     }
 }

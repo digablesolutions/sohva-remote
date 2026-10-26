@@ -72,6 +72,7 @@ class FastKeysViewModel @Inject constructor(
             _state.update { it.copy(step = FastKeysStep.Connecting, code = "") }
             try {
                 val pairing = withContext(Dispatchers.IO) {
+                    identity.ensureOwnCertificate()
                     AtvPairing(identity.socketFactory(), identity.publicKey, DeviceName.forTv)
                 }
                 session = pairing.start(tv.host)
