@@ -1,6 +1,6 @@
 # Play Console checklist: Sohva Remote
 
-The answers below match the code as of 1.3.0 (versionCode 7).
+The answers below match the code as of 1.4.0 (versionCode 8).
 
 ## 0. Status
 
@@ -13,11 +13,10 @@ Finnish UI. Still open, outside the repo:
 - **Promo video**: upload `fastlane/video/promo-<locale>.mp4` to YouTube (unlisted, embeddable, no ads)
   and put the URLs in `metadata/android/<locale>/video.txt`. Optional for the listing.
 - **Organization account** verification (D-U-N-S, address, phone).
-- **Store screenshots 1, 2 and 7** (remote, touchpad) were captured before 1.1.0 and show neither the
-  programme line nor the touchpad rails; recapture `tools/shots/<locale>/remote.png` and
-  `touchpad.png` (demo mode, 18:30 with MTV3 on) and run `tools/render.py`.
-- **Promo videos** (`fastlane/video/`) show the half-height sheet and scrolling tab row of 1.1.0:
-  re-record them (`tools/record_promo.sh`, `tools/promo.py`) with the screenshots before uploading.
+- **Promo videos** (`fastlane/video/`) show the half-height sheet and scrolling tab row of 1.1.0, and
+  no Ad break: re-record them when the TV is free (`tools/record_promo.sh` presses TV keys; re-measure
+  its taps, since the chip row now starts with Ad break) and compose with `tools/promo.py` before
+  uploading. The store screenshots are current as of 1.4.0.
 
 ## 1. App details (Grow > Store presence > Main store listing)
 
@@ -134,7 +133,8 @@ No / None / No.
 - **Exact alarms**: the app declares `SCHEDULE_EXACT_ALARM` only, so there is no declaration form; the
   user grants "Alarms & reminders" in system settings (the Timers and Scenes tabs link there). If
   review asks anyway: "Wake-up TV turns the user's TV on at a user-set time (an alarm clock for the
-  TV); the sleep timer turns it off at a user-set time; both must fire on time with the app closed."
+  TV); the sleep timer turns it off at a user-set time; Ad break brings the TV's sound back after the
+  commercials. All must fire on time with the app closed."
 - **READ_PHONE_STATE**: not a Play "restricted permission" (that is the SMS/Call Log group), so there
   is no Permissions Declaration form. It is a runtime permission asked only when the user turns on
   "Mute the TV during calls". Mention it in the privacy policy.
@@ -177,8 +177,8 @@ No / None / No.
       crash on the first-run / no-TV path).
 - [ ] Store listing: upload `icon.png`, `featureGraphic.png`, `phoneScreenshots/1-7.png` for en-US and
       fi-FI (or `fastlane supply --skip_upload_apk --skip_upload_aab`).
-- [ ] Release notes from `changelogs/<versionCode>.txt` (the first Play upload is versionCode 7,
-      `changelogs/7.txt`; 3-6 went out only as GitHub APKs).
+- [ ] Release notes from `changelogs/<versionCode>.txt` (the first Play upload is versionCode 8,
+      `changelogs/8.txt`; 3-7 went out only as GitHub APKs).
 - [ ] Countries: Finland first (plus the Nordics/EU if wanted). The app works anywhere with a Bravia.
 - [ ] Optional: promo video URL in `video.txt` (see `fastlane/VIDEO.md`).
 - [ ] After approval: staged rollout (e.g. 20%) and watch Android vitals for ANRs/crashes.

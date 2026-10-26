@@ -5,6 +5,7 @@ Not affiliated with Sony. Sohva Remote is an independent app by Digable. Sony an
 Keys that land right away
 • The D-pad, volume and channel keys go over the TV's own Android TV Remote connection and arrive in tens of milliseconds.
 • Swipe the card to change channel, and jump back to the previous channel with one tap.
+• Ad break: one tap mutes the commercials, and the sound comes back by itself after three minutes, even with the app closed. Need longer? +1 min.
 • Touchpad mode: swipe to move, tap for OK, hold to keep moving.
 • While the app is open, your phone's volume buttons control the TV.
 

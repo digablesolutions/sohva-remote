@@ -4,6 +4,9 @@
 captions burned in, end card). Made with `tools/record_promo.sh` (scripted phone recording, with
 System UI demo mode at 18:30) and `tools/promo.py` (frames, captions, end card; ffmpeg from the
 `imageio-ffmpeg` pip package works). Voice was left out: speech can't be scripted over adb.
+**Out of date since 1.1.0** (the More sheet's layout) **and 1.4.0** (Ad break): re-record before
+uploading, when the TV is free. Add an Ad break shot after the scene chip: tap Ad break, the card
+shows "muted" and the chip counts down; tap the countdown to bring the sound back.
 **To publish:** upload each to YouTube as Unlisted, embedding on, monetisation off, not "made for
 kids"; put the URL in `metadata/android/<locale>/video.txt`.
 

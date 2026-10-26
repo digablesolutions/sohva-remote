@@ -7,7 +7,7 @@ Sohva Remote is a free, ad-free Android phone remote for Sony Bravia TVs, made b
 - Google Play: coming soon (package id fi.digable.sohva)
 - Source code: https://github.com/digablesolutions/sohva-remote (free software, GPL-3.0-or-later; the name and icon are Digable trademarks)
 - Requirements: an Android phone with Android 8.0 or newer; a Sony Bravia TV with IP control on the same network
-- Version: 1.3.0 (October 2026). Languages: English, Finnish; chosen in the app (Settings › Language) or with Android's per-app language setting, whatever the phone's language.
+- Version: 1.4.0 (October 2026). Languages: English, Finnish; chosen in the app (Settings › Language) or with Android's per-app language setting, whatever the phone's language.
 
 ## What it does
 
@@ -15,6 +15,7 @@ Sohva Remote is a free, ad-free Android phone remote for Sony Bravia TVs, made b
 - Fast keys: D-pad, OK, Back, Home, volume and channel keys go over the TV's Android TV Remote protocol, so a press reaches the TV in tens of milliseconds. Other keys use Sony's IRCC IP control.
 - Touchpad mode: a toggle beside the D-pad turns it into a touch surface. Swipe to move, tap for OK, rest the finger after a swipe to keep moving.
 - The card shows what's on (channel or app) and the volume; swipe it to change channel. A "jump back" chip returns to the previous channel.
+- Ad break: on live TV, one tap mutes the commercials; the sound comes back by itself after 3 minutes ("+1 min" for a long break), also with the app closed. If you watch another channel meanwhile, the end of the break switches back.
 - Inputs and installed apps (with icons) and the full channel list. Long-press an app to pin it as a one-tap button under the remote and as a launcher shortcut.
 - Type on the TV: when the TV's on-screen keyboard is up, type or dictate from the phone.
 - Voice commands in Finnish and English, for example "kanava 3", "volume 20", "Netflix", "PlayStation", "mute", "turn off".

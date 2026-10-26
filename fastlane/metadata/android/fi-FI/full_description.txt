@@ -5,6 +5,7 @@ Sovellus ei ole Sonyn tekemä eikä millään tavalla sidoksissa Sonyyn. Sohva R
 Painallukset perille heti
 • Nuolinäppäimet, äänenvoimakkuus ja kanavanvaihto kulkevat television omaa Android TV Remote -yhteyttä pitkin ja ovat perillä kymmenissä millisekunneissa.
 • Vaihda kanavaa pyyhkäisemällä korttia. Edelliselle kanavalle pääset takaisin yhdellä napautuksella.
+• Mainoskatko: yksi napautus mykistää mainokset, ja ääni palaa itsestään kolmen minuutin päästä, vaikka sovellus olisi kiinni. Pidempi katko? +1 min.
 • Kosketuslevy: liu'uta sormea liikkuaksesi, napauta valitaksesi ja pidä sormi paikallaan, niin liike jatkuu.
 • Kun sovellus on auki, puhelimen äänenvoimakkuuspainikkeet säätävät televisiota.
 

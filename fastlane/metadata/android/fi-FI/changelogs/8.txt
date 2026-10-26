@@ -1,0 +1,2 @@
+• Mainoskatko: kun mainokset alkavat, napauta Mainoskatko kortin alla. Televisio hiljenee, ja ääni palaa itsestään 3 minuutin päästä, vaikka sovellus olisi kiinni. Pitkään katkoon +1 min; napauta laskuria, niin palaat heti. Katso välillä toista kanavaa, niin katkon lopussa palaat takaisin.
+• Kortti vaihtaa seuraavaan ohjelmaan ajallaan, myös kanavanvaihdon jälkeen.

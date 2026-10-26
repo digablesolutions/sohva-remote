@@ -77,6 +77,10 @@ Play only allows `USE_EXACT_ALARM` for alarm/calendar apps, so the app uses the 
   letting the process go (`press()` returns a `Deferred`; receivers use `goAsync()`). Android
   firewalls a cached app (`APP_BACKGROUND` in `dumpsys netpolicy`) and destroys its sockets, so
   `awaitSession()` evicts OkHttp's pool; a reused socket fails with "Software caused connection abort".
+- Ad break (`AdBreak`) never toggles mute: it unmutes only a mute it made and still holds
+  (`AdBreakState.mutedByUs`). Unmuting by hand, a mute with the TV's own remote and a phone call
+  (`CallMuteReceiver` takes the break's mute over first) all take it away. An exact alarm ends the
+  break with the app closed; an end the TV doesn't answer is retried, and a break belongs to its TV.
 - The sleep timer only ever turns the TV off (`setPowerStatus(false)`, then the discrete PowerOff
   key), never the toggling Power key: it must not wake a TV someone already switched off.
 - Wake-up and scenes go through `TvController.ensureOn()`. A live process's state can be stale (the

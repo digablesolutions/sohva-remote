@@ -16,7 +16,7 @@ control should work too. No cloud, no account, no analytics. Not affiliated with
 kaukosäädin Sony Bravia -televisioille).
 
 <p>
-  <img src="site/img/remote.png" width="200" alt="The remote screen: channel card, scene chips, D-pad, volume and channel rockers">
+  <img src="site/img/remote.png" width="200" alt="The remote screen: channel card, Ad break and pinned-app chips, D-pad, volume and channel rockers">
   <img src="site/img/inputs-apps.png" width="200" alt="More sheet: the TV's inputs and installed apps">
   <img src="site/img/timers.png" width="200" alt="Timers: sleep timer with volume fade, and the wake-up TV">
   <img src="site/img/scenes.png" width="200" alt="Scenes: one-tap and scheduled setups">
@@ -35,6 +35,9 @@ kaukosäädin Sony Bravia -televisioille).
   beside the D-pad switches between the two.
 - The card shows what's on (channel or app); swipe it to change channel. "Jump back"
   chip returns to the channel watched before.
+- Ad break: one tap mutes the commercials and the sound comes back by itself after 3 minutes
+  ("+1 min" for a long break), also with the app closed. Watch another channel meanwhile and the
+  end of the break brings you back.
 - Pin apps (long-press in Sources): one-tap chips under the card and launcher
   shortcuts (long-press the app icon).
 - More sheet: the TV's inputs, installed apps (icons cached on the phone), the channel
@@ -93,7 +96,7 @@ for a second, one-time PIN from the TV's Android TV Remote service.
 | Permission | Why |
 |---|---|
 | `INTERNET`, `ACCESS_NETWORK_STATE`, `ACCESS_WIFI_STATE`, `CHANGE_WIFI_MULTICAST_STATE` | Talk to the TV on the LAN and find it with SSDP. |
-| `SCHEDULE_EXACT_ALARM` | Sleep timer, wake-up and scheduled scenes on time, also in Doze. On Android 12+ you allow it in settings; the Timers and Scenes tabs link there. |
+| `SCHEDULE_EXACT_ALARM` | Sleep timer, ad break, wake-up and scheduled scenes on time, also in Doze. On Android 12+ you allow it in settings; the Timers and Scenes tabs link there. |
 | `FOREGROUND_SERVICE`, `WAKE_LOCK` | Keep the phone awake for the minute a timer needs to reach the TV. |
 | `RECEIVE_BOOT_COMPLETED` | Set the alarms again after a restart. |
 | `READ_PHONE_STATE` | Only for "Mute during calls", asked when you switch it on. |
