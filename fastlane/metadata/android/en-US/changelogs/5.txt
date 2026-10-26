@@ -1,0 +1,8 @@
+Polish before Google Play:
+• The menu under the remote opens full height, with six tabs always in view.
+• New Settings tab: your TVs plus vibration, mute during calls and the notification remote.
+• All seven weekdays fit, also in the scene editor.
+• Times follow your phone's format; day names follow the app's language.
+• "Set the volume" switch reads the right way round.
+• Forgetting a TV or deleting a scene asks first.
+• "Find your TV" shows how to switch on IP control on the TV.

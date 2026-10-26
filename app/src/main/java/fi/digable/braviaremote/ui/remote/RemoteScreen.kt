@@ -27,6 +27,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -79,6 +80,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.BlendMode
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.CompositingStrategy
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
@@ -435,22 +442,33 @@ private fun NowPlayingCard(
             is ConnectionState.Connected -> {
                 state.volume?.let { volume ->
                     val range = (volume.maxVolume - volume.minVolume).coerceAtLeast(1)
-                    LinearProgressIndicator(
-                        progress = { ((volume.volume - volume.minVolume).toFloat() / range).coerceIn(0f, 1f) },
-                        modifier = Modifier.fillMaxWidth().height(4.dp).clip(RoundedCornerShape(2.dp)),
-                        color = if (volume.mute) MaterialTheme.colorScheme.outline else MaterialTheme.colorScheme.primary,
-                        trackColor = MaterialTheme.colorScheme.surfaceContainerHighest,
-                        drawStopIndicator = {},
-                    )
+                    // The speaker marks this bar as the volume, not the programme's progress just above it.
+                    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                        Icon(
+                            if (volume.mute) Icons.AutoMirrored.Filled.VolumeOff else Icons.AutoMirrored.Filled.VolumeUp,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.size(16.dp),
+                        )
+                        LinearProgressIndicator(
+                            progress = { ((volume.volume - volume.minVolume).toFloat() / range).coerceIn(0f, 1f) },
+                            modifier = Modifier.weight(1f).height(4.dp).clip(RoundedCornerShape(2.dp)),
+                            color = if (volume.mute) MaterialTheme.colorScheme.outline else MaterialTheme.colorScheme.primary,
+                            trackColor = MaterialTheme.colorScheme.surfaceContainerHighest,
+                            drawStopIndicator = {},
+                        )
+                    }
                 }
                 val switchTo = stringResource(R.string.remote_switch_to)
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     // A plain scrolling row, not a LazyRow: sources arrive in two loads, and a
                     // LazyRow keeps its first visible chip anchored, scrolling "TV" off-screen.
+                    val scroll = rememberScrollState()
                     Row(
                         Modifier
                             .weight(1f)
-                            .horizontalScroll(rememberScrollState())
+                            .horizontalFade(scroll)
+                            .horizontalScroll(scroll)
                             .semantics { contentDescription = switchTo },
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
                     ) {
@@ -585,8 +603,9 @@ private fun QuickChips(
     onScene: (fi.digable.braviaremote.data.Scene) -> Unit,
 ) {
     if (previous == null && favorites.isEmpty() && scenes.isEmpty()) return
+    val scroll = rememberScrollState()
     Row(
-        Modifier.fillMaxWidth().padding(top = 10.dp).horizontalScroll(rememberScrollState()),
+        Modifier.fillMaxWidth().padding(top = 10.dp).horizontalFade(scroll).horizontalScroll(scroll),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         if (previous != null) {
@@ -751,3 +770,29 @@ private fun PlaybackBar(haptics: Boolean, press: (RemoteKey) -> Unit) {
             containerColor = Color.Transparent, contentColor = tint, onPress = { press(RemoteKey.FORWARD) })
     }
 }
+
+/**
+ * Fades the ends of a horizontally scrolling row while there is more to scroll that way, so a chip cut
+ * at the edge reads as "more this way" rather than as a layout fault. Put it before horizontalScroll.
+ */
+private fun Modifier.horizontalFade(scroll: ScrollState, width: Dp = 28.dp) = this
+    .graphicsLayer { compositingStrategy = CompositingStrategy.Offscreen }
+    .drawWithContent {
+        drawContent()
+        val fade = width.toPx()
+        if (scroll.value > 0) {
+            drawRect(
+                Brush.horizontalGradient(listOf(Color.Transparent, Color.Black), endX = fade),
+                size = Size(fade, size.height),
+                blendMode = BlendMode.DstIn,
+            )
+        }
+        if (scroll.value < scroll.maxValue) {
+            drawRect(
+                Brush.horizontalGradient(listOf(Color.Black, Color.Transparent), startX = size.width - fade, endX = size.width),
+                topLeft = Offset(size.width - fade, 0f),
+                size = Size(fade, size.height),
+                blendMode = BlendMode.DstIn,
+            )
+        }
+    }

@@ -1,5 +1,7 @@
 package fi.digable.braviaremote.ui.discover
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -31,6 +33,8 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -126,6 +130,40 @@ fun DiscoverScreen(
                     }
                 }
             }
+            item {
+                Spacer(Modifier.height(24.dp))
+                TvSetupSteps()
+            }
         }
+    }
+}
+
+/**
+ * What to switch on in the TV's menus before it can be found and paired. A first-time user, or anyone
+ * whose TV is not found, otherwise has no way to know IP control exists.
+ */
+@Composable
+private fun TvSetupSteps() {
+    val steps = listOf(R.string.setup_step_menu, R.string.setup_step_auth, R.string.setup_step_start)
+    Column(
+        Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(16.dp))
+            .background(MaterialTheme.colorScheme.surfaceContainer)
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(10.dp),
+    ) {
+        Text(stringResource(R.string.setup_title), style = MaterialTheme.typography.titleSmall, color = MaterialTheme.colorScheme.primary)
+        steps.forEachIndexed { i, step ->
+            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                Text("${i + 1}", style = MaterialTheme.typography.titleSmall, color = MaterialTheme.colorScheme.primary, modifier = Modifier.width(12.dp))
+                Text(stringResource(step), style = MaterialTheme.typography.bodyMedium)
+            }
+        }
+        Text(
+            stringResource(R.string.setup_footer),
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
     }
 }

@@ -1,40 +1,21 @@
 # Play Console checklist: Sohva Remote
 
-The answers below match the code as of this writing (checked against `app/` read-only). Items marked
-**BLOCKER** must be fixed in the app or on the web before the first production submission.
+The answers below match the code as of 1.1.1 (versionCode 5).
 
-## 0. Blockers found in the repo
+## 0. Status
 
-1. **BLOCKER: package name.** `app/build.gradle.kts` still has `applicationId = "fi.digable.braviaremote"`.
-   The listing assumes `fi.digable.sohva`. The package name is permanent once the first AAB is
-   uploaded to any track (internal testing included), so change it before the first upload.
-2. **BLOCKER: app name.** `app_name` in `app/src/main/res/values/strings.xml` is "Bravia Remote"
-   (and `site/index.html` says "Bravia Remote"). The launcher name should match the store title
-   "Sohva Remote", and "Bravia" in the name is the trademark risk we are avoiding in the title.
-3. **BLOCKER: version code.** `versionCode = 2`; the release notes are `changelogs/3.txt`, so the
-   first upload must be versionCode 3 (or rename the changelog file).
-4. **BLOCKER: target API.** `targetSdk = 35` (`compileSdk = 36`). From 31 Aug 2026 new apps and
-   updates must target API 36 (extension possible to 1 Nov 2026).
-   Source: https://developer.android.com/google/play/requirements/target-sdk
-5. **BLOCKER (likely): exact alarms.** The manifest declares `USE_EXACT_ALARM` (all API levels) and
-   `SCHEDULE_EXACT_ALARM` only up to API 32. Play policy: apps "must only declare [USE_EXACT_ALARM]
-   if their core functionality supports the need for an exact alarm"; examples are an alarm or timer
-   app and a calendar app; others should "evaluate if using SCHEDULE_EXACT_ALARM as an alternative is
-   an option", and apps that don't meet the criteria "will be disallowed from publishing".
-   Source: https://support.google.com/googleplay/android-developer/answer/9888170 (Exact alarm section).
-   A TV remote whose wake-up TV and sleep timer are secondary features is a weak fit. Recommendation:
-   drop `USE_EXACT_ALARM`, declare `SCHEDULE_EXACT_ALARM` for all API levels, ask the user to grant
-   "Alarms & reminders" when they turn on the wake-up TV / sleep timer / scheduled scenes, and fall
-   back to inexact alarms if refused. If you keep `USE_EXACT_ALARM`, be ready to argue "wake-up TV is
-   an alarm clock" in the declaration, and expect a possible rejection.
-6. **BLOCKER: privacy policy page.** `site/` has no `privacy.html`. The URL
-   https://digablesolutions.github.io/sohva-remote/privacy.html must be live (and match the Data
-   safety answers below) before submitting.
-7. **Launcher icon mismatch.** `ic_launcher_foreground.xml` is a remote outline, while the store icon
-   is the amber ring + dot mark from `site/favicon.svg`. Play asks that the store icon represents the
-   app; make the launcher icon the same mark.
-8. **App UI is English only** (no `values-fi`). The fi-FI listing is Finnish, the screenshots show the
-   English UI. That is allowed, but a Finnish UI would match the Finland-first audience.
+All repo blockers found in the first review are fixed (2026-10-25): package `fi.digable.sohva`, app
+name "Sohva Remote", targetSdk 36, `SCHEDULE_EXACT_ALARM` instead of `USE_EXACT_ALARM` (asked in the
+Timers tab, inexact fallback), privacy pages live in English and Finnish, launcher icon = store icon,
+Finnish UI. Still open, outside the repo:
+
+- **Contact email**: decide an address Digable monitors (placeholder below).
+- **Promo video**: upload `fastlane/video/promo-<locale>.mp4` to YouTube (unlisted, embeddable, no ads)
+  and put the URLs in `metadata/android/<locale>/video.txt`. Optional for the listing.
+- **Organization account** verification (D-U-N-S, address, phone).
+- **Store screenshots 1, 2 and 7** (remote, touchpad) were captured before 1.1.0 and show neither the
+  programme line nor the touchpad rails; recapture `tools/shots/<locale>/remote.png` and
+  `touchpad.png` (demo mode, 18:30 with MTV3 on) and run `tools/render.py`.
 
 ## 1. App details (Grow > Store presence > Main store listing)
 
@@ -70,7 +51,8 @@ credentials):
 > cannot be fully exercised without such a TV.
 >
 > Without a TV, the app opens on "Find your TV": it searches the Wi-Fi network ("Searching the Wi-Fi
-> network…", with "Search again") and offers "Add by IP address". With no Bravia on the network nothing
+> network…", with "Search again"), offers "Add by IP address", and lists the TV settings to switch on
+> ("Set up the TV first"). With no Bravia on the network nothing
 > is found, and an address that is not a Bravia cannot be paired. The app sends nothing to any server.
 >
 > With a TV: on the TV, Settings > Network > Home network setup > IP control: Authentication "Normal
@@ -126,7 +108,7 @@ Not applicable.
   REST API on the LAN is plain HTTP on the home network. Neither leaves the LAN.)
 - Do you provide a way for users to request that their data is deleted? Not shown when nothing is
   collected. For the privacy policy text: the data that exists lives only on the phone. Remove one TV
-  with its **Forget** button (in the sheet under the remote, `MoreSheet.kt`); remove everything with Android Settings > Apps > Sohva Remote > Storage >
+  with **Forget** (Settings tab of the sheet under the remote, `MoreSheet.kt`; it asks first); remove everything with Android Settings > Apps > Sohva Remote > Storage >
   Clear storage, or by uninstalling. Nothing is held by Digable, so there is nothing to request.
 - What stays on the device (describe in the privacy policy, not in the form):
   - TV address, name, channel/input/app lists, scenes, timers, settings: DataStore preferences.
@@ -147,11 +129,10 @@ Not applicable.
 No / None / No.
 
 ### Permissions declarations
-- **Exact alarms**: see Blocker 5. If the manifest keeps `USE_EXACT_ALARM`, Play Console will ask for
-  the exact-alarm declaration; describe it as: "Wake-up TV: turns the user's TV on at a user-set time
-  (an alarm clock for the TV). Sleep timer: turns the TV off at a user-set time. Both must fire on
-  time with the app closed." If you switch to `SCHEDULE_EXACT_ALARM` (recommended), no declaration
-  form is needed; the user grants "Alarms & reminders" in system settings.
+- **Exact alarms**: the app declares `SCHEDULE_EXACT_ALARM` only, so there is no declaration form; the
+  user grants "Alarms & reminders" in system settings (the Timers and Scenes tabs link there). If
+  review asks anyway: "Wake-up TV turns the user's TV on at a user-set time (an alarm clock for the
+  TV); the sleep timer turns it off at a user-set time; both must fire on time with the app closed."
 - **READ_PHONE_STATE**: not a Play "restricted permission" (that is the SMS/Call Log group), so there
   is no Permissions Declaration form. It is a runtime permission asked only when the user turns on
   "Mute the TV during calls". Mention it in the privacy policy.
@@ -177,8 +158,7 @@ No / None / No.
 
 ## 3. Pre-launch checklist
 
-- [x] Blockers 1-6 above resolved (package name, app name, versionCode 3, targetSdk 36, exact alarm
-      permission, privacy page live) - done 2026-10-25.
+- [x] Repo blockers resolved (see section 0) - done 2026-10-25.
 - [ ] Organization developer account for Digable verified (D-U-N-S, address, phone).
 - [ ] Build a signed **Android App Bundle** (`./gradlew bundleRelease`), R8 on, no debug logs.
 - [ ] **App signing: use our own key** (decided 2026-10-25). The GitHub release APK is signed with
@@ -193,9 +173,10 @@ No / None / No.
       production; organization accounts are exempt, but a closed test is still worth running.
 - [ ] Check the **pre-launch report** (it runs on devices without a Bravia; make sure the app does not
       crash on the first-run / no-TV path).
-- [ ] Store listing: upload `icon.png`, `featureGraphic.png`, `phoneScreenshots/1-6.png` for en-US and
+- [ ] Store listing: upload `icon.png`, `featureGraphic.png`, `phoneScreenshots/1-7.png` for en-US and
       fi-FI (or `fastlane supply --skip_upload_apk --skip_upload_aab`).
-- [ ] Release notes from `changelogs/3.txt`.
+- [ ] Release notes from `changelogs/<versionCode>.txt` (the first Play upload is versionCode 5,
+      `changelogs/5.txt`; 3 and 4 went out only as GitHub APKs).
 - [ ] Countries: Finland first (plus the Nordics/EU if wanted). The app works anywhere with a Bravia.
 - [ ] Optional: promo video URL in `video.txt` (see `fastlane/VIDEO.md`).
 - [ ] After approval: staged rollout (e.g. 20%) and watch Android vitals for ANRs/crashes.

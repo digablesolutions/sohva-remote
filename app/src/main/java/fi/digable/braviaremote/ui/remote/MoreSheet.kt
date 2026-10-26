@@ -12,6 +12,10 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.material3.AlertDialog
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -36,6 +40,11 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Apps
+import androidx.compose.material.icons.filled.AutoAwesome
+import androidx.compose.material.icons.filled.Dialpad
+import androidx.compose.material.icons.filled.LiveTv
+import androidx.compose.material.icons.filled.Schedule
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Bedtime
 import androidx.compose.material.icons.filled.Cast
 import androidx.compose.material.icons.filled.Check
@@ -59,7 +68,7 @@ import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.PrimaryScrollableTabRow
+import androidx.compose.material3.PrimaryTabRow
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
@@ -95,16 +104,16 @@ import fi.digable.braviaremote.protocol.ExternalInput
 import fi.digable.braviaremote.protocol.RemoteKey
 import java.util.Date
 
-private enum class MoreTab(val labelRes: Int) {
-    WATCH(R.string.more_watch),
-    CHANNELS(R.string.more_channels),
-    KEYS(R.string.more_keys),
-    TIMERS(R.string.more_timers),
-    SCENES(R.string.more_scenes),
-    TVS(R.string.more_tvs),
+private enum class MoreTab(val labelRes: Int, val icon: ImageVector) {
+    WATCH(R.string.more_watch, Icons.Default.Apps),
+    CHANNELS(R.string.more_channels, Icons.Default.LiveTv),
+    KEYS(R.string.more_keys, Icons.Default.Dialpad),
+    TIMERS(R.string.more_timers, Icons.Default.Schedule),
+    SCENES(R.string.more_scenes, Icons.Default.AutoAwesome),
+    SETTINGS(R.string.more_settings, Icons.Default.Settings),
 }
 
-/** Everything that is not on the main remote: inputs and apps, channels, extra keys, timers, scenes, TVs. */
+/** Everything that is not on the main remote: inputs and apps, channels, extra keys, timers, scenes, settings. */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MoreSheet(viewModel: RemoteViewModel, onDismiss: () -> Unit, onAddTv: () -> Unit, onFastKeys: (SavedTv) -> Unit) {
@@ -113,20 +122,39 @@ fun MoreSheet(viewModel: RemoteViewModel, onDismiss: () -> Unit, onAddTv: () -> 
     val haptics by viewModel.hapticsEnabled.collectAsStateWithLifecycle()
 
     ModalBottomSheet(onDismissRequest = onDismiss, sheetState = sheetState) {
-        // Sized to the labels: four equal tabs would cut "Inputs & apps" short.
-        PrimaryScrollableTabRow(selectedTabIndex = tab, edgePadding = 0.dp) {
+        // Six fixed tabs, an icon over a short label, so every tab is in sight: a scrolling row hid the
+        // last two off the edge. The content-slot Tab skips the default 16 dp side padding the labels need.
+        PrimaryTabRow(selectedTabIndex = tab, containerColor = Color.Transparent) {
             MoreTab.entries.forEachIndexed { i, t ->
-                Tab(selected = tab == i, onClick = { tab = i }, text = { Text(stringResource(t.labelRes), maxLines = 1) })
+                Tab(
+                    selected = tab == i,
+                    onClick = { tab = i },
+                    selectedContentColor = MaterialTheme.colorScheme.primary,
+                    unselectedContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                ) {
+                    Column(Modifier.padding(vertical = 8.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+                        Icon(t.icon, contentDescription = null, modifier = Modifier.size(22.dp))
+                        Spacer(Modifier.height(4.dp))
+                        Text(
+                            stringResource(t.labelRes),
+                            style = MaterialTheme.typography.labelSmall,
+                            maxLines = 1,
+                            softWrap = false,
+                            overflow = TextOverflow.Ellipsis,
+                        )
+                    }
+                }
             }
         }
-        Box(Modifier.fillMaxWidth().height(560.dp).padding(horizontal = 16.dp, vertical = 12.dp)) {
+        // The full height of the sheet, so long tabs scroll inside it instead of leaving the remote half-covered.
+        Box(Modifier.fillMaxWidth().fillMaxHeight().padding(horizontal = 16.dp).padding(top = 12.dp)) {
             when (MoreTab.entries[tab]) {
                 MoreTab.WATCH -> WatchTab(viewModel, onDismiss)
                 MoreTab.CHANNELS -> ChannelsTab(viewModel, onDismiss)
                 MoreTab.KEYS -> KeysTab(viewModel, haptics)
                 MoreTab.TIMERS -> TimersTab(viewModel)
                 MoreTab.SCENES -> ScenesTab(viewModel, onDismiss)
-                MoreTab.TVS -> TvsTab(viewModel, onAddTv, onFastKeys)
+                MoreTab.SETTINGS -> SettingsTab(viewModel, haptics, onAddTv, onFastKeys)
             }
         }
     }
@@ -359,7 +387,7 @@ private fun inputIcon(input: ExternalInput): ImageVector {
     }
 }
 
-/** Number pad with Guide and Info, track and stop keys, colour keys, the rarer remote keys, haptics. */
+/** Number pad with Guide and Info, track and stop keys, colour keys and the rarer remote keys. */
 @Composable
 private fun KeysTab(viewModel: RemoteViewModel, haptics: Boolean) {
     Column(
@@ -410,18 +438,12 @@ private fun KeysTab(viewModel: RemoteViewModel, haptics: Boolean) {
                 }
             }
         }
-
-        CallMuteSetting(viewModel)
-        NotificationRemoteSetting(viewModel)
-
-        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth().padding(top = 4.dp)) {
-            Text(stringResource(R.string.more_haptics), Modifier.weight(1f))
-            Switch(checked = haptics, onCheckedChange = viewModel::setHaptics)
-        }
+        Spacer(Modifier.height(8.dp))
     }
 }
 
 /** The phone's own sleep timer: pick a time, see when the TV goes off, cancel. */
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 internal fun SleepTimerSection(viewModel: RemoteViewModel) {
     val sleepAt by viewModel.sleepAt.collectAsStateWithLifecycle()
@@ -446,10 +468,7 @@ internal fun SleepTimerSection(viewModel: RemoteViewModel) {
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
-        Row(
-            Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()).padding(top = 4.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
+        FlowRow(Modifier.fillMaxWidth().padding(top = 4.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             for (minutes in SLEEP_MINUTES) {
                 FilterChip(
                     selected = false,
@@ -537,12 +556,15 @@ private fun ColorKey(label: String, color: Color, haptics: Boolean, onPress: () 
     RemoteButton(label, onPress = onPress, size = 48.dp, haptics = haptics, containerColor = color, contentColor = Color.White)
 }
 
+/** The saved TVs (switch, pair fast keys, forget, add), then the app's own settings. */
 @Composable
-private fun TvsTab(viewModel: RemoteViewModel, onAddTv: () -> Unit, onFastKeys: (SavedTv) -> Unit) {
+private fun SettingsTab(viewModel: RemoteViewModel, haptics: Boolean, onAddTv: () -> Unit, onFastKeys: (SavedTv) -> Unit) {
     val tvs by viewModel.savedTvs.collectAsStateWithLifecycle()
     val state by viewModel.state.collectAsStateWithLifecycle()
     val activeId = state.tvOrNull?.id
-    LazyColumn {
+    var forgetting by remember { mutableStateOf<SavedTv?>(null) }
+    LazyColumn(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+        item { SectionHeader(stringResource(R.string.more_tvs)) }
         items(tvs, key = { it.id }) { tv ->
             ListItem(
                 headlineContent = { Text(tv.name) },
@@ -562,19 +584,41 @@ private fun TvsTab(viewModel: RemoteViewModel, onAddTv: () -> Unit, onFastKeys: 
                     Icon(Icons.Default.Tv, contentDescription = null, tint = if (tv.id == activeId) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant)
                 },
                 trailingContent = {
-                    TextButton(onClick = { viewModel.forget(tv) }) { Text(stringResource(R.string.more_forget_tv)) }
+                    TextButton(onClick = { forgetting = tv }) { Text(stringResource(R.string.more_forget_tv)) }
                 },
                 colors = ListItemDefaults.colors(containerColor = Color.Transparent),
                 modifier = Modifier.clip(RoundedCornerShape(16.dp)).clickable { viewModel.switchTo(tv) },
             )
         }
         item {
-            OutlinedButton(onClick = onAddTv, modifier = Modifier.padding(top = 8.dp)) {
+            OutlinedButton(onClick = onAddTv, modifier = Modifier.padding(top = 4.dp, bottom = 16.dp)) {
                 Icon(Icons.Default.Add, contentDescription = null)
                 Spacer(Modifier.width(8.dp))
                 Text(stringResource(R.string.more_add_tv))
             }
         }
+        item { SectionHeader(stringResource(R.string.more_this_phone)) }
+        item {
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.padding(bottom = 16.dp)) {
+                Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
+                    Text(stringResource(R.string.more_haptics), Modifier.weight(1f))
+                    Switch(checked = haptics, onCheckedChange = viewModel::setHaptics)
+                }
+                CallMuteSetting(viewModel)
+                NotificationRemoteSetting(viewModel)
+            }
+        }
+    }
+    forgetting?.let { tv ->
+        AlertDialog(
+            onDismissRequest = { forgetting = null },
+            title = { Text(stringResource(R.string.forget_title, tv.name)) },
+            text = { Text(stringResource(R.string.forget_body)) },
+            confirmButton = {
+                TextButton(onClick = { viewModel.forget(tv); forgetting = null }) { Text(stringResource(R.string.more_forget_tv)) }
+            },
+            dismissButton = { TextButton(onClick = { forgetting = null }) { Text(stringResource(R.string.dialog_cancel)) } },
+        )
     }
 }
 

@@ -112,7 +112,7 @@ Lint errors fail the build; warnings about newer library versions are acceptable
   (gitignored; points at the upload key `~/.android/sohva-upload.jks`) they are signed with the Play
   upload key, otherwise with the debug key. An upload-signed APK does not install over a debug build.
   Release builds log nothing; after R8-related changes smoke-test them too (fast keys, the More
-  sheet's inputs, channels and app icons, the TVs tab, saved scenes).
+  sheet's inputs, channels and app icons, the Settings tab (TVs, phone settings), saved scenes).
 - On the TV: Settings › Network › Home network setup › IP control › Authentication
   "Normal and Pre-Shared Key"; Remote start On.
 - Walk: discover TV → PIN pairing → power toggle → volume with on-screen and hardware

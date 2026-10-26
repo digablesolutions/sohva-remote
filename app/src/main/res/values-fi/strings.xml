@@ -11,6 +11,11 @@
     <string name="discover_manual_invalid">Anna kelvollinen IPv4-osoite</string>
     <string name="discover_wifi_off">Wi-Fi on pois päältä. Yhdistä ensin television verkkoon.</string>
     <string name="discover_tv_model">%1$s · %2$s</string>
+    <string name="setup_title">Valmistele ensin televisio</string>
+    <string name="setup_step_menu">Televisiossa: Asetukset › Verkko › Kotiverkon asetukset › IP-ohjaus.</string>
+    <string name="setup_step_auth">Todennus: \"Normaali ja esijaettu avain\" (Normal and Pre-Shared Key).</string>
+    <string name="setup_step_start">Etäkäynnistys (Remote start): päällä, jotta sovellus voi käynnistää television.</string>
+    <string name="setup_footer">Pidä puhelin samassa wifi-verkossa kuin televisio. Kun valitset television täältä, se näyttää nelinumeroisen PIN-koodin, jonka kirjoitat sovellukseen.</string>
 
     <!-- Pairing -->
     <string name="pair_title">Muodosta laitepari: %1$s</string>
@@ -85,12 +90,12 @@
     <string name="state_retry">Yritä uudelleen</string>
 
     <!-- More sheet -->
-    <string name="more_watch">Tulot ja sovellukset</string>
+    <string name="more_watch">Lähteet</string>
     <string name="more_inputs">Tulot</string>
     <string name="more_not_connected">Ei yhteyttä</string>
     <string name="more_now_on">Nyt päällä</string>
     <string name="more_apps">Sovellukset</string>
-    <string name="more_keys">Painikkeet</string>
+    <string name="more_keys">Näppäimet</string>
     <string name="more_channels">Kanavat</string>
     <string name="more_channels_empty">Televisio ei ilmoittanut kanavia.</string>
     <string name="remote_swipe_channels">Vaihda kanavaa pyyhkäisemällä</string>
@@ -186,7 +191,14 @@
     <string name="target_label">Vaihda</string>
     <string name="target_keep">Viimeksi katsottu</string>
     <string name="target_none">Älä muuta</string>
-    <string name="volume_keep">Säilytä äänenvoimakkuus</string>
+    <string name="more_settings">Asetukset</string>
+    <string name="more_this_phone">Tässä puhelimessa</string>
+    <string name="forget_title">Unohdetaanko %1$s?</string>
+    <string name="forget_body">Sen yhdistys poistetaan tästä puhelimesta. Jos haluat käyttää sitä taas, lisää se ja kirjoita television näyttämä uusi PIN-koodi.</string>
+    <string name="scene_delete_title">Poistetaanko %1$s?</string>
+    <string name="scene_delete_confirm">Poista</string>
+    <string name="volume_set">Aseta äänenvoimakkuus</string>
+    <string name="volume_keep_hint">Pois: televisio pitää nykyisen äänenvoimakkuuden</string>
     <string name="dialog_ok">OK</string>
     <string name="dialog_cancel">Peruuta</string>
     <string name="scenes_hint">Yksi napautus käynnistää television ja valitsee kanavan, tulon tai sovelluksen sekä äänenvoimakkuuden. Kohtaukset näkyvät kortin alla. Ensimmäinen kohtaus näkyy myös pika-asetuksissa. Kohtauksen voi myös ajastaa. Muokkaa kohtausta napauttamalla sitä.</string>

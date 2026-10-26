@@ -35,10 +35,11 @@ kaukosäädin Sony Bravia -televisioille).
   beside the D-pad switches between the two.
 - The card shows what's on (channel or app); swipe it to change channel. "Jump back"
   chip returns to the channel watched before.
-- Pin apps (long-press in Inputs & apps): one-tap chips under the card and launcher
+- Pin apps (long-press in Sources): one-tap chips under the card and launcher
   shortcuts (long-press the app icon).
 - More sheet: the TV's inputs, installed apps (icons cached on the phone), the channel
-  list, number pad and extra keys, timers, scenes, saved TVs.
+  list, number pad and extra keys, timers, scenes, and Settings (saved TVs, vibration, call
+  mute, notification remote).
 - Type on the TV: when the TV's keyboard is up, type (or dictate) from the phone.
 - Voice commands in Finnish and English: "kanava 3", "volume 20", "Netflix",
   "PlayStation", "mute", "turn off".
