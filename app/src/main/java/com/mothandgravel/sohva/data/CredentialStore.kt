@@ -89,6 +89,10 @@ class CredentialStore @Inject constructor(@ApplicationContext context: Context) 
         prefs.edit().remove("atv_cert.$pending").apply()
     }
 
+    fun clearPendingAtvCertificate(host: String) {
+        prefs.edit().remove("atv_cert.${pendingAtvKey(host)}").apply()
+    }
+
     fun clear(tvId: String) {
         prefs.edit()
             .remove("cookie.$tvId").remove("cookie_exp.$tvId").remove("ircc.$tvId").remove("atv_cert.$tvId")

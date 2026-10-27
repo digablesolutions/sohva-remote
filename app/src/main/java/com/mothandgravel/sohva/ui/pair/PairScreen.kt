@@ -1,6 +1,7 @@
 package com.mothandgravel.sohva.ui.pair
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -20,6 +21,7 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -95,24 +97,34 @@ fun PairScreen(
                     }
                 }
                 is PairStep.Failed -> {
-                    Text(
-                        if (step.notSupported) stringResource(R.string.pair_not_supported)
-                        else stringResource(R.string.pair_failed, step.message ?: ""),
-                        color = MaterialTheme.colorScheme.error,
-                        textAlign = TextAlign.Center,
-                    )
-                    Spacer(Modifier.height(24.dp))
-                    Row(Modifier.fillMaxWidth(), horizontalArrangement = androidx.compose.foundation.layout.Arrangement.Center) {
-                        OutlinedButton(onClick = onCancel) { Text(stringResource(R.string.pair_cancel)) }
-                        Spacer(Modifier.width(16.dp))
-                        Button(onClick = viewModel::requestPin) { Text(stringResource(R.string.state_retry)) }
-                    }
-                    if (step.notSupported || step.unreachable) {
-                        // IP control is off and the menus need a remote: this phone can be that remote.
-                        Spacer(Modifier.height(24.dp))
+                    if (step.offerNoRemote) {
+                        // The TV refuses control over the network and its menus need a remote: this
+                        // phone can be that remote, so that is the way out, not another try.
                         Text(stringResource(R.string.no_remote_offer), textAlign = TextAlign.Center)
+                        Spacer(Modifier.height(24.dp))
+                        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+                            OutlinedButton(onClick = viewModel::requestPin) { Text(stringResource(R.string.state_retry)) }
+                            Spacer(Modifier.width(16.dp))
+                            Button(onClick = onNoRemote) { Text(stringResource(R.string.no_remote_button)) }
+                        }
                         Spacer(Modifier.height(8.dp))
-                        androidx.compose.material3.FilledTonalButton(onClick = onNoRemote) { Text(stringResource(R.string.no_remote_button)) }
+                        TextButton(onClick = onCancel) { Text(stringResource(R.string.pair_cancel)) }
+                    } else {
+                        Text(
+                            when {
+                                step.notSupported -> stringResource(R.string.pair_not_supported)
+                                step.unreachable -> stringResource(R.string.state_unreachable, tv.name)
+                                else -> stringResource(R.string.pair_failed, step.message ?: "")
+                            },
+                            color = MaterialTheme.colorScheme.error,
+                            textAlign = TextAlign.Center,
+                        )
+                        Spacer(Modifier.height(24.dp))
+                        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+                            OutlinedButton(onClick = onCancel) { Text(stringResource(R.string.pair_cancel)) }
+                            Spacer(Modifier.width(16.dp))
+                            Button(onClick = viewModel::requestPin) { Text(stringResource(R.string.state_retry)) }
+                        }
                     }
                 }
                 PairStep.Done -> Unit

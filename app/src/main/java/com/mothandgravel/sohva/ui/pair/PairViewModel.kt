@@ -11,6 +11,7 @@ import com.mothandgravel.sohva.protocol.BraviaApi
 import com.mothandgravel.sohva.protocol.BraviaAuth
 import com.mothandgravel.sohva.protocol.BraviaException
 import com.mothandgravel.sohva.protocol.DiscoveredTv
+import com.mothandgravel.sohva.protocol.TvChecker
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -25,7 +26,11 @@ sealed interface PairStep {
     data object Requesting : PairStep
     data object EnterPin : PairStep
     data object Confirming : PairStep
-    data class Failed(val message: String?, val notSupported: Boolean = false, val unreachable: Boolean = false) : PairStep
+    /**
+     * [offerNoRemote]: the TV refuses the web API but its Android TV Remote service answers, so this
+     * phone can steer the TV's menus to switch control on.
+     */
+    data class Failed(val message: String?, val notSupported: Boolean = false, val unreachable: Boolean = false, val offerNoRemote: Boolean = false) : PairStep
     data object Done : PairStep
 }
 
@@ -40,7 +45,7 @@ class PairViewModel @Inject constructor(
     private val store: TvStore,
     private val credentials: CredentialStore,
     private val controller: TvController,
-    httpClient: OkHttpClient,
+    private val httpClient: OkHttpClient,
 ) : ViewModel() {
     private val _state = MutableStateFlow(PairUiState())
     val state: StateFlow<PairUiState> = _state.asStateFlow()
@@ -48,6 +53,7 @@ class PairViewModel @Inject constructor(
     private lateinit var tv: DiscoveredTv
     private val api: BraviaApi by lazy { BraviaApi("http://${tv.host}/", httpClient) }
     private val pairing by lazy { controller.pairing(api) }
+    private val checker = TvChecker(httpClient)
 
     fun start(tv: DiscoveredTv) {
         if (this::tv.isInitialized) return
@@ -62,9 +68,11 @@ class PairViewModel @Inject constructor(
                 pairing.requestPin()
                 _state.update { it.copy(step = PairStep.EnterPin) }
             } catch (e: BraviaException.Unreachable) {
-                _state.update { it.copy(step = PairStep.Failed(e.message, unreachable = true)) }
+                // Off at the wall, another network, or Control remotely off: only the last can be fixed here.
+                val offer = checker.fastKeysAnswer(tv.host)
+                _state.update { it.copy(step = PairStep.Failed(e.message, unreachable = true, offerNoRemote = offer)) }
             } catch (e: BraviaException) {
-                _state.update { it.copy(step = PairStep.Failed(e.message, notSupported = true)) }
+                _state.update { it.copy(step = PairStep.Failed(e.message, notSupported = true, offerNoRemote = checker.fastKeysAnswer(tv.host))) }
             } catch (e: Exception) {
                 _state.update { it.copy(step = PairStep.Failed(e.message)) }
             }

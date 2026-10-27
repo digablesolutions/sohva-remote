@@ -22,13 +22,18 @@ kaukosäädin Sony Bravia -televisioille).
 **The remote**
 - Finds the TV with SSDP (or add it by IP address); PIN pairing, cookie stored encrypted
   and renewed silently. Re-finds the TV by UUID when its IP address changes.
+- Lost the TV's remote? A TV with Control remotely off is still found (mDNS, Sony only); the app
+  pairs fast keys first and gives you a D-pad and numbered steps to switch it on, then pairs as usual.
+- Check connection (on "Can't reach" and per TV in Settings): home network, TV on the network,
+  Control remotely, pairing, Remote start (switched on from the app) and fast keys, each with what to do.
 - "Fast keys" over the TV's Android TV Remote protocol (one-time pairing): D-pad, OK,
   Back, Home, volume and channel keys arrive in tens of milliseconds. Other keys use IRCC.
 - Power, volume, mute, D-pad, Back, Home, Guide, Options, playback, channel up/down;
   haptics and long-press repeat. The phone's volume buttons change the TV volume.
 - Touchpad mode: swipe to move, tap for OK, rest the finger to keep moving; a toggle
   beside the D-pad switches between the two.
-- The card shows what's on (channel or app); swipe it to change channel. "Jump back"
+- The card shows what's on (channel or app); swipe it to change channel, drag its volume bar to
+  set the volume. "Jump back"
   chip returns to the channel watched before.
 - Ad break: one tap mutes the commercials and the sound comes back by itself after 3 minutes
   ("+1 min" for a long break), also with the app closed. Watch another channel meanwhile and the

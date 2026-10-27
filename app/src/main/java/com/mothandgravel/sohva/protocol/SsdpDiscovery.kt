@@ -72,6 +72,16 @@ class SsdpDiscovery(
         parseDescription(response.body)
     }
 
+    /**
+     * The TV's Cast (DIAL) description on port 8008, which answers even with Control remotely off:
+     * a Sony TV for an address found by mDNS, or null for anything else (Chromecasts, other brands).
+     */
+    suspend fun sonyCastDevice(host: String, port: Int = CAST_PORT): DiscoveredTv? {
+        val description = runCatching { fetchDescription("http://$host:$port/ssdp/device-desc.xml") }.getOrNull() ?: return null
+        if (!description.manufacturer.contains("Sony", ignoreCase = true)) return null
+        return DiscoveredTv(host = host, name = description.friendlyName.ifBlank { description.modelName }, model = description.modelName)
+    }
+
     /** Probes one host by hand (manual IP entry). Returns null when it does not answer like a Bravia. */
     suspend fun probe(host: String): DiscoveredTv? {
         val api = BraviaApi("http://$host/", httpClient)
@@ -101,11 +111,13 @@ class SsdpDiscovery(
         val modelName: String,
         val udn: String?,
         val scalarBaseUrl: String?,
+        val manufacturer: String = "",
     )
 
     companion object {
         const val SSDP_ADDRESS = "239.255.255.250"
         const val SSDP_PORT = 1900
+        const val CAST_PORT = 8008
         const val SCALAR_WEB_API_ST = "urn:schemas-sony-com:service:ScalarWebAPI:1"
 
         fun mSearch(st: String, mx: Int = 2): String =
@@ -158,6 +170,7 @@ class SsdpDiscovery(
             modelName = tag(xml, "modelName").orEmpty(),
             udn = tag(xml, "UDN")?.removePrefix("uuid:")?.ifBlank { null },
             scalarBaseUrl = tag(xml, "X_ScalarWebAPI_BaseURL"),
+            manufacturer = tag(xml, "manufacturer").orEmpty(),
         )
 
         private fun unescapeXml(s: String): String = s

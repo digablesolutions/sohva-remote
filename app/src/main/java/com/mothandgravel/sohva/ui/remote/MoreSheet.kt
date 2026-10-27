@@ -1,5 +1,6 @@
 package com.mothandgravel.sohva.ui.remote
 
+import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.BlendMode
@@ -750,7 +751,11 @@ private fun SettingsTab(viewModel: RemoteViewModel, haptics: Boolean, onAddTv: (
                             Text(stringResource(R.string.check_open))
                         }
                         if (viewModel.hasFastKeys(tv)) {
-                            Text(stringResource(R.string.fast_keys_on), color = MaterialTheme.colorScheme.primary)
+                            // A status, not a button: muted, so amber stays for what can be pressed.
+                            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                                Icon(Icons.Default.CheckCircle, contentDescription = null, tint = MaterialTheme.colorScheme.tertiary, modifier = Modifier.size(16.dp))
+                                Text(stringResource(R.string.fast_keys_on), color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            }
                         } else {
                             TextButton(onClick = { onFastKeys(tv) }, contentPadding = PaddingValues(0.dp)) {
                                 Text(stringResource(R.string.fast_keys_setup))

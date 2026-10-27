@@ -66,7 +66,8 @@ class DiscoverViewModel @Inject constructor(
         }
         viewModelScope.launch {
             _state.update { it.copy(probing = true) }
-            val tv = discovery.probe(ip) ?: DiscoveredTv(host = ip, name = "Bravia at $ip", model = "", webApi = false)
+            // Not a Bravia web API: a TV with Control remotely off still answers on the fast key port.
+            val tv = discovery.probe(ip) ?: DiscoveredTv(host = ip, name = "Bravia at $ip", model = "", webApi = !discovery.fastKeysAnswer(ip))
             _state.update { it.copy(probing = false, probed = tv) }
         }
     }

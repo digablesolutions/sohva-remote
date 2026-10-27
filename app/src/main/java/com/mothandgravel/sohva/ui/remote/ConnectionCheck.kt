@@ -3,13 +3,15 @@ package com.mothandgravel.sohva.ui.remote
 import androidx.annotation.StringRes
 import com.mothandgravel.sohva.R
 import com.mothandgravel.sohva.data.LocalNetwork
+import com.mothandgravel.sohva.protocol.PowerStatus
 import com.mothandgravel.sohva.protocol.TvCheck
 
 enum class CheckMark { OK, PROBLEM, NOTE }
 
 /** What a line's button does, when it has one. */
-enum class CheckFix { PAIR_AGAIN, SET_UP_FAST_KEYS, TURN_ON_REMOTE_START }
+enum class CheckFix { PAIR_AGAIN, SET_UP_FAST_KEYS, TURN_ON_REMOTE_START, USE_PHONE_AS_REMOTE }
 
+/** A step of the check. [title] names the thing checked, never a verdict, so it reads true either way. */
 data class CheckLine(@StringRes val title: Int, val mark: CheckMark, @StringRes val detail: Int? = null, val fix: CheckFix? = null)
 
 /**
@@ -29,17 +31,15 @@ fun checkLines(network: LocalNetwork, check: TvCheck, fastKeysPaired: Boolean): 
         add(CheckLine(R.string.check_tv_answers, CheckMark.PROBLEM, R.string.check_tv_silent))
         return@buildList
     }
-    add(CheckLine(R.string.check_tv_answers, CheckMark.OK))
+    add(
+        if (check.power == PowerStatus.STANDBY) CheckLine(R.string.check_tv_answers, CheckMark.NOTE, R.string.check_tv_standby)
+        else CheckLine(R.string.check_tv_answers, CheckMark.OK),
+    )
     if (!check.ipControl) {
-        // The TV is there (its Android TV remote service answers) but its web API is off.
-        add(CheckLine(R.string.check_ip_control, CheckMark.PROBLEM, R.string.check_ip_control_off))
+        // The TV is there (its Android TV remote service answers) but refuses its web API.
+        add(CheckLine(R.string.check_ip_control, CheckMark.PROBLEM, R.string.check_ip_control_off, CheckFix.USE_PHONE_AS_REMOTE))
     } else {
         add(CheckLine(R.string.check_ip_control, CheckMark.OK))
-        when (check.controlRemotely) {
-            true -> add(CheckLine(R.string.check_control_remotely, CheckMark.OK))
-            false -> add(CheckLine(R.string.check_control_remotely, CheckMark.PROBLEM, R.string.check_control_remotely_off))
-            null -> Unit
-        }
         when (check.paired) {
             true -> add(CheckLine(R.string.check_paired, CheckMark.OK))
             false -> add(CheckLine(R.string.check_paired, CheckMark.PROBLEM, R.string.check_paired_expired, CheckFix.PAIR_AGAIN))

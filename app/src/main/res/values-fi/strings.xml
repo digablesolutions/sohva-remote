@@ -13,7 +13,7 @@
     <string name="discover_tv_model">%1$s · %2$s</string>
     <string name="setup_title">Näin käyttöönotto toimii</string>
     <string name="setup_step_menu">Valitse televisiosi yllä. Se näyttää nelinumeroisen koodin, jonka kirjoitat tänne: television valikoissa ei tarvitse käydä.</string>
-    <string name="setup_step_auth">Eikö televisio näy listassa tai koodia ei tule? Sen verkko-ohjaus voi olla pois päältä. Valitse se silti tai lisää sen osoite alla: sovellus auttaa kytkemään sen päälle, vaikka television omaa kaukosäädintä ei olisi.</string>
+    <string name="setup_step_auth">Eikö televisio näy listassa tai koodia ei tule? Siinä voi olla Hallitse etänä pois päältä. Valitse se silti tai lisää sen osoite alla: sovellus auttaa kytkemään sen päälle, vaikka television omaa kaukosäädintä ei olisi.</string>
     <string name="setup_step_start">Lopuksi Tarkista yhteys (Asetuksissa) kertoo, onko etäkäynnistys pois päältä. Sovellus tarvitsee sitä käynnistääkseen television.</string>
     <string name="setup_footer">Pidä puhelin samassa Wi-Fi-verkossa kuin televisio.</string>
 
@@ -25,7 +25,7 @@
     <string name="pair_requesting">Pyydetään koodia televisiolta…</string>
     <string name="pair_wrong_pin">Väärä koodi. Tarkista koodi televisiosta ja yritä uudelleen.</string>
     <string name="pair_failed">Laiteparin muodostaminen epäonnistui: %1$s</string>
-    <string name="pair_not_supported">Televisio kieltäytyi parituksesta: ohjaus verkon kautta on luultavasti pois päältä. Televisiossa: Asetukset › Verkko ja internet › Etälaitteiden asetukset › Hallitse etänä › Päällä.</string>
+    <string name="pair_not_supported">Televisio hylkäsi laiteparipyynnön. Televisiossa: Asetukset › Verkko ja internet › Etälaitteiden asetukset › Hallitse etänä › Päällä.</string>
     <string name="pair_cancel">Peruuta</string>
 
     <!-- Remote -->
@@ -236,18 +236,16 @@
     <string name="check_open">Tarkista yhteys</string>
     <string name="check_title">Yhteys: %1$s</string>
     <string name="check_again">Tarkista uudelleen</string>
-    <string name="check_phone">Puhelin on kotiverkossa</string>
+    <string name="check_phone">Kotiverkko</string>
     <string name="check_phone_offline">Puhelin ei ole yhteydessä verkkoon.</string>
     <string name="check_phone_mobile">Puhelin käyttää mobiilidataa. Yhdistä se samaan Wi-Fi-verkkoon kuin televisio.</string>
     <string name="check_phone_vpn">VPN on päällä. Sulje se tai salli lähiverkon käyttö VPN-sovelluksessa.</string>
-    <string name="check_tv_answers">Televisio vastaa</string>
-    <string name="check_tv_silent">Tästä osoitteesta ei vastata. Tarkista, että televisio on kytketty sähköverkkoon ja samassa Wi-Fi-verkossa kuin puhelin. Jos sen osoite on muuttunut, lisää televisio uudelleen (Asetukset › Lisää toinen televisio).</string>
-    <string name="check_ip_control">Ohjaus verkon kautta</string>
-    <string name="check_ip_control_off">Televisio on verkossa, mutta ei salli ohjausta sen kautta. Televisiossa: Asetukset › Verkko ja internet › Etälaitteiden asetukset › Hallitse etänä › Päällä (joissain malleissa: Kotiverkkoasetus › IP-ohjaus › Tunnistaminen › Normaali).</string>
-    <string name="check_control_remotely">Etäohjaus</string>
-    <string name="check_control_remotely_off">Televisio ei salli etäohjausta. Televisiossa: Asetukset › Verkko ja internet › Etälaitteiden asetukset › Hallitse etänä › Päällä.</string>
-    <string name="check_paired">Paritettu tähän puhelimeen</string>
-    <string name="check_paired_expired">Televisio ei enää hyväksy tämän puhelimen paritusta.</string>
+    <string name="check_tv_answers">Televisio verkossa</string>
+    <string name="check_tv_silent">Osoitteesta ei tule vastausta. Valmiustilassa oleva televisio ei vastaa, jos etäkäynnistys on pois päältä: käynnistä se ja tarkista uudelleen. Muuten tarkista, että televisio on kytketty sähköverkkoon ja samassa Wi-Fi-verkossa kuin puhelin, tai lisää se uudelleen, jos sen osoite on muuttunut (Asetukset › Lisää toinen televisio).</string>
+    <string name="check_ip_control">Hallitse etänä</string>
+    <string name="check_ip_control_off">Pois päältä: televisio ei hyväksy sovellusta. Asetus on televisiossa kohdassa Asetukset › Verkko ja internet › Etälaitteiden asetukset, ja tällä puhelimella pääset sinne.</string>
+    <string name="check_paired">Laitepari</string>
+    <string name="check_paired_expired">Televisio ei enää hyväksy laiteparia tämän puhelimen kanssa.</string>
     <string name="check_remote_start">Etäkäynnistys</string>
     <string name="check_remote_start_off">Pois päältä: sovellus ei voi käynnistää televisiota valmiustilasta, joten herätykset ja kohtaukset eivät myöskään voi.</string>
     <string name="check_remote_start_turn_on">Ota etäkäynnistys käyttöön</string>
@@ -255,14 +253,21 @@
     <string name="check_fast_keys_none">Ei käytössä: näppäinpainallukset menevät televisioon hieman hitaammin.</string>
     <string name="check_fast_keys_silent">Television Android TV -kaukosäädinpalvelu ei vastaa, joten näppäimet kulkevat hitaampaa reittiä.</string>
     <string name="check_fix_failed">Televisio ei hyväksynyt muutosta. Ota se käyttöön television valikosta: Asetukset › Verkko ja internet › Etäkäynnistys.</string>
-    <string name="discover_ip_control_off">Verkko-ohjaus pois päältä: valitse, niin kytketään päälle</string>
+    <string name="discover_ip_control_off">Hallitse etänä on pois päältä: valitse ja kytke se päälle</string>
     <string name="no_remote_title">Puhelin kaukosäätimeksi</string>
-    <string name="no_remote_intro">Televisio ei salli ohjausta verkon kautta, ja sen kytkeminen vaatii television valikoita. Tällä puhelimella voi ohjata niitä television Android TV -kaukosäädinpalvelun kautta, joka ei vaadi asetuksia. Parita ensin puhelin koodilla, jonka televisio näyttää.</string>
-    <string name="no_remote_steps">Televisiossa, alla olevilla näppäimillä: paina Asetukset (tai Koti ja oikean yläkulman ratas), sitten Verkko ja internet › Etälaitteiden asetukset › Hallitse etänä › Päällä. Kytke samalla myös Etäkäynnistys päälle (Verkko ja internet). Paina sitten Valmis.</string>
+    <string name="no_remote_intro">Televisiossa on Hallitse etänä pois päältä, ja sen kytkeminen vaatii käyntiä television valikoissa. Tämä puhelin voi painaa näppäimiä puolestasi. Kirjoita ensin koodi, jonka televisio näyttää; lopussa tulee vielä toinen koodi.</string>
     <string name="no_remote_lost">Yhteys televisioon katkesi.</string>
-    <string name="no_remote_still_off">Televisio kieltäytyy yhä. Tarkista, että Hallitse etänä on päällä; joissain malleissa myös Kotiverkkoasetus › IP-ohjaus › Tunnistaminen › Normaali. Paina sitten Valmis uudelleen.</string>
+    <string name="no_remote_still_off">Televisio ei vieläkään salli ohjausta. Tarkista, että Hallitse etänä on päällä, ja paina Valmis uudelleen.</string>
     <string name="no_remote_done">Valmis</string>
-    <string name="no_remote_settings_key">Asetukset</string>
-    <string name="no_remote_offer">Eikö kaukosäädintä ole käsillä television asetusten muuttamiseen?</string>
+    <string name="no_remote_offer">Televisio ei hyväksy sovellusta: Hallitse etänä on luultavasti pois päältä. Eikö television kaukosäädintä löydy? Tämä puhelin voi kytkeä sen päälle.</string>
     <string name="no_remote_button">Puhelin kaukosäätimeksi</string>
+    <string name="check_tv_standby">Valmiustilassa: se vastaa, joten sovellus voi käynnistää sen.</string>
+    <string name="check_mark_ok">Kunnossa</string>
+    <string name="check_mark_problem">Vaatii huomiota</string>
+    <string name="check_mark_note">Huomio</string>
+    <string name="no_remote_steps_title">Televisiossa, alla olevilla näppäimillä</string>
+    <string name="no_remote_step_open">Paina Koti, sitten Ylös yläriville ja Oikealle oikean yläkulman rattaaseen. Paina OK.</string>
+    <string name="no_remote_step_menu">Avaa Verkko ja internet › Etälaitteiden asetukset.</string>
+    <string name="no_remote_step_switch">Kytke Hallitse etänä päälle.</string>
+    <string name="no_remote_step_done">Paina alta Valmis.</string>
 </resources>

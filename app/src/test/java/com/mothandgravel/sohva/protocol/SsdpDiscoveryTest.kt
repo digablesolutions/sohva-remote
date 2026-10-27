@@ -2,6 +2,8 @@ package com.mothandgravel.sohva.protocol
 
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.test.runTest
+import okhttp3.mockwebserver.MockResponse
+import okhttp3.mockwebserver.MockWebServer
 import org.junit.Test
 
 class SsdpDiscoveryTest {
@@ -115,4 +117,29 @@ class SsdpDiscoveryTest {
             tv.stop()
         }
     }
+
+    @Test
+    fun `mDNS finds count only when the Cast description says Sony`() = runTest {
+        val server = MockWebServer()
+        server.start()
+        try {
+            val ssdp = SsdpDiscovery()
+            server.enqueue(MockResponse().setBody(castDescription("Sony", "KD-65XF9005", "BRAVIA 4K GB ATV3")))
+            val tv = ssdp.sonyCastDevice(server.hostName, server.port)
+            assertThat(tv?.name).isEqualTo("KD-65XF9005")
+            assertThat(tv?.model).isEqualTo("BRAVIA 4K GB ATV3")
+            server.enqueue(MockResponse().setBody(castDescription("Google Inc.", "Living room", "Chromecast")))
+            assertThat(ssdp.sonyCastDevice(server.hostName, server.port)).isNull()
+            server.enqueue(MockResponse().setResponseCode(404))
+            assertThat(ssdp.sonyCastDevice(server.hostName, server.port)).isNull()
+        } finally {
+            server.shutdown()
+        }
+    }
+
+    private fun castDescription(manufacturer: String, name: String, model: String) = """<?xml version="1.0"?>
+<root xmlns="urn:schemas-upnp-org:device-1-0"><device>
+<deviceType>urn:dial-multiscreen-org:device:dial:1</deviceType>
+<friendlyName>$name</friendlyName><manufacturer>$manufacturer</manufacturer><modelName>$model</modelName>
+</device></root>"""
 }

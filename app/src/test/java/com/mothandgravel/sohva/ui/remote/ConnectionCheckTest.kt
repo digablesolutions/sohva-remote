@@ -15,7 +15,7 @@ class ConnectionCheckTest {
         val lines = checkLines(LocalNetwork.OK, allGood, fastKeysPaired = true)
         assertThat(lines.map { it.mark }.toSet()).containsExactly(CheckMark.OK)
         assertThat(lines.map { it.title }).containsExactly(
-            R.string.check_phone, R.string.check_tv_answers, R.string.check_ip_control, R.string.check_control_remotely,
+            R.string.check_phone, R.string.check_tv_answers, R.string.check_ip_control,
             R.string.check_paired, R.string.check_remote_start, R.string.check_fast_keys,
         ).inOrder()
     }
@@ -31,12 +31,20 @@ class ConnectionCheckTest {
     }
 
     @Test
-    fun `IP control off is told apart from a TV that is not there`() {
-        val ipOff = TvCheck(ipControl = false, androidTvRemote = true, power = null, controlRemotely = null, paired = null, remoteStart = null)
-        val lines = checkLines(LocalNetwork.OK, ipOff, fastKeysPaired = false)
+    fun `a TV in standby is a note, not a problem`() {
+        val lines = checkLines(LocalNetwork.OK, allGood.copy(power = PowerStatus.STANDBY), fastKeysPaired = true)
+        assertThat(lines.first { it.title == R.string.check_tv_answers })
+            .isEqualTo(CheckLine(R.string.check_tv_answers, CheckMark.NOTE, R.string.check_tv_standby))
+        assertThat(lines.none { it.mark == CheckMark.PROBLEM }).isTrue()
+    }
+
+    @Test
+    fun `Control remotely off is told apart from a TV that is not there, and offers this phone`() {
+        val off = TvCheck(ipControl = false, androidTvRemote = true, power = null, controlRemotely = null, paired = null, remoteStart = null)
+        val lines = checkLines(LocalNetwork.OK, off, fastKeysPaired = false)
         assertThat(lines.first { it.title == R.string.check_tv_answers }.mark).isEqualTo(CheckMark.OK)
         assertThat(lines.first { it.title == R.string.check_ip_control })
-            .isEqualTo(CheckLine(R.string.check_ip_control, CheckMark.PROBLEM, R.string.check_ip_control_off))
+            .isEqualTo(CheckLine(R.string.check_ip_control, CheckMark.PROBLEM, R.string.check_ip_control_off, CheckFix.USE_PHONE_AS_REMOTE))
         assertThat(lines.map { it.title }).doesNotContain(R.string.check_paired)
     }
 

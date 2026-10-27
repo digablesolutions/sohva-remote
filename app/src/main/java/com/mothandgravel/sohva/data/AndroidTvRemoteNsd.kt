@@ -8,12 +8,17 @@ import com.mothandgravel.sohva.protocol.DiscoveredTv
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import java.net.Inet4Address
+import java.util.concurrent.CountDownLatch
+import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
 
 /**
  * Finds TVs by their Android TV Remote service (mDNS `_androidtvremote2._tcp`), which every
- * Android TV advertises with no setting to switch on. It finds a Bravia whose IP control is off,
+ * Android TV advertises with no setting to switch on. It finds a Bravia with Control remotely off,
  * where SSDP for the web API stays silent: the TV a user without the physical remote can't fix.
+ * Chromecasts and other brands answer too; [AndroidDiscovery] keeps only Sony's.
  */
 class AndroidTvRemoteNsd(context: Context) {
     private val nsd = context.applicationContext.getSystemService(NsdManager::class.java)
@@ -49,9 +54,9 @@ class AndroidTvRemoteNsd(context: Context) {
      * FAILURE_ALREADY_ACTIVE, so resolves wait for each other on one thread.
      */
     @Suppress("DEPRECATION")
-    private fun resolve(manager: NsdManager, service: NsdServiceInfo, queue: java.util.concurrent.ExecutorService, onResolved: (NsdServiceInfo) -> Unit) {
+    private fun resolve(manager: NsdManager, service: NsdServiceInfo, queue: ExecutorService, onResolved: (NsdServiceInfo) -> Unit) {
         queue.execute {
-            val done = java.util.concurrent.CountDownLatch(1)
+            val done = CountDownLatch(1)
             manager.resolveService(service, object : NsdManager.ResolveListener {
                 override fun onServiceResolved(info: NsdServiceInfo) {
                     onResolved(info)
@@ -62,14 +67,14 @@ class AndroidTvRemoteNsd(context: Context) {
                     done.countDown()
                 }
             })
-            done.await(RESOLVE_TIMEOUT_S, java.util.concurrent.TimeUnit.SECONDS)
+            done.await(RESOLVE_TIMEOUT_S, TimeUnit.SECONDS)
         }
     }
 
     @Suppress("DEPRECATION")
     private fun NsdServiceInfo.hostAddressCompat(): String? {
-        val address = if (Build.VERSION.SDK_INT >= 34) hostAddresses.firstOrNull { it is java.net.Inet4Address } else host
-        return (address as? java.net.Inet4Address)?.hostAddress
+        val address = if (Build.VERSION.SDK_INT >= 34) hostAddresses.firstOrNull { it is Inet4Address } else host
+        return (address as? Inet4Address)?.hostAddress
     }
 
     companion object {

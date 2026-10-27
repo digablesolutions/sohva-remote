@@ -32,7 +32,10 @@ import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.ensureActive
+import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -130,8 +133,8 @@ class TvController @Inject constructor(
     /** Key presses run one after another so fast taps keep their order. */
     private val sendQueue = Channel<suspend () -> Unit>(Channel.UNLIMITED)
 
-    /** The newest level [setVolume] was asked for and has not reached yet, or [NO_LEVEL]. */
-    private val volumeWanted = AtomicInteger(NO_LEVEL)
+    /** Levels asked for by [setVolume]; only the newest is kept. */
+    private val volumeWanted = MutableSharedFlow<Int>(extraBufferCapacity = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
 
     /** Keys queued or in flight; auto-repeats are skipped while the TV is still busy. */
     private val pendingKeys = AtomicInteger(0)
@@ -139,6 +142,16 @@ class TvController @Inject constructor(
     init {
         scope.launch {
             for (work in sendQueue) runCatching { work() }.onFailure { DebugLog.w(it) { "Queued TV call failed" } }
+        }
+        scope.launch {
+            volumeWanted.collectLatest { level ->
+                val client = api ?: return@collectLatest
+                runCatching { stepVolumeTo(client, level) }.onFailure {
+                    if (it is CancellationException) throw it
+                    DebugLog.w(it) { "Setting the volume failed" }
+                }
+                scheduleVolumeRefresh()
+            }
         }
         scope.launch {
             _playing.collect { playing ->
@@ -826,27 +839,12 @@ class TvController @Inject constructor(
     }
 
     /**
-     * Steps the TV to [level]. A drag on the volume bar calls this for every level it passes: only
-     * the newest counts, and one queued job steps to it, so no backlog of old levels builds up.
+     * Steps the TV to [level] (voice, the volume bar). A drag calls this for every level it passes:
+     * only the newest counts, and a newer one replaces a step in flight. It runs beside the key
+     * queue, not in it, so keys never wait behind a sound system's slow steps.
      */
     fun setVolume(level: Int) {
-        val client = api ?: return
-        if (volumeWanted.getAndSet(level) != NO_LEVEL) return
-        sendQueue.trySend {
-            try {
-                while (true) {
-                    val target = volumeWanted.get()
-                    if (target == NO_LEVEL) break
-                    stepVolumeTo(client, target)
-                    if (volumeWanted.compareAndSet(target, NO_LEVEL)) break
-                }
-            } catch (e: Throwable) {
-                // Never leave a level behind that would make every later call wait for this job.
-                volumeWanted.set(NO_LEVEL)
-                throw e
-            }
-            scheduleVolumeRefresh()
-        }
+        volumeWanted.tryEmit(level)
     }
 
     /**
@@ -1106,7 +1104,6 @@ class TvController @Inject constructor(
 
         /** One volume key moves an HDMI-CEC sound system's level by 2. */
         const val VOLUME_STEP = 2
-        private const val NO_LEVEL = -1
         const val MAX_VOLUME_STEPS = 60
         const val VOLUME_SETTLE_MS = 600L
         const val MAX_VOLUME_STALLS = 2

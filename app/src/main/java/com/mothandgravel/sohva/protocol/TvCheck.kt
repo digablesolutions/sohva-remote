@@ -13,12 +13,15 @@ import java.net.Socket
  * e.g. nothing past "answers" when the TV does not answer at all.
  */
 data class TvCheck(
-    /** The TV's web API answered (Settings › Network › Home network setup › IP control). */
+    /**
+     * The TV's web API answered. Off when Settings › Network & Internet › Remote device settings ›
+     * Control remotely is off (on some models also Home network setup › IP control).
+     */
     val ipControl: Boolean,
     /** The Android TV Remote service answered (fast keys), which works even with IP control off. */
     val androidTvRemote: Boolean,
     val power: PowerStatus?,
-    /** Settings › Network › Remote device settings › Control remotely. */
+    /** Control remotely as the TV reports it; only readable while it is on, so mostly informative. */
     val controlRemotely: Boolean?,
     /** The saved pairing still works; null when there is none to try. */
     val paired: Boolean?,
@@ -38,10 +41,20 @@ class TvChecker(
     private val httpClient: OkHttpClient = BraviaApi.defaultClient(),
     private val portOpen: suspend (host: String, port: Int) -> Boolean = ::tcpPortOpen,
 ) {
+    /**
+     * Whether the TV's web API answers at all: off when Settings › Network & Internet › Remote device
+     * settings › Control remotely is off (the TV then closes port 80), or the TV is not there.
+     */
+    suspend fun webApiAnswers(host: String): Boolean =
+        answers { BraviaApi("http://$host/", httpClient).getInterfaceInformation() }
+
+    /** Whether the TV's Android TV Remote service (fast keys) accepts a connection. */
+    suspend fun fastKeysAnswer(host: String): Boolean = portOpen(host, AtvRemote.PORT)
+
     suspend fun check(host: String, auth: BraviaAuth?): TvCheck = coroutineScope {
         val remote = async { portOpen(host, AtvRemote.PORT) }
         val api = BraviaApi("http://$host/", httpClient)
-        val ipControl = answers { api.getInterfaceInformation() }
+        val ipControl = webApiAnswers(host)
         if (!ipControl) {
             return@coroutineScope TvCheck(ipControl = false, androidTvRemote = remote.await(), power = null, controlRemotely = null, paired = null, remoteStart = null)
         }

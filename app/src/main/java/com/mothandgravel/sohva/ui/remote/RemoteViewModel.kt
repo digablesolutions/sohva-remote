@@ -36,6 +36,7 @@ import com.mothandgravel.sohva.voice.VoiceInbox
 import javax.inject.Inject
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
@@ -188,8 +189,7 @@ class RemoteViewModel @Inject constructor(
     fun selectInput(uri: String) = controller.selectInput(uri)
     fun launchApp(uri: String) = controller.launchApp(uri)
 
-    /** Paired for fast keys, and the TV still accepts that pairing. */
-    private val _checking = kotlinx.coroutines.flow.MutableStateFlow<SavedTv?>(null)
+    private val _checking = MutableStateFlow<SavedTv?>(null)
 
     /** The TV whose connection check is open, if any. */
     val checking: StateFlow<SavedTv?> = _checking
@@ -202,6 +202,7 @@ class RemoteViewModel @Inject constructor(
         _checking.value = null
     }
 
+    /** Paired for fast keys, and the TV still accepts that pairing. */
     fun hasFastKeys(tv: SavedTv): Boolean =
         credentials.atvCertificate(tv.id) != null && !(controller.fastKeysRefused.value && tv.id == state.value.tvOrNull?.id)
 

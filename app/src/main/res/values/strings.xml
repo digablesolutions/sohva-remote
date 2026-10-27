@@ -15,7 +15,7 @@
     <string name="discover_tv_model">%1$s · %2$s</string>
     <string name="setup_title">How setup works</string>
     <string name="setup_step_menu">Pick your TV above. It shows a 4-digit code to type in here: no TV menus needed.</string>
-    <string name="setup_step_auth">TV not listed, or no code? Its network remote control may be off. Pick it anyway, or add its address below: the app helps you switch it on, even without the TV\'s own remote.</string>
+    <string name="setup_step_auth">TV not listed, or no code? It may have Control remotely off. Pick it anyway, or add its address below: the app helps you switch it on, even without the TV\'s own remote.</string>
     <string name="setup_step_start">Afterwards, Check connection (in Settings) tells you if Remote start is off. The app needs it to switch the TV on.</string>
     <string name="setup_footer">Keep this phone on the same Wi-Fi as the TV.</string>
 
@@ -27,7 +27,7 @@
     <string name="pair_requesting">Asking the TV for a code…</string>
     <string name="pair_wrong_pin">Wrong code. Check the TV screen and try again.</string>
     <string name="pair_failed">Pairing failed: %1$s</string>
-    <string name="pair_not_supported">This TV refused the pairing request: control over the network is probably off. On the TV: Settings › Network &amp; Internet › Remote device settings › Control remotely › On.</string>
+    <string name="pair_not_supported">This TV refused the pairing request. On the TV: Settings › Network &amp; Internet › Remote device settings › Control remotely › On.</string>
     <string name="pair_cancel">Cancel</string>
 
     <!-- Remote -->
@@ -239,17 +239,15 @@
     <string name="check_open">Check connection</string>
     <string name="check_title">Connection to %1$s</string>
     <string name="check_again">Check again</string>
-    <string name="check_phone">This phone is on the home network</string>
+    <string name="check_phone">Home network</string>
     <string name="check_phone_offline">This phone isn\'t connected to a network.</string>
     <string name="check_phone_mobile">This phone is on mobile data. Connect it to the Wi-Fi the TV is on.</string>
     <string name="check_phone_vpn">A VPN is on. Turn it off, or allow local network access in the VPN app.</string>
-    <string name="check_tv_answers">The TV answers</string>
-    <string name="check_tv_silent">No answer at this address. Check that the TV is plugged in and on the same Wi-Fi as this phone. If its address changed, add the TV again (Settings › Add another TV).</string>
-    <string name="check_ip_control">Control over the network</string>
-    <string name="check_ip_control_off">The TV is on the network but refuses control over it. On the TV: Settings › Network &amp; Internet › Remote device settings › Control remotely › On (on some models: Home network setup › IP control › Authentication › Normal).</string>
-    <string name="check_control_remotely">Control remotely</string>
-    <string name="check_control_remotely_off">The TV refuses remote control. On the TV: Settings › Network &amp; Internet › Remote device settings › Control remotely › On.</string>
-    <string name="check_paired">Paired with this phone</string>
+    <string name="check_tv_answers">TV on the network</string>
+    <string name="check_tv_silent">No answer at this address. A TV in standby with Remote start off can\'t answer either: switch it on and check again. Otherwise check that it\'s plugged in and on the same Wi-Fi as this phone, or add it again if its address changed (Settings › Add another TV).</string>
+    <string name="check_ip_control">Control remotely</string>
+    <string name="check_ip_control_off">Off: the TV refuses this app. It\'s under Settings › Network &amp; Internet › Remote device settings on the TV, and this phone can get you there.</string>
+    <string name="check_paired">Pairing</string>
     <string name="check_paired_expired">The TV no longer accepts this phone\'s pairing.</string>
     <string name="check_remote_start">Remote start</string>
     <string name="check_remote_start_off">Off: the app can\'t switch the TV on from standby, so wake-ups and scenes can\'t either.</string>
@@ -258,14 +256,21 @@
     <string name="check_fast_keys_none">Not set up: keys take a little longer to reach the TV.</string>
     <string name="check_fast_keys_silent">The TV\'s Android TV remote service doesn\'t answer, so keys go the slower way.</string>
     <string name="check_fix_failed">The TV didn\'t take the change. Turn it on in the TV\'s menu instead: Settings › Network &amp; Internet › Remote start.</string>
-    <string name="discover_ip_control_off">Network control off: pick it to switch it on</string>
+    <string name="discover_ip_control_off">Control remotely is off: pick it to switch it on</string>
     <string name="no_remote_title">Use this phone as the remote</string>
-    <string name="no_remote_intro">The TV refuses control over the network, and switching that on takes the TV\'s menus. This phone can steer them through the TV\'s Android TV remote service, which needs no setup. First, pair it with the code the TV shows.</string>
-    <string name="no_remote_steps">On the TV, with the keys below: press Settings (or Home, then the gear at the top right), then Network &amp; Internet › Remote device settings › Control remotely › On. While there, turn on Remote start too (in Network &amp; Internet). Then press Done.</string>
+    <string name="no_remote_intro">The TV has Control remotely off, and switching it on takes the TV\'s menus. This phone can press the keys for you. First type the code the TV shows; you\'ll get one more code at the end.</string>
     <string name="no_remote_lost">The connection to the TV dropped.</string>
-    <string name="no_remote_still_off">The TV still refuses. Check that Control remotely is on; on some models also Home network setup › IP control › Authentication › Normal. Then press Done again.</string>
+    <string name="no_remote_still_off">The TV still refuses. Check that Control remotely is on, then press Done again.</string>
     <string name="no_remote_done">Done</string>
-    <string name="no_remote_settings_key">Settings</string>
-    <string name="no_remote_offer">No remote at hand to change the TV\'s settings?</string>
+    <string name="no_remote_offer">The TV refuses the app: Control remotely is probably off. No remote at hand? This phone can switch it on.</string>
     <string name="no_remote_button">Use this phone as the remote</string>
+    <string name="check_tv_standby">In standby: it answers, so the app can switch it on.</string>
+    <string name="check_mark_ok">OK</string>
+    <string name="check_mark_problem">Needs attention</string>
+    <string name="check_mark_note">Note</string>
+    <string name="no_remote_steps_title">On the TV, with the keys below</string>
+    <string name="no_remote_step_open">Press Home, then Up to the top row and Right to the gear at the top right. Press OK.</string>
+    <string name="no_remote_step_menu">Open Network &amp; Internet › Remote device settings.</string>
+    <string name="no_remote_step_switch">Turn Control remotely on.</string>
+    <string name="no_remote_step_done">Press Done below.</string>
 </resources>

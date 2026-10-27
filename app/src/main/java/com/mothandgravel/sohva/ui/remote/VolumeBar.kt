@@ -55,8 +55,9 @@ class VolumeDrag {
 
 /** Lets go of the picked level once the TV reports it, or after a while if it never does. */
 @Composable
-fun rememberVolumeDrag(reported: Int?): VolumeDrag {
-    val drag = remember { VolumeDrag() }
+fun rememberVolumeDrag(tvId: String?, reported: Int?): VolumeDrag {
+    // Per TV: a level picked for one must not show on another after switching.
+    val drag = remember(tvId) { VolumeDrag() }
     LaunchedEffect(drag.level, drag.dragging, reported) {
         val level = drag.level ?: return@LaunchedEffect
         if (drag.dragging) return@LaunchedEffect
@@ -93,13 +94,15 @@ fun VolumeBar(volume: VolumeInfo, drag: VolumeDrag, haptics: Boolean, onVolume: 
             contentAlignment = Alignment.Center,
             modifier = Modifier
                 .weight(1f)
-                // Taller than the bar: a thumb needs room to grab it.
-                .height(28.dp)
+                // Taller than the bar: a thumb needs a full touch target to grab it.
+                .height(48.dp)
                 .semantics {
                     contentDescription = description
                     progressBarRangeInfo = ProgressBarRangeInfo(shown.toFloat(), volume.minVolume.toFloat()..volume.maxVolume.toFloat())
                     setProgress { target ->
-                        currentOnVolume(target.roundToInt().coerceIn(current.minVolume, current.maxVolume))
+                        val level = target.roundToInt().coerceIn(current.minVolume, current.maxVolume)
+                        drag.level = level
+                        currentOnVolume(level)
                         true
                     }
                 }

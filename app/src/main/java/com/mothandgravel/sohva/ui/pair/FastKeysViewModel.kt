@@ -74,6 +74,8 @@ class FastKeysViewModel @Inject constructor(
      */
     fun startUnsaved(host: String, name: String) {
         if (tv != null) return
+        // A pairing left half-done earlier (maybe with another device at this address) must not linger.
+        credentials.clearPendingAtvCertificate(host)
         tv = SavedTv(id = CredentialStore.pendingAtvKey(host), name = name, model = "", host = host)
         certificateKey = CredentialStore.pendingAtvKey(host)
         _state.update { it.copy(tvName = name) }

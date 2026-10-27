@@ -76,6 +76,7 @@ fun AppNav(root: RootViewModel = hiltViewModel()) {
                     nav.navigate(Routes.pair(DiscoveredTv(tv.host, tv.name, tv.model, tv.uuid)))
                 },
                 onFastKeys = { tv -> nav.navigate(Routes.fastKeys(tv.id)) },
+                onNoRemote = { tv -> nav.navigate(Routes.noRemote(DiscoveredTv(tv.host, tv.name, tv.model, tv.uuid, webApi = false))) },
             )
         }
         composable(Routes.FAST_KEYS, arguments = listOf(navArgument("tvId") { type = NavType.StringType })) { entry ->

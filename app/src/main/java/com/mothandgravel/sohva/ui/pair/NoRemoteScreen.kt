@@ -2,34 +2,25 @@ package com.mothandgravel.sohva.ui.pair
 
 import android.os.Build
 import android.view.KeyEvent
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.automirrored.filled.Undo
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.KeyboardArrowUp
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilledTonalButton
-import androidx.compose.material3.FilledTonalIconButton
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
@@ -40,7 +31,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -53,16 +43,24 @@ import com.mothandgravel.sohva.R
 import com.mothandgravel.sohva.data.AtvIdentity
 import com.mothandgravel.sohva.data.CredentialStore
 import com.mothandgravel.sohva.data.DebugLog
+import com.mothandgravel.sohva.data.TvStore
 import com.mothandgravel.sohva.protocol.AtvRemote
-import com.mothandgravel.sohva.protocol.BraviaApi
 import com.mothandgravel.sohva.protocol.DiscoveredTv
+import com.mothandgravel.sohva.protocol.TvChecker
+import com.mothandgravel.sohva.ui.StepsCard
+import com.mothandgravel.sohva.ui.remote.DPadRing
+import com.mothandgravel.sohva.ui.remote.SystemKey
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.asExecutor
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
@@ -84,58 +82,93 @@ data class NoRemoteUiState(
 class NoRemoteViewModel @Inject constructor(
     private val credentials: CredentialStore,
     private val identity: AtvIdentity,
-    private val httpClient: OkHttpClient,
+    store: TvStore,
+    httpClient: OkHttpClient,
 ) : ViewModel() {
+    val haptics: StateFlow<Boolean> = store.hapticsEnabled.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), true)
     private val _state = MutableStateFlow(NoRemoteUiState())
     val state: StateFlow<NoRemoteUiState> = _state.asStateFlow()
+    private val checker = TvChecker(httpClient)
     private var host: String? = null
     private var connection: AtvRemote.Connection? = null
+    private var connecting: Job? = null
 
-    /** Connects once fast keys are paired (the certificate waits under the TV's address). */
+    /**
+     * Connects once fast keys are paired (the certificate waits under the TV's address). The TV
+     * now and then drops the channel while its menus are in use (seen on the KD-65XF9005): that
+     * reconnects by itself, and only reconnects that keep failing ask the user to retry.
+     */
     fun connect(host: String) {
-        if (this.host == host && connection != null) return
+        if (connecting?.isActive == true) return
+        if (this.host == host && connection?.isOpen == true) return
         this.host = host
+        closeConnection()
         val certificate = credentials.atvCertificate(CredentialStore.pendingAtvKey(host)) ?: return
-        viewModelScope.launch {
+        connecting = viewModelScope.launch {
             _state.update { it.copy(failed = false) }
-            try {
-                val remote = AtvRemote(identity.socketFactory(), Build.MODEL, BuildConfig.APPLICATION_ID, BuildConfig.VERSION_NAME)
-                connection = remote.connect(host, certificate)
+            var attempts = 0
+            while (attempts < RECONNECT_ATTEMPTS) {
+                val opened = try {
+                    AtvRemote(identity.socketFactory(), Build.MODEL, BuildConfig.APPLICATION_ID, BuildConfig.VERSION_NAME)
+                        .connect(host, certificate)
+                } catch (e: Exception) {
+                    DebugLog.w(e) { "No-remote key channel failed" }
+                    attempts++
+                    delay(RECONNECT_DELAY_MS)
+                    continue
+                }
+                connection = opened
+                attempts = 0
                 _state.update { it.copy(connected = true) }
-            } catch (e: Exception) {
-                DebugLog.w(e) { "No-remote key channel failed" }
-                _state.update { it.copy(failed = true) }
+                val cause = opened.awaitClosed()
+                DebugLog.w(cause) { "No-remote key channel closed; reconnecting" }
+                if (connection !== opened) return@launch
+                connection = null
+                delay(RECONNECT_DELAY_MS)
             }
+            _state.update { it.copy(connected = false, failed = true) }
         }
     }
 
+    /** A key lost while the channel reconnects is not resent: nothing happens, and the user presses again. */
     fun press(keyCode: Int) {
-        if (connection?.sendKey(keyCode) != true) _state.update { it.copy(connected = false, failed = true) }
+        connection?.sendKey(keyCode)
     }
 
-    /** Asks the web API whether IP control is on now. */
+    /** Asks the web API whether it answers now, the same way the connection check does. */
     fun checkIpControl() {
         val host = host ?: return
         viewModelScope.launch {
             _state.update { it.copy(checking = true, stillOff = false) }
-            val on = runCatching { BraviaApi("http://$host/", httpClient).getInterfaceInformation() }.isSuccess
+            val on = checker.webApiAnswers(host)
             _state.update { it.copy(checking = false, ipControlOn = on, stillOff = !on) }
         }
     }
 
     fun consumeIpControlOn() = _state.update { it.copy(ipControlOn = false) }
 
+    /**
+     * Cancelled by the user: forget the fast keys paired for this address. Not in [onCleared]: going
+     * on to the PIN pairing clears this view model too, and that pairing adopts the certificate.
+     */
+    fun discard(host: String) = credentials.clearPendingAtvCertificate(host)
+
     override fun onCleared() {
+        connecting?.cancel()
+        closeConnection()
+    }
+
+    /** Closing sends a TLS close alert: network I/O, never on the main thread. */
+    private fun closeConnection() {
         val open = connection ?: return
         connection = null
-        // Closing sends a TLS close alert: network I/O, never on the main thread.
         Dispatchers.IO.asExecutor().execute { open.close() }
     }
 }
 
 /**
- * "No remote?": pair fast keys, then a D-pad and the way through the TV's menus to IP control,
- * then on to the usual PIN pairing.
+ * "No remote?": pair fast keys, then the way through the TV's menus as numbered steps with the
+ * remote's own D-pad, then on to the usual PIN pairing.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -148,6 +181,9 @@ fun NoRemoteScreen(
 ) {
     val pairing by fastKeys.state.collectAsStateWithLifecycle()
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val haptics by viewModel.haptics.collectAsStateWithLifecycle()
+    val cancel = { viewModel.discard(tv.host); onCancel() }
+    BackHandler(onBack = cancel)
     LaunchedEffect(tv.host) { fastKeys.startUnsaved(tv.host, tv.name) }
     LaunchedEffect(pairing.step) { if (pairing.step == FastKeysStep.Done) viewModel.connect(tv.host) }
     LaunchedEffect(state.ipControlOn) {
@@ -156,67 +192,72 @@ fun NoRemoteScreen(
             onIpControlOn(tv.copy(webApi = true))
         }
     }
+    val paired = pairing.step == FastKeysStep.Done
 
-    Scaffold(topBar = { TopAppBar(title = { Text(stringResource(R.string.no_remote_title)) }) }) { padding ->
+    Scaffold(
+        topBar = { TopAppBar(title = { Text(stringResource(R.string.no_remote_title)) }) },
+        // Done stays in reach however long the steps run (small phones, Finnish).
+        bottomBar = {
+            if (paired) {
+                Column(
+                    Modifier.fillMaxWidth().wrapContentWidth().widthIn(max = 600.dp).navigationBarsPadding().padding(horizontal = 24.dp, vertical = 12.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    if (state.stillOff) Text(stringResource(R.string.no_remote_still_off), color = MaterialTheme.colorScheme.error)
+                    Row(horizontalArrangement = Arrangement.spacedBy(16.dp), modifier = Modifier.align(Alignment.End)) {
+                        OutlinedButton(onClick = cancel) { Text(stringResource(R.string.pair_cancel)) }
+                        Button(onClick = viewModel::checkIpControl, enabled = !state.checking) {
+                            if (state.checking) CircularProgressIndicator(Modifier.size(18.dp), strokeWidth = 2.dp)
+                            else Text(stringResource(R.string.no_remote_done))
+                        }
+                    }
+                }
+            }
+        },
+    ) { padding ->
         Column(
+            // On a tablet the steps stay at a readable width, centred.
             Modifier.padding(padding).fillMaxSize().wrapContentWidth().widthIn(max = 600.dp)
                 .verticalScroll(rememberScrollState()).padding(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(16.dp),
+            verticalArrangement = Arrangement.spacedBy(20.dp),
         ) {
-            if (pairing.step != FastKeysStep.Done) {
-                Text(stringResource(R.string.no_remote_intro), textAlign = TextAlign.Center)
-                FastKeysSteps(pairing, fastKeys, onCancel)
+            if (!paired) {
+                Text(stringResource(R.string.no_remote_intro), style = MaterialTheme.typography.bodyLarge, modifier = Modifier.fillMaxWidth())
+                FastKeysSteps(pairing, fastKeys, cancel)
                 return@Column
             }
-            Text(stringResource(R.string.no_remote_steps), style = MaterialTheme.typography.bodyLarge)
+            StepsCard(
+                title = stringResource(R.string.no_remote_steps_title),
+                steps = listOf(R.string.no_remote_step_open, R.string.no_remote_step_menu, R.string.no_remote_step_switch, R.string.no_remote_step_done)
+                    .map { stringResource(it) },
+            )
             when {
-                state.connected -> DPad(viewModel::press)
+                state.connected -> Keys(haptics, viewModel::press)
                 state.failed -> {
                     Text(stringResource(R.string.no_remote_lost), color = MaterialTheme.colorScheme.error, textAlign = TextAlign.Center)
                     Button(onClick = { viewModel.connect(tv.host) }) { Text(stringResource(R.string.state_retry)) }
                 }
                 else -> CircularProgressIndicator()
             }
-            if (state.stillOff) {
-                Text(stringResource(R.string.no_remote_still_off), color = MaterialTheme.colorScheme.error, textAlign = TextAlign.Center)
-            }
-            Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                OutlinedButton(onClick = onCancel) { Text(stringResource(R.string.pair_cancel)) }
-                Button(onClick = viewModel::checkIpControl, enabled = !state.checking) {
-                    if (state.checking) CircularProgressIndicator(Modifier.size(18.dp), strokeWidth = 2.dp)
-                    else Text(stringResource(R.string.no_remote_done))
-                }
-            }
         }
     }
 }
 
-/** Just what the TV's menus need: arrows, OK, Back, Home and the Settings key. */
+/**
+ * The remote's own D-pad ring with Back and Home, captioned like on the remote. No Settings key:
+ * the KD-65XF9005 ignores KEYCODE_SETTINGS.
+ */
 @Composable
-private fun DPad(press: (Int) -> Unit) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        PadKey(Icons.Default.KeyboardArrowUp, R.string.remote_up) { press(KeyEvent.KEYCODE_DPAD_UP) }
-        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            PadKey(Icons.AutoMirrored.Filled.KeyboardArrowLeft, R.string.remote_left) { press(KeyEvent.KEYCODE_DPAD_LEFT) }
-            FilledTonalButton(onClick = { press(KeyEvent.KEYCODE_DPAD_CENTER) }, modifier = Modifier.size(72.dp)) {
-                Text(stringResource(R.string.remote_ok))
-            }
-            PadKey(Icons.AutoMirrored.Filled.KeyboardArrowRight, R.string.remote_right) { press(KeyEvent.KEYCODE_DPAD_RIGHT) }
-        }
-        PadKey(Icons.Default.KeyboardArrowDown, R.string.remote_down) { press(KeyEvent.KEYCODE_DPAD_DOWN) }
-        Spacer(Modifier.height(8.dp))
-        Row(horizontalArrangement = Arrangement.spacedBy(16.dp), modifier = Modifier.fillMaxWidth().wrapContentWidth()) {
-            PadKey(Icons.AutoMirrored.Filled.ArrowBack, R.string.remote_back) { press(KeyEvent.KEYCODE_BACK) }
-            PadKey(Icons.Default.Home, R.string.remote_home) { press(KeyEvent.KEYCODE_HOME) }
-            PadKey(Icons.Default.Settings, R.string.no_remote_settings_key) { press(KeyEvent.KEYCODE_SETTINGS) }
+private fun Keys(haptics: Boolean, press: (Int) -> Unit) {
+    Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(20.dp)) {
+        DPadRing(haptics, press = { key -> key.atvKeyCode?.let(press) }, pressRepeat = { key -> key.atvKeyCode?.let(press) })
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            SystemKey(stringResource(R.string.remote_back), stringResource(R.string.remote_back), Icons.AutoMirrored.Filled.Undo, haptics) { press(KeyEvent.KEYCODE_BACK) }
+            SystemKey(stringResource(R.string.remote_home), stringResource(R.string.remote_home), Icons.Default.Home, haptics) { press(KeyEvent.KEYCODE_HOME) }
         }
     }
 }
 
-@Composable
-private fun PadKey(icon: ImageVector, label: Int, onClick: () -> Unit) {
-    FilledTonalIconButton(onClick = onClick, modifier = Modifier.size(64.dp)) {
-        Icon(icon, contentDescription = stringResource(label), modifier = Modifier.width(32.dp).height(32.dp))
-    }
-}
+private const val RECONNECT_ATTEMPTS = 3
+private const val RECONNECT_DELAY_MS = 1_000L

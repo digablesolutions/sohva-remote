@@ -143,6 +143,7 @@ fun RemoteScreen(
     onAddTv: () -> Unit,
     onPairAgain: (SavedTv) -> Unit,
     onFastKeys: (SavedTv) -> Unit,
+    onNoRemote: (SavedTv) -> Unit,
     viewModel: RemoteViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -425,10 +426,13 @@ fun RemoteScreen(
         )
     }
     checking?.let { tv ->
+        // One sheet at a time: the check replaces the More sheet it may have been opened from.
+        LaunchedEffect(tv) { showMore = false }
         ConnectionCheckSheet(
             tv = tv,
             onPairAgain = onPairAgain,
             onFastKeys = onFastKeys,
+            onNoRemote = onNoRemote,
             onDismiss = viewModel::closeCheck,
         )
     }
@@ -506,7 +510,7 @@ private fun NowPlayingCard(
     onVolume: (Int) -> Unit,
     onMore: (() -> Unit)?,
 ) {
-    val volumeDrag = rememberVolumeDrag((state as? ConnectionState.Connected)?.volume?.volume)
+    val volumeDrag = rememberVolumeDrag(state.tvOrNull?.id, (state as? ConnectionState.Connected)?.volume?.volume)
     Column(
         Modifier
             .fillMaxWidth()
@@ -822,7 +826,7 @@ private fun PowerKey(isOn: Boolean, haptics: Boolean, onPress: () -> Unit) {
 
 /** One round target with the arrows on its rim, like the ring on the physical remote. */
 @Composable
-private fun DPadRing(haptics: Boolean, press: (RemoteKey) -> Unit, pressRepeat: (RemoteKey) -> Unit) {
+internal fun DPadRing(haptics: Boolean, press: (RemoteKey) -> Unit, pressRepeat: (RemoteKey) -> Unit) {
     val ring = 252.dp
     val arrow = 72.dp
     val edge = 4.dp
@@ -857,7 +861,7 @@ private fun DPadRing(haptics: Boolean, press: (RemoteKey) -> Unit, pressRepeat: 
 }
 
 @Composable
-private fun SystemKey(label: String, caption: String, icon: androidx.compose.ui.graphics.vector.ImageVector, haptics: Boolean, onPress: () -> Unit) {
+internal fun SystemKey(label: String, caption: String, icon: androidx.compose.ui.graphics.vector.ImageVector, haptics: Boolean, onPress: () -> Unit) {
     Column(Modifier.width(76.dp), horizontalAlignment = Alignment.CenterHorizontally) {
         RemoteButton(
             label, icon = icon, size = 60.dp, haptics = haptics, onPress = onPress,
