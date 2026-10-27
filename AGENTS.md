@@ -11,6 +11,8 @@ again once the app is on Play (it changed once, before the first release).
 Play only allows `USE_EXACT_ALARM` for alarm/calendar apps, so the app uses the user-granted
 `SCHEDULE_EXACT_ALARM` and shows `ExactAlarmNotice` until it is allowed.
 
+`site/` is the source for mothandgravel.com/sohva/ (hosted by the studio site) and is not deployed from this repo.
+
 ## Architecture
 
 - `protocol` is pure Kotlin with no Android imports: `BraviaApi` (JSON-RPC "Scalar
