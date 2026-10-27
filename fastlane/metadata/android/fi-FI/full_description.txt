@@ -1,6 +1,6 @@
 Sohva Remote tekee puhelimesta nopean kaukosäätimen Sony Bravia -televisioon kotiverkossa. Ei mainoksia ennen kuin ääni muuttuu, ei maksumuuria eikä käyttäjätiliä. Yhdistät television kerran sen ruudulla näkyvällä PIN-koodilla, ja yhteys pysyy.
 
-Sovellus ei ole Sonyn tekemä eikä millään tavalla sidoksissa Sonyyn. Sohva Remote on Digablen itsenäinen sovellus. Sony ja Bravia ovat Sony Group Corporationin tai sen konserniyhtiöiden tavaramerkkejä.
+Sovellus ei ole Sonyn tekemä eikä millään tavalla sidoksissa Sonyyn. Sohva Remote on Moth & Gravelin itsenäinen sovellus. Sony ja Bravia ovat Sony Group Corporationin tai sen konserniyhtiöiden tavaramerkkejä.
 
 Painallukset perille heti
 • Nuolinäppäimet, äänenvoimakkuus ja kanavanvaihto kulkevat television omaa Android TV Remote -yhteyttä pitkin ja ovat perillä kymmenissä millisekunneissa.

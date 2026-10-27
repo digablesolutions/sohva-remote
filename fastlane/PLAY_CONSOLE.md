@@ -4,14 +4,15 @@ The answers below match the code as of 1.5.2 (versionCode 11).
 
 ## 0. Status
 
-All repo blockers found in the first review are fixed (2026-10-25): package `fi.digable.sohva`, app
+All repo blockers found in the first review are fixed (2026-10-25): package `com.mothandgravel.sohva`, app
 name "Sohva Remote", targetSdk 36, `SCHEDULE_EXACT_ALARM` instead of `USE_EXACT_ALARM` (asked in the
 Timers tab, inexact fallback), privacy pages live in English and Finnish, launcher icon = store icon,
 Finnish UI. Still open, outside the repo:
 
 - **Promo video**: upload `fastlane/video/promo-<locale>.mp4` to YouTube (unlisted, embeddable, no ads)
   and put the URLs in `metadata/android/<locale>/video.txt`. Optional for the listing.
-- **Organization account** verification (D-U-N-S, address, phone).
+- **Developer account**: the owner's personal account, developer name "Moth & Gravel" (identity
+  verification, contact details).
 - **Promo videos** (`fastlane/video/`) were re-recorded for 1.5.0 (with Ad break). The phone and
   10-inch tablet screenshots are current as of 1.5.0.
 
@@ -27,15 +28,15 @@ Finnish UI. Still open, outside the repo:
   and would rank against much bigger apps.
 - Tags (choose up to 5 that the console offers; closest matches): Remote control, Smart home,
   TV, Utilities, Wi-Fi tools (pick whatever of these exists in the tag picker).
-- Contact email: `perttu@digable.fi` (also the privacy pages' contact)
-- Website: https://digablesolutions.github.io/sohva-remote/
-- Privacy policy: https://digablesolutions.github.io/sohva-remote/privacy.html
+- Contact email: `hello@mothandgravel.com` (also the privacy pages' contact)
+- Website: https://mothandgravel.com/sohva/
+- Privacy policy: https://mothandgravel.com/sohva/privacy/
 - External marketing: allow (default).
 
 ## 2. App content (Policy > App content)
 
 ### Privacy policy
-https://digablesolutions.github.io/sohva-remote/privacy.html
+https://mothandgravel.com/sohva/privacy/
 
 ### Ads
 **No, my app does not contain ads.**
@@ -94,7 +95,7 @@ Not applicable.
   Source: https://support.google.com/googleplay/android-developer/answer/10787469
   - What does leave the phone: key presses, channel/input/app choices and the text typed or dictated
     into the TV's search box, sent only to the user's own TV on the home network. Nothing ever
-    reaches Digable or any server, and the TV is the user's device, not a third party.
+    reaches Moth & Gravel or any server, and the TV is the user's device, not a third party.
   - The honest grey area: the TV is technically "off the device". The "No" answer rests on the
     reading that commands sent to the user's own hardware on the LAN, never to the developer, are not
     collection (this is how other LAN remote apps answer). If you want to be conservative instead,
@@ -107,7 +108,7 @@ Not applicable.
 - Do you provide a way for users to request that their data is deleted? Not shown when nothing is
   collected. For the privacy policy text: the data that exists lives only on the phone. Remove one TV
   with **Forget** (Settings tab of the sheet under the remote, `MoreSheet.kt`; it asks first); remove everything with Android Settings > Apps > Sohva Remote > Storage >
-  Clear storage, or by uninstalling. Nothing is held by Digable, so there is nothing to request.
+  Clear storage, or by uninstalling. Nothing is held by Moth & Gravel, so there is nothing to request.
 - What stays on the device (describe in the privacy policy, not in the form):
   - TV address, name, channel/input/app lists, scenes, timers, settings: DataStore preferences.
   - Pairing secrets (auth cookies, per-TV IRCC code tables, the TVs' Android TV Remote certificates):
@@ -158,7 +159,7 @@ No / None / No.
 ## 3. Pre-launch checklist
 
 - [x] Repo blockers resolved (see section 0) - done 2026-10-25.
-- [ ] Organization developer account for Digable verified (D-U-N-S, address, phone).
+- [ ] Personal developer account verified, developer name "Moth & Gravel" (identity, contact details).
 - [ ] Build a signed **Android App Bundle** (`./gradlew bundleRelease`), R8 on, no debug logs.
 - [ ] **App signing: use our own key** (decided 2026-10-25). The GitHub release APK is signed with
       `~/.android/sohva-upload.jks` (alias `upload`, SHA-256 A0:3B:3F:9F:...:C4:26), so Play must

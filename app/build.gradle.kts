@@ -10,12 +10,12 @@ plugins {
 }
 
 android {
-    namespace = "fi.digable.braviaremote"
+    namespace = "com.mothandgravel.sohva"
     compileSdk = 36
 
     defaultConfig {
         // Play package id: can never change after the first upload.
-        applicationId = "fi.digable.sohva"
+        applicationId = "com.mothandgravel.sohva"
         minSdk = 26
         targetSdk = 36
         versionCode = 11

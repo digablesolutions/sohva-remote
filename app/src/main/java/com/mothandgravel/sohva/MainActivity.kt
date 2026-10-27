@@ -1,0 +1,94 @@
+package com.mothandgravel.sohva
+
+import android.content.Context
+import android.content.Intent
+import android.content.pm.ActivityInfo
+import android.os.Bundle
+import android.view.KeyEvent
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.Surface
+import androidx.compose.ui.Modifier
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import dagger.hilt.android.AndroidEntryPoint
+import com.mothandgravel.sohva.data.AppLanguage
+import com.mothandgravel.sohva.data.AppShortcuts
+import com.mothandgravel.sohva.data.ConnectionState
+import com.mothandgravel.sohva.data.HardwareKeys
+import com.mothandgravel.sohva.data.TvController
+import com.mothandgravel.sohva.di.ApplicationScope
+import com.mothandgravel.sohva.protocol.RemoteKey
+import com.mothandgravel.sohva.ui.AppNav
+import com.mothandgravel.sohva.ui.theme.BraviaRemoteTheme
+import com.mothandgravel.sohva.voice.VoiceInbox
+import javax.inject.Inject
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
+
+@AndroidEntryPoint
+class MainActivity : ComponentActivity() {
+
+    @Inject lateinit var hardwareKeys: HardwareKeys
+    @Inject lateinit var voiceInbox: VoiceInbox
+    @Inject lateinit var controller: TvController
+    @Inject @ApplicationScope lateinit var scope: CoroutineScope
+
+    // Before Android 13, the in-app language choice (Settings tab); later the system applies it.
+    override fun attachBaseContext(newBase: Context) = super.attachBaseContext(AppLanguage.wrap(newBase))
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        installSplashScreen()
+        super.onCreate(savedInstanceState)
+        // The manifest keeps phones upright (the remote is one tall column). A tablet turns freely:
+        // on its side the remote gets two panes. Android 16 ignores the lock on large screens anyway.
+        if (resources.configuration.smallestScreenWidthDp >= 600) {
+            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+        }
+        enableEdgeToEdge()
+        takeDebugVoice(intent)
+        openTvApp(intent)
+        setContent {
+            BraviaRemoteTheme {
+                Surface(Modifier.fillMaxSize()) { AppNav() }
+            }
+        }
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        takeDebugVoice(intent)
+        openTvApp(intent)
+    }
+
+    /** A launcher shortcut for a pinned app: open it on the TV once the session is up. */
+    private fun openTvApp(intent: Intent?) {
+        if (intent?.action != AppShortcuts.ACTION_OPEN_TV_APP) return
+        val uri = intent.getStringExtra(AppShortcuts.EXTRA_URI) ?: return
+        scope.launch {
+            if (controller.awaitSession() is ConnectionState.Connected) controller.launchApp(uri)
+        }
+    }
+
+    private fun takeDebugVoice(intent: Intent?) {
+        if (BuildConfig.DEBUG) intent?.getStringExtra("voice")?.let(voiceInbox::offer)
+    }
+
+    /** Phone volume rocker controls the TV while the remote screen is listening (F15). */
+    override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
+        val key = volumeKey(keyCode) ?: return super.onKeyDown(keyCode, event)
+        return hardwareKeys.offer(key, repeat = event.repeatCount > 0) || super.onKeyDown(keyCode, event)
+    }
+
+    override fun onKeyUp(keyCode: Int, event: KeyEvent): Boolean {
+        if (volumeKey(keyCode) != null && hardwareKeys.hasListener) return true
+        return super.onKeyUp(keyCode, event)
+    }
+
+    private fun volumeKey(keyCode: Int): RemoteKey? = when (keyCode) {
+        KeyEvent.KEYCODE_VOLUME_UP -> RemoteKey.VOLUME_UP
+        KeyEvent.KEYCODE_VOLUME_DOWN -> RemoteKey.VOLUME_DOWN
+        else -> null
+    }
+}

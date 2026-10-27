@@ -33,4 +33,4 @@ Allow: /
 User-agent: CCBot
 Allow: /
 
-Sitemap: https://digablesolutions.github.io/sohva-remote/sitemap.xml
+Sitemap: https://mothandgravel.com/sohva/sitemap.xml
