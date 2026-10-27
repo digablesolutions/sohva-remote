@@ -87,7 +87,12 @@ fun DiscoverScreen(
             items(state.found, key = { it.host }) { tv ->
                 ListItem(
                     headlineContent = { Text(tv.name) },
-                    supportingContent = { Text(stringResource(R.string.discover_tv_model, tv.model.ifBlank { "Bravia" }, tv.host)) },
+                    supportingContent = {
+                        Column {
+                            Text(stringResource(R.string.discover_tv_model, tv.model.ifBlank { "Bravia" }, tv.host))
+                            if (!tv.webApi) Text(stringResource(R.string.discover_ip_control_off), color = MaterialTheme.colorScheme.primary)
+                        }
+                    },
                     leadingContent = { Icon(Icons.Default.Tv, contentDescription = null) },
                     modifier = Modifier.clickable { onTvChosen(tv) },
                 )

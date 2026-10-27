@@ -10,6 +10,8 @@ data class DiscoveredTv(
     val model: String,
     /** The UPnP UDN without the `uuid:` prefix, when known. */
     val uuid: String? = null,
+    /** False when only the Android TV Remote service answered: IP control is off on the TV. */
+    val webApi: Boolean = true,
 )
 
 enum class PowerStatus { ACTIVE, STANDBY, UNKNOWN }

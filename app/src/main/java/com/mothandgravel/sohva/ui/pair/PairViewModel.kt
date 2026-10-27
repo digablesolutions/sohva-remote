@@ -25,7 +25,7 @@ sealed interface PairStep {
     data object Requesting : PairStep
     data object EnterPin : PairStep
     data object Confirming : PairStep
-    data class Failed(val message: String?, val notSupported: Boolean = false) : PairStep
+    data class Failed(val message: String?, val notSupported: Boolean = false, val unreachable: Boolean = false) : PairStep
     data object Done : PairStep
 }
 
@@ -62,7 +62,7 @@ class PairViewModel @Inject constructor(
                 pairing.requestPin()
                 _state.update { it.copy(step = PairStep.EnterPin) }
             } catch (e: BraviaException.Unreachable) {
-                _state.update { it.copy(step = PairStep.Failed(e.message)) }
+                _state.update { it.copy(step = PairStep.Failed(e.message, unreachable = true)) }
             } catch (e: BraviaException) {
                 _state.update { it.copy(step = PairStep.Failed(e.message, notSupported = true)) }
             } catch (e: Exception) {
@@ -97,6 +97,7 @@ class PairViewModel @Inject constructor(
                     uuid = tv.uuid ?: existing?.uuid,
                 )
                 credentials.saveCookie(saved.id, CredentialStore.Cookie(result.cookie, result.expiresAtEpochMs))
+                credentials.adoptPendingAtvCertificate(tv.host, saved.id)
                 runCatching { api.getRemoteControllerInfo() }.getOrNull()
                     ?.takeIf { it.isNotEmpty() }
                     ?.let { credentials.saveIrccCodes(saved.id, it) }

@@ -40,6 +40,10 @@ class FakeBraviaTv(
     /** Answer getVolumeInformation with a shape the app does not expect. */
     var malformedVolume = false
     var cookieMaxAge = 1209600L
+    /** Settings › Network › Remote device settings › Control remotely. */
+    var controlRemotely = true
+    /** Settings › Network › Home network setup › IP control › Remote start. */
+    var remoteStart = false
     val requests = mutableListOf<RecordedRequest>()
     /** Request bodies in arrival order; the dispatcher consumes [RecordedRequest.body] itself. */
     val bodies = mutableListOf<String>()
@@ -97,9 +101,19 @@ class FakeBraviaTv(
         val id = req["id"]
         val method = req["method"]?.jsonPrimitive?.contentOrNull.orEmpty()
         val params = req["params"]?.jsonArray ?: JsonArray(emptyList())
-        if (requireAuth && !request.hasValidCookie()) return MockResponse().setResponseCode(403)
+        if (requireAuth && method !in METHODS_WITHOUT_AUTH && !request.hasValidCookie()) return MockResponse().setResponseCode(403)
         if (!powerOn && method !in METHODS_ALLOWED_IN_STANDBY) return error(id, 40005, "Display Is Turned off")
         return when ("$service.$method") {
+            "system.getInterfaceInformation" -> ok(
+                id,
+                """[{"productCategory":"tv","productName":"BRAVIA","modelName":"KD-65XF9005","serverName":"","interfaceVersion":"5.4.0"}]""",
+            )
+            "system.getRemoteDeviceSettings" -> ok(id, """[[{"target":"accessPermission","currentValue":"${if (controlRemotely) "on" else "off"}"}]]""")
+            "system.getWolMode" -> ok(id, """[{"enabled":$remoteStart}]""")
+            "system.setWolMode" -> {
+                remoteStart = params.firstObj()["enabled"]?.jsonPrimitive?.contentOrNull == "true"
+                ok(id, "[]")
+            }
             "system.getPowerStatus" -> ok(id, """[{"status":"${if (powerOn) "active" else "standby"}"}]""")
             "system.setPowerStatus" -> {
                 powerOn = params.firstObj()["status"]?.jsonPrimitive?.contentOrNull == "true"
@@ -178,7 +192,12 @@ class FakeBraviaTv(
             .setBody("""{"error":[$code,"$message"],"id":$id}""")
 
     companion object {
-        private val METHODS_ALLOWED_IN_STANDBY = setOf("getPowerStatus", "setPowerStatus", "getSystemInformation", "getRemoteControllerInfo")
+        private val METHODS_ALLOWED_IN_STANDBY = setOf(
+            "getPowerStatus", "setPowerStatus", "getSystemInformation", "getRemoteControllerInfo",
+            "getInterfaceInformation", "getRemoteDeviceSettings", "getWolMode", "setWolMode",
+        )
+        /** The calls a real TV (KD-65XF9005) answers without the auth cookie. */
+        private val METHODS_WITHOUT_AUTH = setOf("getPowerStatus", "getInterfaceInformation", "getRemoteDeviceSettings")
         private const val IRCC_OK = """<?xml version="1.0"?><s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/" s:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"><s:Body><u:X_SendIRCCResponse xmlns:u="urn:schemas-sony-com:service:IRCC:1"></u:X_SendIRCCResponse></s:Body></s:Envelope>"""
         const val DEVICE_DESCRIPTION = """<?xml version="1.0"?>
 <root xmlns="urn:schemas-upnp-org:device-1-0" xmlns:av="urn:schemas-sony-com:av">

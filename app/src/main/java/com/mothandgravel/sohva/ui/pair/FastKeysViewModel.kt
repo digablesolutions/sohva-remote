@@ -48,6 +48,9 @@ class FastKeysViewModel @Inject constructor(
     val state: StateFlow<FastKeysUiState> = _state.asStateFlow()
 
     private var tv: SavedTv? = null
+
+    /** Where the TV's certificate is kept: the saved TV's id, or a holding place before there is one. */
+    private var certificateKey: String? = null
     private var session: AtvPairing.Session? = null
 
     fun start(tvId: String) {
@@ -59,9 +62,22 @@ class FastKeysViewModel @Inject constructor(
                 return@launch
             }
             tv = saved
+            certificateKey = saved.id
             _state.update { it.copy(tvName = saved.name) }
             connect()
         }
+    }
+
+    /**
+     * Pairs a TV that is not saved yet because it refuses the web API pairing (IP control off). The
+     * certificate waits under [CredentialStore.pendingAtvKey] until the TV is saved.
+     */
+    fun startUnsaved(host: String, name: String) {
+        if (tv != null) return
+        tv = SavedTv(id = CredentialStore.pendingAtvKey(host), name = name, model = "", host = host)
+        certificateKey = CredentialStore.pendingAtvKey(host)
+        _state.update { it.copy(tvName = name) }
+        connect()
     }
 
     /** Opens a pairing connection; the TV then shows a new code. */
@@ -98,7 +114,7 @@ class FastKeysViewModel @Inject constructor(
             _state.update { it.copy(step = FastKeysStep.Confirming) }
             try {
                 session.confirm(code)
-                credentials.saveAtvCertificate(tv.id, session.serverCertificate.encoded)
+                credentials.saveAtvCertificate(certificateKey ?: tv.id, session.serverCertificate.encoded)
                 this@FastKeysViewModel.session = null
                 _state.update { it.copy(step = FastKeysStep.Done) }
             } catch (e: BraviaException.WrongPin) {

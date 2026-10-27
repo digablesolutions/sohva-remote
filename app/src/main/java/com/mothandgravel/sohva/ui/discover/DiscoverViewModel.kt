@@ -43,7 +43,7 @@ class DiscoverViewModel @Inject constructor(
             _state.update { it.copy(searching = true, found = emptyList(), wifiOff = !discovery.isWifiEnabled) }
             try {
                 discovery.discover(timeoutMs = 5000).collect { tv ->
-                    _state.update { s -> if (s.found.any { it.host == tv.host }) s else s.copy(found = s.found + tv) }
+                    _state.update { s -> s.copy(found = merge(s.found, tv)) }
                 }
             } catch (e: Exception) {
                 // No network or socket failure: the manual entry path is still offered.
@@ -66,7 +66,7 @@ class DiscoverViewModel @Inject constructor(
         }
         viewModelScope.launch {
             _state.update { it.copy(probing = true) }
-            val tv = discovery.probe(ip) ?: DiscoveredTv(host = ip, name = "Bravia at $ip", model = "")
+            val tv = discovery.probe(ip) ?: DiscoveredTv(host = ip, name = "Bravia at $ip", model = "", webApi = false)
             _state.update { it.copy(probing = false, probed = tv) }
         }
     }
@@ -76,6 +76,19 @@ class DiscoverViewModel @Inject constructor(
     }
 
     companion object {
+        /**
+         * Adds a TV found by one search to the others' finds. The same TV can answer both: its SSDP
+         * answer has the model and UUID, and means IP control is on, so it replaces an mDNS one.
+         */
+        fun merge(found: List<DiscoveredTv>, tv: DiscoveredTv): List<DiscoveredTv> {
+            val i = found.indexOfFirst { it.host == tv.host }
+            return when {
+                i < 0 -> found + tv
+                tv.webApi && !found[i].webApi -> found.toMutableList().apply { set(i, tv) }
+                else -> found
+            }
+        }
+
         fun isIpv4(s: String): Boolean {
             val parts = s.split('.')
             if (parts.size != 4) return false

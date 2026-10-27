@@ -54,8 +54,8 @@ credentials):
 > ("Set up the TV first"). With no Bravia on the network nothing
 > is found, and an address that is not a Bravia cannot be paired. The app sends nothing to any server.
 >
-> With a TV: on the TV, Settings > Network > Home network setup > IP control: Authentication "Normal
-> and Pre-Shared Key", Remote start "On". Open the app, pick the TV from "Find your TV" (or add it by
+> With a TV: on the TV, Settings > Network & Internet > Remote start "On" (needed to switch the TV on;
+> pairing needs no setting). Open the app, pick the TV from "Find your TV" (or add it by
 > IP address) and enter the 4-digit code the TV shows. Optionally, "Set up fast keys" pairs the
 > Android TV Remote connection with a second code shown on the TV. Tested on a KD-65XF9005 (Android
 > TV). A screen recording of the full flow: <link to unlisted video>.

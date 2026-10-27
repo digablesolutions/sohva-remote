@@ -6,28 +6,37 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import com.mothandgravel.sohva.protocol.DiscoveredTv
 import com.mothandgravel.sohva.protocol.SsdpDiscovery
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.onCompletion
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withTimeoutOrNull
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/** SSDP discovery with the Wi-Fi multicast lock Android needs to receive multicast replies. */
+/**
+ * SSDP discovery (the TV's web API) plus mDNS (its Android TV Remote service), with the Wi-Fi
+ * multicast lock Android needs to receive multicast replies. A TV found only by mDNS has its web API
+ * off ([DiscoveredTv.webApi] false).
+ */
 @Singleton
 class AndroidDiscovery @Inject constructor(
     @ApplicationContext private val context: Context,
     private val ssdp: SsdpDiscovery,
 ) {
+    private val nsd = AndroidTvRemoteNsd(context)
+
     private val wifi: WifiManager? get() = context.applicationContext.getSystemService(WifiManager::class.java)
 
     val isWifiEnabled: Boolean get() = wifi?.isWifiEnabled ?: true
 
-    fun discover(timeoutMs: Long = 4000): Flow<DiscoveredTv> = flow {
+    fun discover(timeoutMs: Long = 4000): Flow<DiscoveredTv> = channelFlow {
         val lock = wifi?.createMulticastLock("bravia-ssdp")?.apply {
             setReferenceCounted(false)
             acquire()
         }
         try {
-            ssdp.discover(timeoutMs).collect { emit(it) }
+            launch { withTimeoutOrNull(timeoutMs) { nsd.discover().collect { send(it.copy(webApi = false)) } } }
+            ssdp.discover(timeoutMs).collect { send(it) }
         } finally {
             runCatching { lock?.release() }
         }

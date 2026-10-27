@@ -35,6 +35,6 @@ Sohva Remote ei kerää mitään tietoja. Se keskustelee vain television kanssa 
 Mitä tarvitset
 • Sony Bravia -television, jossa on IP-ohjaus ja joka on samassa wifi-verkossa kuin puhelin. Sovellus on tehty ja testattu KD-65XF9005 Android TV:llä; muidenkin IP-ohjausta tukevien Bravia-mallien pitäisi toimia.
 • Android 8.0 tai uudempi.
-• Televisiosta kerran: Asetukset › Verkko › Kotiverkon asetukset › IP-ohjaus. Valitse todennukseksi "Normaali ja esijaettu avain" (Normal and Pre-Shared Key) ja ota etäkäynnistys (Remote start) käyttöön.
+• Televisioon ei yleensä tarvitse asettaa mitään: valitse se sovelluksessa ja kirjoita koodi, jonka se näyttää. Hukkuiko television kaukosäädin? Sovellus auttaa myös television valikoissa. Ota etäkäynnistys käyttöön (Asetukset › Verkko ja internet), jotta sovellus voi käynnistää television.
 
 Maksuton, ei mainoksia eikä sovelluksen sisäisiä ostoksia.

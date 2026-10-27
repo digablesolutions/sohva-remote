@@ -139,8 +139,12 @@ Lint errors fail the build; warnings about newer library versions are acceptable
   upload key, otherwise with the debug key. An upload-signed APK does not install over a debug build.
   Release builds log nothing; after R8-related changes smoke-test them too (fast keys, the More
   sheet's inputs, channels and app icons, the Settings tab (TVs, phone settings), saved scenes).
-- On the TV: Settings › Network › Home network setup › IP control › Authentication
-  "Normal and Pre-Shared Key"; Remote start On.
+- On the TV (KD-65XF9005, Android 9): Settings › Network & Internet › Remote start On. PIN pairing
+  works with the factory settings (Remote device settings › Control remotely On, Home network setup ›
+  IP control › Authentication "Normal"; the TV has no "off" there). Control remotely Off closes port
+  80 entirely while the Android TV Remote ports 6466/6467 stay open: that is the "no remote" setup
+  path (`NoRemoteScreen`), found by mDNS `_androidtvremote2._tcp` (`AndroidTvRemoteNsd`). The TV
+  shows no PIN while its own settings panel is open.
 - Walk: discover TV → PIN pairing → power toggle → volume with on-screen and hardware
   buttons → D-pad/OK/Back/Home → an input and an app from the More sheet.
 - Tiles: `adb shell cmd statusbar add-tile com.mothandgravel.sohva/.shortcuts.MuteTile`, then open the shade

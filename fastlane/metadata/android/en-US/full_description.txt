@@ -35,6 +35,6 @@ Sohva Remote collects no data. It talks only to your TV, on your home network. N
 What you need
 • A Sony Bravia TV with IP control, on the same Wi-Fi network as your phone. Built and tested on a KD-65XF9005 Android TV; other Bravia models with IP control should work.
 • Android 8.0 or newer.
-• On the TV, once: Settings › Network › Home network setup › IP control. Set Authentication to "Normal and Pre-Shared Key" and turn Remote start on.
+• Usually nothing to set on the TV: pick it in the app and type the code it shows. Lost the TV's remote? The app gets you through the TV's menus too. Turn on Remote start (Settings › Network & Internet) so the app can switch the TV on.
 
 Free, with no ads and no in-app purchases.

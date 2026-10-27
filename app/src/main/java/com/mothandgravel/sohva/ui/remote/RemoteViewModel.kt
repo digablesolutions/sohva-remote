@@ -189,6 +189,19 @@ class RemoteViewModel @Inject constructor(
     fun launchApp(uri: String) = controller.launchApp(uri)
 
     /** Paired for fast keys, and the TV still accepts that pairing. */
+    private val _checking = kotlinx.coroutines.flow.MutableStateFlow<SavedTv?>(null)
+
+    /** The TV whose connection check is open, if any. */
+    val checking: StateFlow<SavedTv?> = _checking
+
+    fun checkConnection(tv: SavedTv) {
+        _checking.value = tv
+    }
+
+    fun closeCheck() {
+        _checking.value = null
+    }
+
     fun hasFastKeys(tv: SavedTv): Boolean =
         credentials.atvCertificate(tv.id) != null && !(controller.fastKeysRefused.value && tv.id == state.value.tvOrNull?.id)
 

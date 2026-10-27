@@ -22,6 +22,7 @@ import com.mothandgravel.sohva.data.TvStore
 import com.mothandgravel.sohva.protocol.DiscoveredTv
 import com.mothandgravel.sohva.ui.discover.DiscoverScreen
 import com.mothandgravel.sohva.ui.pair.FastKeysScreen
+import com.mothandgravel.sohva.ui.pair.NoRemoteScreen
 import com.mothandgravel.sohva.ui.pair.PairScreen
 import com.mothandgravel.sohva.ui.remote.RemoteScreen
 import kotlinx.coroutines.flow.SharingStarted
@@ -36,8 +37,12 @@ object Routes {
     const val DISCOVER = "discover"
     const val FAST_KEYS = "fastkeys/{tvId}"
     const val PAIR = "pair/{host}?name={name}&model={model}&uuid={uuid}"
+    const val NO_REMOTE = "noremote/{host}?name={name}"
 
     fun fastKeys(tvId: String) = "fastkeys/${URLEncoder.encode(tvId, "UTF-8")}"
+
+    fun noRemote(tv: DiscoveredTv): String =
+        "noremote/${URLEncoder.encode(tv.host, "UTF-8")}?name=${URLEncoder.encode(tv.name, "UTF-8")}"
 
     fun pair(tv: DiscoveredTv): String {
         fun enc(s: String?) = URLEncoder.encode(s.orEmpty(), "UTF-8")
@@ -105,11 +110,29 @@ fun AppNav(root: RootViewModel = hiltViewModel()) {
             PairScreen(
                 tv = tv,
                 onCancel = { nav.popBackStack() },
+                onNoRemote = { nav.navigate(Routes.noRemote(tv)) },
                 onPaired = {
                     nav.navigate(Routes.REMOTE) {
                         popUpTo(nav.graph.id) { inclusive = true }
                         launchSingleTop = true
                     }
+                },
+            )
+        }
+        composable(
+            Routes.NO_REMOTE,
+            arguments = listOf(
+                navArgument("host") { type = NavType.StringType },
+                navArgument("name") { type = NavType.StringType; defaultValue = "" },
+            ),
+        ) { entry ->
+            fun arg(key: String) = URLDecoder.decode(entry.arguments?.getString(key).orEmpty(), "UTF-8")
+            NoRemoteScreen(
+                tv = DiscoveredTv(host = arg("host"), name = arg("name"), model = "", webApi = false),
+                onCancel = { nav.popBackStack() },
+                // IP control is on now: pair as usual, without coming back here.
+                onIpControlOn = { tv ->
+                    nav.navigate(Routes.pair(tv)) { popUpTo(Routes.PAIR) { inclusive = true } }
                 },
             )
         }

@@ -165,6 +165,7 @@ fun RemoteScreen(
         if (granted) viewModel.showAdBreakNotification()
     }
     var showMore by remember { mutableStateOf(false) }
+    val checking by viewModel.checking.collectAsStateWithLifecycle()
     var showKeyboard by remember { mutableStateOf(false) }
     // Opens when the TV's keyboard comes up, not on every echo, so a dismissed sheet stays closed.
     val textFieldOpen = tvTextField != null
@@ -214,6 +215,7 @@ fun RemoteScreen(
             onPower = viewModel::togglePower,
             onVoice = onVoice,
             onRetry = viewModel::refresh,
+            onCheck = viewModel::checkConnection,
             onPairAgain = onPairAgain,
             onSelect = viewModel::selectInput,
             onChannel = viewModel::changeChannel,
@@ -422,6 +424,14 @@ fun RemoteScreen(
             onFastKeys = { tv -> showMore = false; onFastKeys(tv) },
         )
     }
+    checking?.let { tv ->
+        ConnectionCheckSheet(
+            tv = tv,
+            onPairAgain = onPairAgain,
+            onFastKeys = onFastKeys,
+            onDismiss = viewModel::closeCheck,
+        )
+    }
 }
 
 /**
@@ -489,6 +499,7 @@ private fun NowPlayingCard(
     onPower: () -> Unit,
     onVoice: (() -> Unit)?,
     onRetry: () -> Unit,
+    onCheck: (SavedTv) -> Unit,
     onPairAgain: (SavedTv) -> Unit,
     onSelect: (String) -> Unit,
     onChannel: (next: Boolean) -> Unit,
@@ -585,7 +596,10 @@ private fun NowPlayingCard(
                 }
             }
             is ConnectionState.Connecting -> CircularProgressIndicator(Modifier.size(20.dp), strokeWidth = 2.dp)
-            is ConnectionState.Unreachable -> TextButton(onClick = onRetry) { Text(stringResource(R.string.state_retry)) }
+            is ConnectionState.Unreachable -> Row {
+                TextButton(onClick = onRetry) { Text(stringResource(R.string.state_retry)) }
+                TextButton(onClick = { onCheck(state.tv) }) { Text(stringResource(R.string.check_open)) }
+            }
             is ConnectionState.Unauthorized -> TextButton(onClick = { onPairAgain(state.tv) }) { Text(stringResource(R.string.state_pair_again)) }
             else -> Unit
         }

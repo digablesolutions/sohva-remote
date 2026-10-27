@@ -746,6 +746,9 @@ private fun SettingsTab(viewModel: RemoteViewModel, haptics: Boolean, onAddTv: (
                 supportingContent = {
                     Column {
                         Text(listOf(tv.model, tv.host).filter { it.isNotBlank() }.joinToString(" · "))
+                        TextButton(onClick = { viewModel.checkConnection(tv) }, contentPadding = PaddingValues(0.dp)) {
+                            Text(stringResource(R.string.check_open))
+                        }
                         if (viewModel.hasFastKeys(tv)) {
                             Text(stringResource(R.string.fast_keys_on), color = MaterialTheme.colorScheme.primary)
                         } else {

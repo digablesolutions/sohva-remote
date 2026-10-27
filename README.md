@@ -69,9 +69,12 @@ service, so they work with the app closed and the phone in Doze.
 
 - Android 8.0 (API 26) or newer, phone or tablet. On a tablet the More tabs sit beside the remote
   (landscape) or above it (portrait).
-- On the TV: Settings › Network › Home network setup › IP control
-  - Authentication: "Normal and Pre-Shared Key"
-  - Remote start: On (needed to switch the TV on from standby)
+- On the TV, usually nothing: the app finds it and you type the 4-digit code it shows.
+  - Remote start: On (Settings › Network & Internet), so the app can switch the TV on from standby.
+    Settings › Check connection tells you when it's off and can switch it on.
+  - If the TV refuses the app, Settings › Network & Internet › Remote device settings › Control
+    remotely must be On. Lost the TV's remote? The app pairs over the TV's Android TV remote service
+    first and gives you a D-pad to switch it on.
 - Phone and TV on the same network.
 
 ## Install

@@ -43,6 +43,7 @@ import com.mothandgravel.sohva.protocol.DiscoveredTv
 fun PairScreen(
     tv: DiscoveredTv,
     onCancel: () -> Unit,
+    onNoRemote: () -> Unit,
     onPaired: () -> Unit,
     viewModel: PairViewModel = hiltViewModel(),
 ) {
@@ -105,6 +106,13 @@ fun PairScreen(
                         OutlinedButton(onClick = onCancel) { Text(stringResource(R.string.pair_cancel)) }
                         Spacer(Modifier.width(16.dp))
                         Button(onClick = viewModel::requestPin) { Text(stringResource(R.string.state_retry)) }
+                    }
+                    if (step.notSupported || step.unreachable) {
+                        // IP control is off and the menus need a remote: this phone can be that remote.
+                        Spacer(Modifier.height(24.dp))
+                        Text(stringResource(R.string.no_remote_offer), textAlign = TextAlign.Center)
+                        Spacer(Modifier.height(8.dp))
+                        androidx.compose.material3.FilledTonalButton(onClick = onNoRemote) { Text(stringResource(R.string.no_remote_button)) }
                     }
                 }
                 PairStep.Done -> Unit

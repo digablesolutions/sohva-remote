@@ -78,15 +78,29 @@ class CredentialStore @Inject constructor(@ApplicationContext context: Context) 
         prefs.edit().putString("atv_cert.$tvId", Base64.encodeToString(der, Base64.NO_WRAP)).apply()
     }
 
+    /**
+     * Moves fast keys paired before the TV was saved (see [pendingAtvKey]) to the saved TV, so a TV
+     * set up without its remote has fast keys from the start.
+     */
+    fun adoptPendingAtvCertificate(host: String, tvId: String) {
+        val pending = pendingAtvKey(host)
+        val der = atvCertificate(pending) ?: return
+        saveAtvCertificate(tvId, der)
+        prefs.edit().remove("atv_cert.$pending").apply()
+    }
+
     fun clear(tvId: String) {
         prefs.edit()
             .remove("cookie.$tvId").remove("cookie_exp.$tvId").remove("ircc.$tvId").remove("atv_cert.$tvId")
             .apply()
     }
 
-    private companion object {
-        const val KEY_CLIENT_ID = "client_id"
-        val json = Json { ignoreUnknownKeys = true }
-        val mapSerializer = MapSerializer(String.serializer(), String.serializer())
+    companion object {
+        /** Where fast keys paired with a TV not saved yet are kept, by the TV's address. */
+        fun pendingAtvKey(host: String) = "pending:$host"
+
+        private const val KEY_CLIENT_ID = "client_id"
+        private val json = Json { ignoreUnknownKeys = true }
+        private val mapSerializer = MapSerializer(String.serializer(), String.serializer())
     }
 }

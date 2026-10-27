@@ -93,6 +93,32 @@ class BraviaApi(
     }
 
 
+    /** The TV's product and model. Answers without pairing, so it tells "a Bravia's web API is here". */
+    suspend fun getInterfaceInformation(): String = mapped("getInterfaceInformation") {
+        call("system", "getInterfaceInformation").firstObject().str("modelName")
+    }
+
+    /**
+     * Settings › Network › Remote device settings › Control remotely. Answers without pairing; null
+     * when the TV does not report it.
+     */
+    suspend fun getControlRemotely(): Boolean? = mapped("getRemoteDeviceSettings") {
+        val list = call("system", "getRemoteDeviceSettings", buildJsonArray { add(buildJsonObject { put("target", "") }) })
+            .getOrNull(0)?.jsonArray ?: return@mapped null
+        val setting = list.firstOrNull { (it as? JsonObject)?.str("target") == "accessPermission" } as? JsonObject
+        return@mapped setting?.str("currentValue")?.let { it == "on" }
+    }
+
+    /** "Remote start": whether the TV can be switched on over the network from standby. Needs pairing. */
+    suspend fun getRemoteStart(): Boolean = mapped("getWolMode") {
+        call("system", "getWolMode").firstObject()["enabled"]?.jsonPrimitive?.booleanOrNull
+            ?: throw NoSuchElementException("enabled")
+    }
+
+    suspend fun setRemoteStart(on: Boolean) {
+        call("system", "setWolMode", buildJsonArray { add(buildJsonObject { put("enabled", on) }) })
+    }
+
     /** The TV's own IRCC key table, keyed by key name. */
     suspend fun getRemoteControllerInfo(): Map<String, String> = mapped("getRemoteControllerInfo") {
         val result = call("system", "getRemoteControllerInfo")

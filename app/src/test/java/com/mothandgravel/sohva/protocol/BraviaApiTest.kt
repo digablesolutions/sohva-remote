@@ -138,7 +138,8 @@ class BraviaApiTest {
     fun `HTTP 403 maps to Unauthorized`() = runTest {
         api.auth = BraviaAuth.None
         assertThrows(BraviaException.Unauthorized::class.java) {
-            kotlinx.coroutines.runBlocking { api.getPowerStatus() }
+            // Not getPowerStatus: like a real TV, the fake answers that one without pairing.
+            kotlinx.coroutines.runBlocking { api.getVolumeInformation() }
         }
     }
 

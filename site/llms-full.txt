@@ -34,7 +34,7 @@ Sohva Remote is a free, ad-free Android phone remote for Sony Bravia TVs, made b
 - Wake-up TV: switches the TV on at a set time on chosen days, to a channel, input or app and a volume.
 
 ## Setup
-1. On the TV: Settings > Network > Home network setup > IP control. Set Authentication to "Normal and Pre-Shared Key" and Remote start to On.
+1. On the TV: Settings > Network & Internet > Remote start On, so the app can switch the TV on. Pairing needs no setting; if the TV refuses, Remote device settings > Control remotely must be On (the app guides you there with its own D-pad, even without the TV's remote).
 2. Install the app from Google Play (coming soon).
 3. Open it on the same Wi-Fi as the TV. It finds the TV; type the 4-digit PIN the TV shows. Fast keys ask once for a second code from the TV.
 

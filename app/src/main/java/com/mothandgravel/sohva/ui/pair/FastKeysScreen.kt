@@ -58,70 +58,77 @@ fun FastKeysScreen(
             Modifier.padding(padding).fillMaxSize().wrapContentWidth().widthIn(max = 600.dp).padding(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            when (val step = state.step) {
-                FastKeysStep.Connecting -> {
-                    CircularProgressIndicator()
-                    Spacer(Modifier.height(16.dp))
-                    Text(stringResource(R.string.fast_keys_connecting), textAlign = TextAlign.Center)
-                }
-                FastKeysStep.EnterCode, FastKeysStep.Confirming -> {
-                    Text(stringResource(R.string.fast_keys_instructions, state.tvName), textAlign = TextAlign.Center)
-                    Spacer(Modifier.height(24.dp))
-                    OutlinedTextField(
-                        value = state.code,
-                        onValueChange = viewModel::onCodeChange,
-                        label = { Text(stringResource(R.string.fast_keys_code_label)) },
-                        isError = state.wrongCode,
-                        supportingText = if (state.wrongCode) {
-                            { Text(stringResource(R.string.fast_keys_wrong_code)) }
-                        } else null,
-                        singleLine = true,
-                        enabled = step == FastKeysStep.EnterCode,
-                        textStyle = TextStyle(fontSize = 28.sp, textAlign = TextAlign.Center, letterSpacing = 8.sp),
-                        keyboardOptions = KeyboardOptions(
-                            capitalization = KeyboardCapitalization.Characters,
-                            autoCorrectEnabled = false,
-                            keyboardType = KeyboardType.Ascii,
-                            imeAction = ImeAction.Done,
-                        ),
-                        keyboardActions = KeyboardActions(onDone = { viewModel.confirm() }),
-                        modifier = Modifier.width(260.dp),
-                    )
-                    Spacer(Modifier.height(24.dp))
-                    Row {
-                        OutlinedButton(onClick = onClose) { Text(stringResource(R.string.pair_cancel)) }
-                        Spacer(Modifier.width(16.dp))
-                        Button(
-                            onClick = viewModel::confirm,
-                            enabled = step == FastKeysStep.EnterCode && state.code.length == AtvPairing.CODE_LENGTH,
-                        ) {
-                            if (step == FastKeysStep.Confirming) {
-                                CircularProgressIndicator(Modifier.size(18.dp), strokeWidth = 2.dp)
-                            } else {
-                                Text(stringResource(R.string.pair_button))
-                            }
-                        }
+            FastKeysSteps(state, viewModel, onClose)
+            if (state.step == FastKeysStep.Done) {
+                Text(stringResource(R.string.fast_keys_done, state.tvName), textAlign = TextAlign.Center)
+                Spacer(Modifier.height(24.dp))
+                Button(onClick = onClose) { Text(stringResource(R.string.fast_keys_close)) }
+            }
+        }
+    }
+}
+
+/** Asking for the code, entering it, and a failure with its retry; nothing once paired. */
+@Composable
+fun FastKeysSteps(state: FastKeysUiState, viewModel: FastKeysViewModel, onCancel: () -> Unit) {
+    when (val step = state.step) {
+        FastKeysStep.Connecting -> {
+            CircularProgressIndicator()
+            Spacer(Modifier.height(16.dp))
+            Text(stringResource(R.string.fast_keys_connecting), textAlign = TextAlign.Center)
+        }
+        FastKeysStep.EnterCode, FastKeysStep.Confirming -> {
+            Text(stringResource(R.string.fast_keys_instructions, state.tvName), textAlign = TextAlign.Center)
+            Spacer(Modifier.height(24.dp))
+            OutlinedTextField(
+                value = state.code,
+                onValueChange = viewModel::onCodeChange,
+                label = { Text(stringResource(R.string.fast_keys_code_label)) },
+                isError = state.wrongCode,
+                supportingText = if (state.wrongCode) {
+                    { Text(stringResource(R.string.fast_keys_wrong_code)) }
+                } else null,
+                singleLine = true,
+                enabled = step == FastKeysStep.EnterCode,
+                textStyle = TextStyle(fontSize = 28.sp, textAlign = TextAlign.Center, letterSpacing = 8.sp),
+                keyboardOptions = KeyboardOptions(
+                    capitalization = KeyboardCapitalization.Characters,
+                    autoCorrectEnabled = false,
+                    keyboardType = KeyboardType.Ascii,
+                    imeAction = ImeAction.Done,
+                ),
+                keyboardActions = KeyboardActions(onDone = { viewModel.confirm() }),
+                modifier = Modifier.width(260.dp),
+            )
+            Spacer(Modifier.height(24.dp))
+            Row {
+                OutlinedButton(onClick = onCancel) { Text(stringResource(R.string.pair_cancel)) }
+                Spacer(Modifier.width(16.dp))
+                Button(
+                    onClick = viewModel::confirm,
+                    enabled = step == FastKeysStep.EnterCode && state.code.length == AtvPairing.CODE_LENGTH,
+                ) {
+                    if (step == FastKeysStep.Confirming) {
+                        CircularProgressIndicator(Modifier.size(18.dp), strokeWidth = 2.dp)
+                    } else {
+                        Text(stringResource(R.string.pair_button))
                     }
-                }
-                is FastKeysStep.Failed -> {
-                    Text(
-                        stringResource(R.string.fast_keys_failed, step.message ?: ""),
-                        color = MaterialTheme.colorScheme.error,
-                        textAlign = TextAlign.Center,
-                    )
-                    Spacer(Modifier.height(24.dp))
-                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-                        OutlinedButton(onClick = onClose) { Text(stringResource(R.string.pair_cancel)) }
-                        Spacer(Modifier.width(16.dp))
-                        Button(onClick = viewModel::connect) { Text(stringResource(R.string.state_retry)) }
-                    }
-                }
-                FastKeysStep.Done -> {
-                    Text(stringResource(R.string.fast_keys_done, state.tvName), textAlign = TextAlign.Center)
-                    Spacer(Modifier.height(24.dp))
-                    Button(onClick = onClose) { Text(stringResource(R.string.fast_keys_close)) }
                 }
             }
         }
+        is FastKeysStep.Failed -> {
+            Text(
+                stringResource(R.string.fast_keys_failed, step.message ?: ""),
+                color = MaterialTheme.colorScheme.error,
+                textAlign = TextAlign.Center,
+            )
+            Spacer(Modifier.height(24.dp))
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+                OutlinedButton(onClick = onCancel) { Text(stringResource(R.string.pair_cancel)) }
+                Spacer(Modifier.width(16.dp))
+                Button(onClick = viewModel::connect) { Text(stringResource(R.string.state_retry)) }
+            }
+        }
+        FastKeysStep.Done -> Unit
     }
 }

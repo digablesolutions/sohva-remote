@@ -13,11 +13,11 @@
     <string name="discover_manual_invalid">Enter a valid IPv4 address</string>
     <string name="discover_wifi_off">Wi-Fi is off. Connect to the TV\'s network first.</string>
     <string name="discover_tv_model">%1$s · %2$s</string>
-    <string name="setup_title">Set up the TV first</string>
-    <string name="setup_step_menu">On the TV: Settings › Network › Home network setup › IP control.</string>
-    <string name="setup_step_auth">Authentication: \"Normal and Pre-Shared Key\".</string>
-    <string name="setup_step_start">Remote start: On, so the app can switch the TV on.</string>
-    <string name="setup_footer">Keep this device on the same Wi-Fi as the TV. When you pick the TV here, it shows a 4-digit PIN to type in.</string>
+    <string name="setup_title">How setup works</string>
+    <string name="setup_step_menu">Pick your TV above. It shows a 4-digit code to type in here: no TV menus needed.</string>
+    <string name="setup_step_auth">TV not listed, or no code? Its network remote control may be off. Pick it anyway, or add its address below: the app helps you switch it on, even without the TV\'s own remote.</string>
+    <string name="setup_step_start">Afterwards, Check connection (in Settings) tells you if Remote start is off. The app needs it to switch the TV on.</string>
+    <string name="setup_footer">Keep this phone on the same Wi-Fi as the TV.</string>
 
     <!-- Pairing -->
     <string name="pair_title">Pair with %1$s</string>
@@ -27,7 +27,7 @@
     <string name="pair_requesting">Asking the TV for a code…</string>
     <string name="pair_wrong_pin">Wrong code. Check the TV screen and try again.</string>
     <string name="pair_failed">Pairing failed: %1$s</string>
-    <string name="pair_not_supported">This TV did not answer the pairing request. Check that IP control is on: Settings › Network › Home network setup › IP control › Authentication › Normal and Pre-Shared Key.</string>
+    <string name="pair_not_supported">This TV refused the pairing request: control over the network is probably off. On the TV: Settings › Network &amp; Internet › Remote device settings › Control remotely › On.</string>
     <string name="pair_cancel">Cancel</string>
 
     <!-- Remote -->
@@ -236,4 +236,36 @@
     <string name="ad_break_end">Back now</string>
     <string name="ad_break_late">Without exact alarms the sound can come back a few minutes late.</string>
     <string name="jump_back">Back to the previous channel</string>
+    <string name="check_open">Check connection</string>
+    <string name="check_title">Connection to %1$s</string>
+    <string name="check_again">Check again</string>
+    <string name="check_phone">This phone is on the home network</string>
+    <string name="check_phone_offline">This phone isn\'t connected to a network.</string>
+    <string name="check_phone_mobile">This phone is on mobile data. Connect it to the Wi-Fi the TV is on.</string>
+    <string name="check_phone_vpn">A VPN is on. Turn it off, or allow local network access in the VPN app.</string>
+    <string name="check_tv_answers">The TV answers</string>
+    <string name="check_tv_silent">No answer at this address. Check that the TV is plugged in and on the same Wi-Fi as this phone. If its address changed, add the TV again (Settings › Add another TV).</string>
+    <string name="check_ip_control">Control over the network</string>
+    <string name="check_ip_control_off">The TV is on the network but refuses control over it. On the TV: Settings › Network &amp; Internet › Remote device settings › Control remotely › On (on some models: Home network setup › IP control › Authentication › Normal).</string>
+    <string name="check_control_remotely">Control remotely</string>
+    <string name="check_control_remotely_off">The TV refuses remote control. On the TV: Settings › Network &amp; Internet › Remote device settings › Control remotely › On.</string>
+    <string name="check_paired">Paired with this phone</string>
+    <string name="check_paired_expired">The TV no longer accepts this phone\'s pairing.</string>
+    <string name="check_remote_start">Remote start</string>
+    <string name="check_remote_start_off">Off: the app can\'t switch the TV on from standby, so wake-ups and scenes can\'t either.</string>
+    <string name="check_remote_start_turn_on">Turn on Remote start</string>
+    <string name="check_fast_keys">Fast keys</string>
+    <string name="check_fast_keys_none">Not set up: keys take a little longer to reach the TV.</string>
+    <string name="check_fast_keys_silent">The TV\'s Android TV remote service doesn\'t answer, so keys go the slower way.</string>
+    <string name="check_fix_failed">The TV didn\'t take the change. Turn it on in the TV\'s menu instead: Settings › Network &amp; Internet › Remote start.</string>
+    <string name="discover_ip_control_off">Network control off: pick it to switch it on</string>
+    <string name="no_remote_title">Use this phone as the remote</string>
+    <string name="no_remote_intro">The TV refuses control over the network, and switching that on takes the TV\'s menus. This phone can steer them through the TV\'s Android TV remote service, which needs no setup. First, pair it with the code the TV shows.</string>
+    <string name="no_remote_steps">On the TV, with the keys below: press Settings (or Home, then the gear at the top right), then Network &amp; Internet › Remote device settings › Control remotely › On. While there, turn on Remote start too (in Network &amp; Internet). Then press Done.</string>
+    <string name="no_remote_lost">The connection to the TV dropped.</string>
+    <string name="no_remote_still_off">The TV still refuses. Check that Control remotely is on; on some models also Home network setup › IP control › Authentication › Normal. Then press Done again.</string>
+    <string name="no_remote_done">Done</string>
+    <string name="no_remote_settings_key">Settings</string>
+    <string name="no_remote_offer">No remote at hand to change the TV\'s settings?</string>
+    <string name="no_remote_button">Use this phone as the remote</string>
 </resources>
