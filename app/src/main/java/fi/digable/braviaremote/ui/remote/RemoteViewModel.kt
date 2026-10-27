@@ -133,6 +133,8 @@ class RemoteViewModel @Inject constructor(
     fun loadInputs() = viewModelScope.launch { controller.loadInputs() }
     fun loadApps() = viewModelScope.launch { controller.loadApps() }
     fun loadChannels() = viewModelScope.launch { controller.loadChannels() }
+    fun setVolume(level: Int) = controller.setVolume(level)
+
     fun changeChannel(next: Boolean) = controller.press(if (next) RemoteKey.CHANNEL_UP else RemoteKey.CHANNEL_DOWN)
     /** Makes the TV's text field go from [old] to [new]. */
     fun typeOnTv(old: String, new: String) = AtvTextEdit.between(old, new).forEach { controller.editTvText(it) }

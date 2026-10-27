@@ -130,6 +130,9 @@ class TvController @Inject constructor(
     /** Key presses run one after another so fast taps keep their order. */
     private val sendQueue = Channel<suspend () -> Unit>(Channel.UNLIMITED)
 
+    /** The newest level [setVolume] was asked for and has not reached yet, or [NO_LEVEL]. */
+    private val volumeWanted = AtomicInteger(NO_LEVEL)
+
     /** Keys queued or in flight; auto-repeats are skipped while the TV is still busy. */
     private val pendingKeys = AtomicInteger(0)
 
@@ -822,10 +825,26 @@ class TvController @Inject constructor(
         refresh()
     }
 
+    /**
+     * Steps the TV to [level]. A drag on the volume bar calls this for every level it passes: only
+     * the newest counts, and one queued job steps to it, so no backlog of old levels builds up.
+     */
     fun setVolume(level: Int) {
         val client = api ?: return
+        if (volumeWanted.getAndSet(level) != NO_LEVEL) return
         sendQueue.trySend {
-            stepVolumeTo(client, level)
+            try {
+                while (true) {
+                    val target = volumeWanted.get()
+                    if (target == NO_LEVEL) break
+                    stepVolumeTo(client, target)
+                    if (volumeWanted.compareAndSet(target, NO_LEVEL)) break
+                }
+            } catch (e: Throwable) {
+                // Never leave a level behind that would make every later call wait for this job.
+                volumeWanted.set(NO_LEVEL)
+                throw e
+            }
             scheduleVolumeRefresh()
         }
     }
@@ -1087,6 +1106,7 @@ class TvController @Inject constructor(
 
         /** One volume key moves an HDMI-CEC sound system's level by 2. */
         const val VOLUME_STEP = 2
+        private const val NO_LEVEL = -1
         const val MAX_VOLUME_STEPS = 60
         const val VOLUME_SETTLE_MS = 600L
         const val MAX_VOLUME_STALLS = 2

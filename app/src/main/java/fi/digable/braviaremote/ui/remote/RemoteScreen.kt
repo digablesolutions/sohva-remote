@@ -217,6 +217,7 @@ fun RemoteScreen(
             onPairAgain = onPairAgain,
             onSelect = viewModel::selectInput,
             onChannel = viewModel::changeChannel,
+            onVolume = viewModel::setVolume,
             onMore = if (inlineMore) null else { { showMore = true } },
         )
         val tv = state.tvOrNull
@@ -491,8 +492,10 @@ private fun NowPlayingCard(
     onPairAgain: (SavedTv) -> Unit,
     onSelect: (String) -> Unit,
     onChannel: (next: Boolean) -> Unit,
+    onVolume: (Int) -> Unit,
     onMore: (() -> Unit)?,
 ) {
+    val volumeDrag = rememberVolumeDrag((state as? ConnectionState.Connected)?.volume?.volume)
     Column(
         Modifier
             .fillMaxWidth()
@@ -528,7 +531,7 @@ private fun NowPlayingCard(
                         val volumeText = when {
                             volume == null -> null
                             volume.mute -> stringResource(R.string.remote_volume_lower_muted)
-                            else -> stringResource(R.string.remote_volume_lower, volume.volume)
+                            else -> stringResource(R.string.remote_volume_lower, volumeDrag.level ?: volume.volume)
                         }
                         val detail = playing?.title?.takeIf { it.isNotBlank() && it != headline }
                         val line = listOfNotNull(detail, volumeText)
@@ -555,25 +558,7 @@ private fun NowPlayingCard(
 
         when (state) {
             is ConnectionState.Connected -> {
-                state.volume?.let { volume ->
-                    val range = (volume.maxVolume - volume.minVolume).coerceAtLeast(1)
-                    // The speaker marks this bar as the volume, not the programme's progress just above it.
-                    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                        Icon(
-                            if (volume.mute) Icons.AutoMirrored.Filled.VolumeOff else Icons.AutoMirrored.Filled.VolumeUp,
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                            modifier = Modifier.size(16.dp),
-                        )
-                        LinearProgressIndicator(
-                            progress = { ((volume.volume - volume.minVolume).toFloat() / range).coerceIn(0f, 1f) },
-                            modifier = Modifier.weight(1f).height(4.dp).clip(RoundedCornerShape(2.dp)),
-                            color = if (volume.mute) MaterialTheme.colorScheme.outline else MaterialTheme.colorScheme.primary,
-                            trackColor = MaterialTheme.colorScheme.surfaceContainerHighest,
-                            drawStopIndicator = {},
-                        )
-                    }
-                }
+                state.volume?.let { volume -> VolumeBar(volume, volumeDrag, haptics, onVolume) }
                 // With the More tabs in sight (a tablet) the Sources tab lists these already.
                 if (onMore != null) Row(verticalAlignment = Alignment.CenterVertically) {
                     val switchTo = stringResource(R.string.remote_switch_to)
