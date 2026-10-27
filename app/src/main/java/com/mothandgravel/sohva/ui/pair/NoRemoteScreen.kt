@@ -223,7 +223,8 @@ fun NoRemoteScreen(
             verticalArrangement = Arrangement.spacedBy(20.dp),
         ) {
             if (!paired) {
-                Text(stringResource(R.string.no_remote_intro), style = MaterialTheme.typography.bodyLarge, modifier = Modifier.fillMaxWidth())
+                // Centred like the pairing steps under it, which other screens share.
+                Text(stringResource(R.string.no_remote_intro), style = MaterialTheme.typography.bodyLarge, textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth())
                 FastKeysSteps(pairing, fastKeys, cancel)
                 return@Column
             }

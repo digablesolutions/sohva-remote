@@ -71,6 +71,13 @@ Play only allows `USE_EXACT_ALARM` for alarm/calendar apps, so the app uses the 
   KEYCODE_UNKNOWN on the KD-65XF9005 even though IRCC Guide maps to GUIDE there.
 - The TV's first ping comes about 9 s after connecting, then every 5 s; read timeouts must allow
   for that. Close TLS sockets off the main thread (the close alert is network I/O).
+- No-remote setup facts (KD-65XF9005): the TV ignores KEYCODE_SETTINGS (reach Settings with Home →
+  top row → gear). Port 8008 `/ssdp/device-desc.xml` (Cast/DIAL) names the manufacturer even with
+  Control remotely off, which is how mDNS finds are kept to Sony TVs (`SsdpDiscovery.sonyCastDevice`).
+  The remote service sometimes stops pinging mid-session; the 12 s read timeout then closes the
+  channel, and `NoRemoteViewModel` reconnects by itself. In standby with Remote start on, ports 80,
+  6466, 6467 and 8008 stay open. Right after Control remotely goes on, the web API answers 404 for a
+  few seconds (`TvChecker.webApiAnswers` counts any answer as on).
 - Typing on the TV (`AtvTextEdit`, probed on the KD-65XF9005): the TV sends 20 (IME counter in
   1.1, text field id/text/hint in 2), then 21 with 1 = 1 when its keyboard is up (0 when it goes).
   Each edit is 21{1: newest counter, 2: newest field id, 3:{1:1, 2:{1:0, 2:0, 3: one character}}};
