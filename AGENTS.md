@@ -1,12 +1,13 @@
 # Sohva Remote contributor instructions
 
-Sohva Remote (package `fi.digable.sohva`, published by Digable) is an Android phone app that
+Sohva Remote (package `com.mothandgravel.sohva`, published by Moth & Gravel) is an Android phone app that
 replaces the physical remote of a Sony Bravia TV (target: KD-65XF9005, 2018 Android TV) over the
 local network. Keep changes small, keep key presses fast, and never add a backend.
 
 It is headed for Google Play: the name and listing never use "Sony" or "Bravia" as our brand
-(descriptive "for Sony Bravia TVs" only, plus a not-affiliated line), the Kotlin package stays
-`fi.digable.braviaremote` (invisible to users), and `applicationId` must never change again.
+(descriptive "for Sony Bravia TVs" only, plus a not-affiliated line), the Kotlin package is
+`com.mothandgravel.sohva` (the same as `applicationId`), and `applicationId` must never change
+again once the app is on Play (it changed once, before the first release).
 Play only allows `USE_EXACT_ALARM` for alarm/calendar apps, so the app uses the user-granted
 `SCHEDULE_EXACT_ALARM` and shows `ExactAlarmNotice` until it is allowed.
 
@@ -140,7 +141,7 @@ Lint errors fail the build; warnings about newer library versions are acceptable
   "Normal and Pre-Shared Key"; Remote start On.
 - Walk: discover TV → PIN pairing → power toggle → volume with on-screen and hardware
   buttons → D-pad/OK/Back/Home → an input and an app from the More sheet.
-- Tiles: `adb shell cmd statusbar add-tile fi.digable.braviaremote/.shortcuts.MuteTile`, then open the shade
+- Tiles: `adb shell cmd statusbar add-tile com.mothandgravel.sohva/.shortcuts.MuteTile`, then open the shade
   (`cmd statusbar expand-settings`) and `cmd statusbar click-tile ...`; test once with the process killed
   (`am kill`) and once cached. Sleep timer: debug builds have a 1 min chip; kill the process and force Doze
   (`dumpsys battery unplug`, `dumpsys deviceidle force-idle`) before it fires. `am force-stop` cancels alarms.

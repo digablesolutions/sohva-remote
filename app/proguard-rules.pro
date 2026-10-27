@@ -1,10 +1,10 @@
 # Keep kotlinx.serialization generated serializers for our models.
 -keepattributes *Annotation*, InnerClasses
 -dontnote kotlinx.serialization.**
--keepclassmembers class fi.digable.braviaremote.** {
+-keepclassmembers class com.mothandgravel.sohva.** {
     *** Companion;
 }
--keepclasseswithmembers class fi.digable.braviaremote.** {
+-keepclasseswithmembers class com.mothandgravel.sohva.** {
     kotlinx.serialization.KSerializer serializer(...);
 }
 

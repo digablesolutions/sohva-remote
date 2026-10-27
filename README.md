@@ -1,18 +1,13 @@
 # Sohva Remote: free, ad-free Android remote for Sony Bravia TVs
 
-[![Latest release](https://img.shields.io/github/v/release/digablesolutions/sohva-remote?label=download%20APK&color=ffb547)](https://github.com/digablesolutions/sohva-remote/releases/latest)
-[![Android 8.0+](https://img.shields.io/badge/Android-8.0%2B-3ddc84?logo=android&logoColor=white)](https://github.com/digablesolutions/sohva-remote/releases/latest)
-[![Website](https://img.shields.io/badge/website-sohva--remote-000000)](https://digablesolutions.github.io/sohva-remote/)
-[![CI](https://github.com/digablesolutions/sohva-remote/actions/workflows/android.yml/badge.svg)](https://github.com/digablesolutions/sohva-remote/actions/workflows/android.yml)
+![Android 8.0+](https://img.shields.io/badge/Android-8.0%2B-3ddc84?logo=android&logoColor=white)
 [![License: GPL-3.0](https://img.shields.io/badge/license-GPL--3.0-blue)](LICENSE)
 
 A fast, ad-free phone remote for Sony Bravia TVs, on the local network only ("sohva" is
 Finnish for sofa). Built for a 2018 KD-65XF9005 (Android TV); other Bravias with IP
 control should work too. No cloud, no account, no analytics. Not affiliated with Sony.
 
-**[Download the APK](https://github.com/digablesolutions/sohva-remote/releases/latest)** ·
-**[Website](https://digablesolutions.github.io/sohva-remote/)** · Coming to Google Play
-(`fi.digable.sohva`). Made by Digable. English and Finnish (suomeksi: ilmainen, mainokseton
+Coming to Google Play (`com.mothandgravel.sohva`). Made by Moth & Gravel. English and Finnish (suomeksi: ilmainen, mainokseton
 kaukosäädin Sony Bravia -televisioille).
 
 <p>
@@ -140,7 +135,7 @@ Unit tests run the protocol code against fake TVs (`FakeBraviaTv` on MockWebServ
 ## Layout
 
 ```
-app/src/main/java/fi/digable/braviaremote/
+app/src/main/java/com/mothandgravel/sohva/
   protocol/   Pure Kotlin, no Android: BraviaApi (Scalar JSON-RPC + IRCC), PinPairing,
               SsdpDiscovery, WakeOnLan, RemoteKey; Android TV Remote: AtvPairing,
               AtvRemote, AtvWire, AtvTls.
@@ -151,7 +146,7 @@ app/src/main/java/fi/digable/braviaremote/
   voice/      Voice command parser (Finnish/English).
   ui/         Compose screens: discover, pair, remote, More sheet tabs.
 app/src/test/ Unit tests and the fake TVs.
-site/         Landing page (GitHub Pages) and screenshots in site/img.
+site/         Landing page and screenshots in site/img.
 .claude/skills/  Project agent skills (Android, Compose, Kotlin), pinned in skills-lock.json.
 ```
 
@@ -159,7 +154,7 @@ Contributor and agent conventions: [AGENTS.md](AGENTS.md).
 
 ## License
 
-Copyright (C) 2026 Digable.
+Copyright (C) 2026 Moth & Gravel.
 
 Sohva Remote is free software: you can redistribute it and/or modify it under the terms of the
 GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -170,7 +165,7 @@ Contributions are accepted under the same license.
 
 ## Trademarks
 
-"Sohva Remote" and the ring-and-dot icon are trademarks of Digable. The GPL covers the code, not
+"Sohva Remote" and the ring-and-dot icon are trademarks of Moth & Gravel. The GPL covers the code, not
 the name or the icon: if you publish a modified version, give it your own name and icon, so
 nobody mistakes it for this app.
 

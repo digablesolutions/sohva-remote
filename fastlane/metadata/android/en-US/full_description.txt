@@ -1,6 +1,6 @@
 Sohva Remote turns your phone into a quick remote for Sony Bravia TVs on your home network. No ads before the volume changes, no paywall, no account. Pair once with the PIN on the TV screen and it stays paired. ("Sohva" is Finnish for sofa.)
 
-Not affiliated with Sony. Sohva Remote is an independent app by Digable. Sony and Bravia are trademarks of Sony Group Corporation or its affiliates.
+Not affiliated with Sony. Sohva Remote is an independent app by Moth & Gravel. Sony and Bravia are trademarks of Sony Group Corporation or its affiliates.
 
 Keys that land right away
 • The D-pad, volume and channel keys go over the TV's own Android TV Remote connection and arrive in tens of milliseconds.

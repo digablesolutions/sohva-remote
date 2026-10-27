@@ -13,8 +13,8 @@ import pathlib
 import re
 
 SITE = pathlib.Path(__file__).resolve().parent.parent
-BASE = "https://digablesolutions.github.io/sohva-remote/"
-REPO = "https://github.com/digablesolutions/sohva-remote"
+# The pages are hosted on the Moth & Gravel studio site; this folder is their source.
+BASE = "https://mothandgravel.com/sohva/"
 INDEX = SITE / "index.html"
 
 FEATURES = [
@@ -44,7 +44,7 @@ def faq(page):
 
 
 def json_ld(page):
-    org = {"@type": "Organization", "@id": BASE + "#digable", "name": "Digable", "url": "https://github.com/digablesolutions"}
+    org = {"@type": "Organization", "@id": BASE + "#publisher", "name": "Moth & Gravel", "url": "https://mothandgravel.com/"}
     app = {
         "@type": "SoftwareApplication",
         "@id": BASE + "#app",
@@ -60,16 +60,12 @@ def json_ld(page):
         "isAccessibleForFree": True,
         "license": "https://www.gnu.org/licenses/gpl-3.0.html",
         "offers": {"@type": "Offer", "price": "0", "priceCurrency": "EUR"},
-        "downloadUrl": REPO + "/releases/latest",
-        "installUrl": REPO + "/releases/latest",
-        "releaseNotes": REPO + "/releases",
         "url": BASE,
         "image": BASE + "img/og.jpg",
         "screenshot": [BASE + f"img/{n}.png" for n in ("remote", "scenes", "timers", "channels", "inputs-apps", "tablet", "tablet-upright")],
         "featureList": FEATURES,
         "author": {"@id": org["@id"]},
         "publisher": {"@id": org["@id"]},
-        "sameAs": [REPO],
     }
     site = {"@type": "WebSite", "@id": BASE + "#site", "url": BASE, "name": "Sohva Remote", "inLanguage": "en",
             "publisher": {"@id": org["@id"]}}
@@ -90,7 +86,7 @@ def main():
     INDEX.write_text(page, encoding="utf-8")
 
     today = datetime.date.today().isoformat()
-    urls = [("", "1.0"), ("privacy.html", "0.3"), ("privacy-fi.html", "0.3"), ("llms.txt", "0.2")]
+    urls = [("", "1.0"), ("privacy/", "0.3"), ("privacy/fi/", "0.3"), ("llms.txt", "0.2")]
     entries = "\n".join(
         f"  <url><loc>{BASE}{path}</loc><lastmod>{today}</lastmod><priority>{prio}</priority></url>" for path, prio in urls
     )

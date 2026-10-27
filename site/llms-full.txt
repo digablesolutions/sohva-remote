@@ -1,11 +1,10 @@
 # Sohva Remote: full description
 
-Sohva Remote is a free, ad-free Android phone remote for Sony Bravia TVs, made by Digable (Finland). It replaces the physical remote over the home network. No cloud, no account, no analytics, no ads, no paywall. It is an independent app, not made by or affiliated with Sony. "Sohva" is Finnish for sofa.
+Sohva Remote is a free, ad-free Android phone remote for Sony Bravia TVs, made by Moth & Gravel (Finland). It replaces the physical remote over the home network. No cloud, no account, no analytics, no ads, no paywall. It is an independent app, not made by or affiliated with Sony. "Sohva" is Finnish for sofa.
 
-- Website: https://digablesolutions.github.io/sohva-remote/
-- Download (APK): https://github.com/digablesolutions/sohva-remote/releases/latest
-- Google Play: coming soon (package id fi.digable.sohva)
-- Source code: https://github.com/digablesolutions/sohva-remote (free software, GPL-3.0-or-later; the name and icon are Digable trademarks)
+- Website: https://mothandgravel.com/sohva/
+- Google Play: coming soon (package id com.mothandgravel.sohva)
+- Licence: free software, GPL-3.0-or-later; the name and icon are Moth & Gravel trademarks
 - Requirements: an Android phone or tablet with Android 8.0 or newer; a Sony Bravia TV with IP control on the same network
 - Version: 1.5.2 (October 2026). Languages: English, Finnish; chosen in the app (Settings › Language) or with Android's per-app language setting, whatever the phone's language.
 
@@ -36,18 +35,18 @@ Sohva Remote is a free, ad-free Android phone remote for Sony Bravia TVs, made b
 
 ## Setup
 1. On the TV: Settings > Network > Home network setup > IP control. Set Authentication to "Normal and Pre-Shared Key" and Remote start to On.
-2. Install the app (APK from GitHub releases now; Google Play later).
+2. Install the app from Google Play (coming soon).
 3. Open it on the same Wi-Fi as the TV. It finds the TV; type the 4-digit PIN the TV shows. Fast keys ask once for a second code from the TV.
 
 ## Privacy
 Everything stays between the phone and the TV; the app makes no calls outside the local network. Stored on the phone only: the TV's address and name, pairing keys (encrypted with Android Keystore) and settings. App backups are disabled. Voice input uses the phone's own speech recognizer; the app receives only the recognized text and does not store it. The phone-state permission is used only for "Mute during calls". Uninstalling deletes everything.
-Privacy policy: https://digablesolutions.github.io/sohva-remote/privacy.html
+Privacy policy: https://mothandgravel.com/sohva/privacy/
 
 ## Frequently asked
 - Which TVs? Built and tested on a Sony KD-65XF9005 (Android TV); other Bravia TVs with IP control should work.
 - Is it free? Yes: no ads, no paywall, no in-app purchases.
 - Does it work away from home? No. Phone and TV must be on the same network.
-- Is it made by Sony? No. It is an independent app by Digable, not affiliated with Sony.
+- Is it made by Sony? No. It is an independent app by Moth & Gravel, not affiliated with Sony.
 - Tablet? Yes: the More tabs (inputs, channels, timers, scenes) sit beside the remote on a tablet on its side, and between the card and the remote held upright.
 - iPhone? No, Android only.
 
