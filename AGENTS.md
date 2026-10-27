@@ -102,6 +102,9 @@ Play only allows `USE_EXACT_ALARM` for alarm/calendar apps, so the app uses the 
 - Scheduled scenes (`Scene.days` + `Scene.times`): `SceneSchedule` keeps one exact alarm for the
   soonest run of any scene and is rescheduled on app start, boot, save/delete and after each run.
   A scheduled run uses `apply(onlyIfOn = true)`: it never switches the TV on.
+- A TV idle on its home screen starts its screensaver (daydream), and getPowerStatus still says
+  active. A channel switched behind it stays hidden, so `apply()` sends the IRCC WakeUp key
+  (Android WAKEUP; a no-op on an awake TV) before switching.
 - Hilt receivers must reach Hilt's generated `onReceive` through a super call: extend
   `InjectedReceiver` (or `AppWidgetProvider`), not `BroadcastReceiver`.
 - Cookies and PSKs live only in `CredentialStore`. Never log them, never put them in

@@ -6,7 +6,7 @@ Sohva Remote is a free, ad-free Android phone remote for Sony Bravia TVs, made b
 - Google Play: coming soon (package id com.mothandgravel.sohva)
 - Licence: free software, GPL-3.0-or-later; the name and icon are Moth & Gravel trademarks
 - Requirements: an Android phone or tablet with Android 8.0 or newer; a Sony Bravia TV with IP control on the same network
-- Version: 1.5.2 (October 2026). Languages: English, Finnish; chosen in the app (Settings › Language) or with Android's per-app language setting, whatever the phone's language.
+- Version: 1.6.0 (October 2026). Languages: English, Finnish; chosen in the app (Settings › Language) or with Android's per-app language setting, whatever the phone's language.
 
 ## What it does
 

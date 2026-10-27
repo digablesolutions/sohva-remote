@@ -1,0 +1,4 @@
+• Eikö television kaukosäädintä löydy? Jos Hallitse etänä on pois päältä, sovellus opastaa television valikoissa puhelin kaukosäätimenä.
+• Tarkista yhteys (Asetuksissa ja "Ei yhteyttä" -kohdassa) kertoo vaihe vaiheelta, mikä on vialla ja miten sen korjaa.
+• Säädä äänenvoimakkuutta vetämällä kortin äänenvoimakkuuspalkkia.
+• Kohtaus sulkee nyt myös television näytönsäästäjän, joten kanava näkyy.

@@ -1,0 +1,4 @@
+• No TV remote at hand? If Control remotely is off, the app guides you through the TV's menus with your phone as the remote.
+• Check connection (in Settings and on "Can't reach") tells you step by step what is wrong and how to fix it.
+• Drag the volume bar on the card to change the volume.
+• A scene now also clears the TV's screensaver, so the channel shows.

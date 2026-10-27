@@ -1,6 +1,6 @@
 # Play Console checklist: Sohva Remote
 
-The answers below match the code as of 1.5.2 (versionCode 11).
+The answers below match the code as of 1.6.0 (versionCode 12).
 
 ## 0. Status
 

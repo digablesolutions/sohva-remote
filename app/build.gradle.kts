@@ -18,8 +18,8 @@ android {
         applicationId = "com.mothandgravel.sohva"
         minSdk = 26
         targetSdk = 36
-        versionCode = 11
-        versionName = "1.5.2"
+        versionCode = 12
+        versionName = "1.6.0"
         vectorDrawables.useSupportLibrary = true
         // Release builds log nothing; `-Psohva.logs=true` builds one that logs, for diagnosing on
         // the family's phone without re-pairing (same package and signature as the release).

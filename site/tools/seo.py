@@ -55,7 +55,7 @@ def json_ld(page):
         "applicationCategory": "UtilitiesApplication",
         "applicationSubCategory": "TV remote control",
         "operatingSystem": "Android 8.0 or newer",
-        "softwareVersion": "1.5.2",
+        "softwareVersion": "1.6.0",
         "inLanguage": ["en", "fi"],
         "isAccessibleForFree": True,
         "license": "https://www.gnu.org/licenses/gpl-3.0.html",
