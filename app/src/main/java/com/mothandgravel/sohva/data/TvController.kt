@@ -776,6 +776,11 @@ class TvController @Inject constructor(
         if (!ensureOn()) return false
         val client = api ?: return false
         if (target != null) {
+            // A TV left idle on its home screen shows its screensaver, which stays on top of a
+            // channel switched to behind it (power still says active). WakeUp ends the screensaver
+            // and does nothing to a TV that is awake.
+            runCatching { client.sendIrcc(codes.codeFor(RemoteKey.WAKE_UP)) }
+                .onFailure { DebugLog.w(it) { "WakeUp key before the switch failed" } }
             sendSwitch(client, target)
             // A games console or sound system on HDMI can take the screen back over HDMI-CEC just
             // after the TV leaves its input: a channel scene checks, and switches once more.
